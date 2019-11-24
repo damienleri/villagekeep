@@ -1,0 +1,19 @@
+{
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-villagekeep-prod-165232-authRole",
+            "UnauthRoleArn": "arn:aws:iam::786032677611:role/amplify-villagekeep-prod-165232-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::786032677611:role/amplify-villagekeep-prod-165232-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplify-villagekeep-prod-165232-deployment",
+            "UnauthRoleName": "amplify-villagekeep-prod-165232-unauthRole",
+            "StackName": "amplify-villagekeep-prod-165232",
+            "StackId": "arn:aws:cloudformation:us-east-1:786032677611:stack/amplify-villagekeep-prod-165232/8d731410-0e3b-11ea-8c44-12b6a099270b"
+        },
+        "categories": {
+            "auth": {
+                "villagekeepd5539f06": {}
+            }
+        }
+    }
+}

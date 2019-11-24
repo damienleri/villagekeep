@@ -1,0 +1,17 @@
+type User @model {
+  id: ID!
+  email: AWSEmail
+  phone: AWSPhone
+  firstName: String
+  lastName: String
+  joinedAt: AWSDateTime
+  isApprover: Boolean
+  followedInvitation: Invitation
+}
+type Invitation @model {
+  id: ID!
+  email: AWSEmail
+  phone: AWSPhone
+  isApprover: Boolean
+  createdByUser: User
+}
