@@ -85,10 +85,19 @@ Parameters:
                       
   usernameAttributes:
     Type: CommaDelimitedList
-              
+      
+  triggers:
+    Type: String
+                      
   userPoolGroupList:
     Type: CommaDelimitedList
-                          
+                        
+  parentStack:
+    Type: String
+                
+  permissions:
+    Type: CommaDelimitedList
+              
   dependsOn:
     Type: CommaDelimitedList
     
@@ -103,7 +112,7 @@ Resources:
   # Created to allow the UserPool SMS Config to publish via the Simple Notification Service during MFA Process
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !If [ShouldNotCreateEnvResources, 'villagd5539f06_sns-role', !Join ['',['villagd5539f06_sns-role', '-', !Ref env]]]
+      RoleName: !If [ShouldNotCreateEnvResources, 'villag680f64a1_sns-role', !Join ['',['villag680f64a1_sns-role', '-', !Ref env]]]
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement: 
@@ -115,10 +124,10 @@ Resources:
               - "sts:AssumeRole"
             Condition: 
               StringEquals:
-                sts:ExternalId: villagd5539f06_role_external_id
+                sts:ExternalId: villag680f64a1_role_external_id
       Policies: 
         - 
-          PolicyName: villagd5539f06-sns-policy
+          PolicyName: villag680f64a1-sns-policy
           PolicyDocument: 
             Version: "2012-10-17"
             Statement: 
@@ -139,7 +148,7 @@ Resources:
       Schema: 
         
         -
-          Name: email
+          Name: phone_number
           Required: true
           Mutable: true
         
@@ -166,15 +175,27 @@ Resources:
       SmsVerificationMessage: !Ref smsVerificationMessage
       SmsConfiguration: 
         SnsCallerArn: !GetAtt SNSRole.Arn
-        ExternalId: villagd5539f06_role_external_id
+        ExternalId: villag680f64a1_role_external_id
     
+  
+    
+    
+  
+    
+    
+  
+  
+   
+    
+  # Updating lambda role with permissions to Cognito
+  
   
   UserPoolClientWeb:
   # Created provide application access to user pool
   # Depends on UserPool for ID reference
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: villagd5539f06_app_clientWeb
+      ClientName: villag680f64a1_app_clientWeb
       
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity
       UserPoolId: !Ref UserPool
@@ -184,7 +205,7 @@ Resources:
   # Depends on UserPool for ID reference
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: villagd5539f06_app_client
+      ClientName: villag680f64a1_app_client
       
       GenerateSecret: !Ref userpoolClientGenerateSecret
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity
@@ -249,7 +270,7 @@ Resources:
   # Marked as depending on UserPoolClientRole for easier to understand CFN sequencing
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: villagd5539f06_userpoolclient_lambda_iam_policy
+      PolicyName: villag680f64a1_userpoolclient_lambda_iam_policy
       Roles: 
         - !If [ShouldNotCreateEnvResources, !Ref userpoolClientLambdaRole, !Join ['',[!Ref userpoolClientLambdaRole, '-', !Ref env]]]
       PolicyDocument:
@@ -266,7 +287,7 @@ Resources:
   # Marked as depending on UserPoolClientLambdaPolicy for easier to understand CFN sequencing
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: villagd5539f06_userpoolclient_lambda_log_policy
+      PolicyName: villag680f64a1_userpoolclient_lambda_log_policy
       Roles: 
         - !If [ShouldNotCreateEnvResources, !Ref userpoolClientLambdaRole, !Join ['',[!Ref userpoolClientLambdaRole, '-', !Ref env]]]
       PolicyDocument:
@@ -306,7 +327,7 @@ Resources:
   # Always created
     Type: AWS::Cognito::IdentityPool
     Properties: 
-      IdentityPoolName: !If [ShouldNotCreateEnvResources, 'villagekeepd5539f06_identitypool_d5539f06', !Join ['',['villagekeepd5539f06_identitypool_d5539f06', '__', !Ref env]]]
+      IdentityPoolName: !If [ShouldNotCreateEnvResources, 'villagekeep680f64a1_identitypool_680f64a1', !Join ['',['villagekeep680f64a1_identitypool_680f64a1', '__', !Ref env]]]
       
       CognitoIdentityProviders:
         - ClientId:  !Ref UserPoolClient

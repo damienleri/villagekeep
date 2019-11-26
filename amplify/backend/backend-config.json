@@ -1,6 +1,6 @@
 {
 	"auth": {
-		"villagekeepd5539f06": {
+		"villagekeep680f64a1": {
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": []

@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "villagekeepd5539f06_identitypool_d5539f06",
+    "identityPoolName": "villagekeep680f64a1_identitypool_680f64a1",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "villagd5539f06",
-    "userPoolName": "villagekeepd5539f06_userpool_d5539f06",
+    "resourceNameTruncated": "villag680f64a1",
+    "userPoolName": "villagekeep680f64a1_userpool_680f64a1",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -18,7 +18,7 @@
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
-        "email"
+        "phone_number"
     ],
     "userpoolClientGenerateSecret": true,
     "userpoolClientRefreshTokenValidity": 30,
@@ -28,9 +28,9 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "villagd5539f06_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "villag680f64a1_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "resourceName": "villagekeepd5539f06",
+    "resourceName": "villagekeep680f64a1",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -46,8 +46,13 @@
     },
     "useDefault": "default",
     "usernameAttributes": [
-        "email, phone_number"
+        "phone_number"
     ],
+    "triggers": "{}",
     "userPoolGroupList": [],
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": [],
     "dependsOn": []
 }

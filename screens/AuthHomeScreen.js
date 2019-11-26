@@ -18,35 +18,33 @@ export default class LinksScreen extends React.Component {
   };
 
   authStateChange(authState) {
-    console.log("auth state change");
-    console.log(authState);
+    console.log(`authhomescreen: auth state change to ${authState}`);
   }
 
   componentDidMount() {
-    const alex = new Logger("AuthListener");
-
-    alex.onHubCapsule = capsule => {
+    // const alex = new Logger("AuthListener");
+    Hub.listen("auth", capsule => {
       switch (capsule.payload.event) {
         case "signIn":
-          alex.error("user signed in");
+          console.log("user signed in");
           this.props.navigation.navigate("Main");
           break;
         case "signUp":
-          alex.error("user signed up");
+          console.log("user signed up");
           break;
         case "signOut":
-          alex.error("user signed out");
+          console.log("user signed out");
           this.props.navigation.navigate("Auth");
           break;
         case "signIn_failure":
-          alex.error("user sign in failed");
+          console.log("user sign in failed");
           break;
         case "configured":
-          alex.error("the Auth module is configured");
+          console.log("the Auth module is configured");
       }
-    };
+    });
 
-    Hub.listen("auth", alex);
+    // Hub.listen("auth", alex);
   }
 
   render() {
