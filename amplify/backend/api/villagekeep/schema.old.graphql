@@ -12,13 +12,13 @@ type User @model {
   firstName: String
   lastName: String
   isParent: Boolean
-  contacts: [Contact] @connection(name: "userContacts")
+  contacts: [ContactTmp] @connection(name: "userContacts")
   # createdContacts: [Contact]
   #   @connection(keyName: "createdByUser", fields: ["id"])
   # ownedContacts: [Contact] @connection(keyName: "ownedByUser", fields: ["id"])
 }
 
-type Contact @model @key(fields: ["phone"]) {
+type ContactTmp @model {
   # @key(name: "createdByUser", fields: ["createdByUserId"])
   # @key(name: "ownedByUser", fields: ["ownedByUserId"])
   id: ID!

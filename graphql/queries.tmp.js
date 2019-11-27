@@ -4,26 +4,24 @@
 export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
-    email
+    createdAt
+    updatedAt
     phone
     firstName
     lastName
-    joinedAt
-    isApprover
-    followedInvitation {
-      id
-      email
-      phone
-      isApprover
-      createdByUser {
+    isParent
+    createdContacts {
+      items {
         id
-        email
+        createdAt
+        updatedAt
+        type
         phone
         firstName
         lastName
-        joinedAt
-        isApprover
+        createdByUserId
       }
+      nextToken
     }
   }
 }
@@ -36,66 +34,68 @@ export const listUsers = `query ListUsers(
   listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      email
+      createdAt
+      updatedAt
       phone
       firstName
       lastName
-      joinedAt
-      isApprover
-      followedInvitation {
-        id
-        email
-        phone
-        isApprover
+      isParent
+      createdContacts {
+        nextToken
       }
     }
     nextToken
   }
 }
 `;
-export const getInvitation = `query GetInvitation($id: ID!) {
-  getInvitation(id: $id) {
+export const getContact = `query GetContact($id: ID!) {
+  getContact(id: $id) {
     id
-    email
+    createdAt
+    updatedAt
+    type
     phone
-    isApprover
+    firstName
+    lastName
+    createdByUserId
     createdByUser {
       id
-      email
+      createdAt
+      updatedAt
       phone
       firstName
       lastName
-      joinedAt
-      isApprover
-      followedInvitation {
-        id
-        email
-        phone
-        isApprover
+      isParent
+      createdContacts {
+        nextToken
       }
     }
   }
 }
 `;
-export const listInvitations = `query ListInvitations(
-  $filter: ModelInvitationFilterInput
+export const listContacts = `query ListContacts(
+  $filter: ModelContactFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listInvitations(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listContacts(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      email
+      createdAt
+      updatedAt
+      type
       phone
-      isApprover
+      firstName
+      lastName
+      createdByUserId
       createdByUser {
         id
-        email
+        createdAt
+        updatedAt
         phone
         firstName
         lastName
-        joinedAt
-        isApprover
+        isParent
       }
     }
     nextToken

@@ -7,17 +7,16 @@ export default class AuthLoadingScreen extends React.Component {
     await this.loadApp();
   };
   loadApp = async () => {
-    Auth.currentAuthenticatedUser({
-      bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-    })
-      .then(user => {
-        console.log(user);
-        this.props.navigation.navigate("Main");
-      })
-      .catch(err => {
-        console.log(err);
-        this.props.navigation.navigate("Auth");
+    try {
+      const user = await Auth.currentAuthenticatedUser({
+        bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
+      console.log("not logged in");
+      this.props.navigation.navigate("Main");
+    } catch (e) {
+      console.log("Error from currentAuthenticatedUser", e);
+      this.props.navigation.navigate("AuthSignUp");
+    }
   };
 
   render() {

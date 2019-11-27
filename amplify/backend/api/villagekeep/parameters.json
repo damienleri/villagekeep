@@ -1,5 +1,11 @@
 {
     "AppSyncApiName": "villagekeep",
     "DynamoDBBillingMode": "PAY_PER_REQUEST",
-    "DynamoDBEnableServerSideEncryption": "false"
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authvillagekeep680f64a1",
+            "Outputs.UserPoolId"
+        ]
+    }
 }

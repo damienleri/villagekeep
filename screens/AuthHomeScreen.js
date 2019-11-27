@@ -1,6 +1,5 @@
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
-import Amplify from "aws-amplify";
 import {
   Authenticator,
   SignIn,
@@ -8,11 +7,13 @@ import {
   ForgotPassword,
   ConfirmSignUp
 } from "aws-amplify-react-native";
-// import settings from "../aws-exports";
+// import Amplify from "aws-amplify";
+import amplifyConfig from "../aws-exports";
+console.log("amplifyConfig", amplifyConfig);
 // Amplify.configure(settings);
-import { Hub, Logger } from "aws-amplify";
+import { Auth, Hub, Logger } from "aws-amplify";
 
-export default class LinksScreen extends React.Component {
+export default class AuthHomeScreen extends React.Component {
   static navigationOptions = {
     title: "Sign In or Sign Up"
   };
@@ -22,7 +23,6 @@ export default class LinksScreen extends React.Component {
   }
 
   componentDidMount() {
-    // const alex = new Logger("AuthListener");
     Hub.listen("auth", capsule => {
       switch (capsule.payload.event) {
         case "signIn":
@@ -43,21 +43,44 @@ export default class LinksScreen extends React.Component {
           console.log("the Auth module is configured");
       }
     });
-
-    // Hub.listen("auth", alex);
   }
 
+  //// AUthenticator docs: https://aws-amplify.github.io/docs/js/authentication
+  // <ConfirmSignUp />
   render() {
+    const signUpConfig = {
+      // hiddenDefaults: ["p"],
+      hiddenDefaults: ["phone_number", "email"],
+      // hideAllDefaults: true,
+      signUpFields: [
+        {
+          label: "You will login using this phone number",
+          key: "username",
+          required: true,
+          placeholder: "Enter your phone",
+          type: "phone_number",
+          displayOrder: 1
+        },
+        {
+          label: "Please create a password",
+          key: "password",
+          required: true,
+          placeholder: "Enter a password at least 8 characters",
+          type: "password",
+          displayOrder: 2
+        }
+      ]
+    };
     return (
       <ScrollView style={styles.container}>
         <Authenticator
           hideDefault={true}
           onStateChange={authState => this.authStateChange(authState)}
+          amplifyConfig={amplifyConfig}
         >
           <SignIn />
-          <SignUp />
+          <SignUp signUpConfig={signUpConfig} />
           <ForgotPassword />
-          <ConfirmSignUp />
         </Authenticator>
       </ScrollView>
     );
