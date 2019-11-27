@@ -35,18 +35,6 @@ export default class AuthSignUpScreen extends React.Component {
       this.setState({ isLoading: false });
     }
   };
-  handleSubmit2 = async () => {
-    const phone = "+12678086023";
-    const password = "testtest";
-
-    try {
-      const newUser = await Auth.signIn(phone, password);
-      this.props.navigation.navigate("Main");
-    } catch (e) {
-      console.log("error", e);
-      this.setState({ isLoading: false });
-    }
-  };
 
   handleSubmit3 = () => {
     this.props.navigation.navigate("AuthVerify");
@@ -55,8 +43,6 @@ export default class AuthSignUpScreen extends React.Component {
     return (
       <ScrollView style={styles.container}>
         <Button title="Sign Up" onPress={this.handleSubmit} />
-        <Button title="Sign In" onPress={this.handleSubmit2} />
-        <Button title="Verify" onPress={this.handleSubmit3} />
       </ScrollView>
     );
   }

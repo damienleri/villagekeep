@@ -7,6 +7,7 @@ import {
 
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
+import TestApiScreen from "../screens/TestApiScreen";
 import ContactsScreen from "../screens/ContactsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 
@@ -17,7 +18,8 @@ const config = Platform.select({
 
 const HomeStack = createStackNavigator(
   {
-    Home: HomeScreen
+    Home: HomeScreen,
+    TestApi: TestApiScreen
   },
   config
 );

@@ -8,6 +8,7 @@ type User @model {
   id: ID!
   createdAt: String
   updatedAt: String
+  cognitoUserId: String
   phone: AWSPhone!
   firstName: String
   lastName: String
@@ -18,7 +19,7 @@ type User @model {
   # ownedContacts: [Contact] @connection(keyName: "ownedByUser", fields: ["id"])
 }
 
-type Contact @model @key(fields: ["phone"]) {
+type Contact @model {
   # @key(name: "createdByUser", fields: ["createdByUserId"])
   # @key(name: "ownedByUser", fields: ["ownedByUserId"])
   id: ID!

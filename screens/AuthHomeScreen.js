@@ -9,7 +9,7 @@ import {
 } from "aws-amplify-react-native";
 // import Amplify from "aws-amplify";
 import amplifyConfig from "../aws-exports";
-console.log("amplifyConfig", amplifyConfig);
+// console.log("amplifyConfig", amplifyConfig);
 // Amplify.configure(settings);
 import { Auth, Hub, Logger } from "aws-amplify";
 
