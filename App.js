@@ -4,6 +4,13 @@ import * as Font from "expo-font";
 import React, { useState } from "react";
 import { Platform, StatusBar, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  mapping,
+  light as lightTheme,
+  dark as darkTheme
+} from "@eva-design/eva";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
+import { ApplicationProvider, IconRegistry } from "react-native-ui-kitten";
 
 import Amplify from "@aws-amplify/core";
 import awsConfig from "./aws-exports";
@@ -16,6 +23,7 @@ export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
+    // if (false) {
     return (
       <AppLoading
         startAsync={loadResourcesAsync}
@@ -25,15 +33,21 @@ export default function App(props) {
     );
   } else {
     return (
-      <View style={styles.container}>
-        {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-        <AppNavigator />
-      </View>
+      <React.Fragment>
+        <IconRegistry icons={EvaIconsPack} />
+        <ApplicationProvider mapping={mapping} theme={lightTheme}>
+          <View style={styles.container}>
+            {Platform.OS === "ios" && <StatusBar barStyle="default" />}
+            <AppNavigator />
+          </View>
+        </ApplicationProvider>
+      </React.Fragment>
     );
   }
 }
 
 async function loadResourcesAsync() {
+  return;
   await Promise.all([
     Asset.loadAsync([
       require("./assets/images/robot-dev.png"),
