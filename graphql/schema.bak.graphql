@@ -4,31 +4,54 @@
 ## Notes:
 # AWSTimestamp is preferred over datetime
 
-type User @model {
+type User
+  @model
+  @key(
+    name: "byCognitoUserId"
+    fields: ["cognitoUserId"]
+    queryField: "userByCognitoUserId"
+  ) {
   id: ID!
   createdAt: String
   updatedAt: String
+  cognitoUserId: String
   phone: AWSPhone!
   firstName: String
   lastName: String
   isParent: Boolean
-  contacts: [ContactTmp] @connection(name: "userContacts")
+  contacts: [Contact] @connection
   # createdContacts: [Contact]
   #   @connection(keyName: "createdByUser", fields: ["id"])
   # ownedContacts: [Contact] @connection(keyName: "ownedByUser", fields: ["id"])
 }
 
-type ContactTmp @model {
+type Contact @model {
   # @key(name: "createdByUser", fields: ["createdByUserId"])
   # @key(name: "ownedByUser", fields: ["ownedByUserId"])
+
+  # @key(name: "byUser", fields: ["userId", "id"], queryField: "contactByUser")
+
+  # @key(
+  #   name: "byCreator"
+  #   fields: ["createdByUserId"]
+  #   queryField: "contactByCreator"
+  # )
+  # @key(
+  #   name: "byOwner"
+  #   fields: ["ownedByUserId"]
+  #   queryField: "contactByOwner"
+  # )
   id: ID!
   createdAt: String
   updatedAt: String
-  type: String! ## 'parent', 'kid', or 'friend'
+  type: ContactType ## 'parent', 'kid', or 'friend'
   phone: AWSPhone!
   firstName: String
   lastName: String
-  user: User @connection(name: "userContacts")
+  # userId: ID
+  # createdByUserId: ID!
+  # ownedByUserId: ID
+  # user: User @connection(name: "userContacts")
   # createdByUserId: ID!
   # createdByUser: User! @connection(fields: ["createdByUserId"])
   # createdByUserId: ID!
@@ -37,6 +60,12 @@ type ContactTmp @model {
   # ownedByUser: User @connection(fields: ["ownedByUserId"])
 }
 
+enum ContactType {
+  parent
+  kid
+  friend
+  other
+}
 # type Person @model {
 #   id: ID!
 #   createdAt: String
@@ -66,3 +95,17 @@ type ContactTmp @model {
 ##    User is prompted to add (with one-click) reciprocal contacts for each user who added them as contact. If they approve the one for parent:
 ##       System creates Contact: parent's phone, first, last, type='parent', createdByUser
 ## Kid invites friend:
+
+# pseudocode.... query getUser() {
+#   id ## the parent
+#   contacts: {
+#     firstName
+#     lastName
+#     user: {
+#       id ## the teen
+#       contacts: {
+#       firstName # their friends
+#       }
+#     }
+#   }
+# }

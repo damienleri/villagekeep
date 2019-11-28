@@ -8,5 +8,8 @@ projects:
     extensions:
       amplify:
         codeGenTarget: javascript
-        generatedFileName: ""
-        docsFilePath: src/graphql
+        generatedFileName: ''
+        docsFilePath: graphql
+extensions:
+  amplify:
+    version: 3

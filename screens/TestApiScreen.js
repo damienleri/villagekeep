@@ -3,81 +3,52 @@ import { ScrollView, StyleSheet } from "react-native";
 import { Button, ListItem } from "react-native-elements";
 import API, { graphqlOperation } from "@aws-amplify/api";
 import { Auth } from "aws-amplify";
-import { createContact, createUser } from "../graphql/mutations";
-import { listContacts, listUsers } from "../graphql/queries";
+import * as mutations from "../graphql/mutations";
+import {
+  getCurrentUser,
+  createCurrentUser,
+  createContact,
+  getContacts
+} from "../utils/api";
 
-// const createContact = `mutation CreateContact($type: String!, $phone: AWSPhone!, $firstName: String, $lastName: String) {
-//   createContact(input: {type: $type, phone: $phone, firstName: $firstName, lastName: $lastName}) {
-//     type
-//   }
-// }
-// `;
+import * as queries from "../graphql/queries";
 
 export default class ContactsScreen extends React.Component {
   static navigationOptions = {
     title: "Contacts"
   };
-  addContact = async ({ type }) => {
-    console.log(`Adding ${type} contact`);
 
-    const contact = {
+  addContact = async ({ type }) => {
+    const phone = "+12678086023";
+    const firstName = "Dale";
+    const lastName = "Cooper";
+    const { error, contact } = await createContact({
       type,
-      phone: "+12678086023",
-      firstName: "Dale",
-      lastName: "Cooper"
-      //user todo
-    };
-    // const contact = {
-    //   type,
-    //   phone: "267-808-6023",
-    //   firstName: "Dale",
-    //   lastName: "Cooper"
-    //   //user todo
-    // };
-    try {
-      const res = await API.graphql(
-        graphqlOperation(createContact, { input: contact })
-      );
-      console.log("createcontact response", res);
-    } catch (e) {
-      console.log("error creating contact", e);
-    }
+      phone,
+      firstName,
+      lastName
+    });
+    console.log(contact);
   };
   addUser = async () => {
-    const cognitoUser = await Auth.currentAuthenticatedUser();
-    console.log(cognitoUser.attributes);
-    const { sub: cognitoUserId, phone_number: phone } = cognitoUser.attributes;
-    console.log(`Adding user with cognito id ${cognitoUserId} (${phone})`);
-
-    const user = {
-      phone,
-      firstName: "Dale from user",
+    const { error, user } = await createCurrentUser({
+      firstName: "The Real Dale",
       lastName: "Cooper",
       isParent: true
-    };
-
-    try {
-      const res = await API.graphql(
-        graphqlOperation(createUser, { input: user })
-      );
-      console.log("createuser response", res);
-    } catch (e) {
-      console.log("error creating user", e);
-    }
+    });
+    console.log(user);
   };
 
   listContacts = async () => {
-    try {
-      const res = await API.graphql(graphqlOperation(listContacts));
-      console.log("listContacts response", res);
-    } catch (e) {
-      console.log("error listing contacts", e);
-    }
+    const { user, error } = await getCurrentUser();
+    if (error) console.log(`error from getCurrentUser: ${error}`);
+    // console.log("all contacts", await getContacts());
+    console.log("my contacts", user.contacts.items.length);
   };
   listUsers = async () => {
     try {
-      const res = await API.graphql(graphqlOperation(listUsers));
-      console.log("list users response", res);
+      const res = await API.graphql(graphqlOperation(queries.listUsers));
+      console.log("list users response", res.data.listUsers.items);
     } catch (e) {
       console.log("error listing users", e);
     }
@@ -85,13 +56,21 @@ export default class ContactsScreen extends React.Component {
   render() {
     return (
       <ScrollView style={styles.container}>
+        <Button title="Add User" onPress={() => this.addUser()} />
         <Button
           title="Add a Kid"
           onPress={() => this.addContact({ type: "kid" })}
         />
-        <Button title="Add User" onPress={() => this.addUser()} />
         <Button title="List contacts" onPress={() => this.listContacts()} />
         <Button title="List users" onPress={() => this.listUsers()} />
+        <Button
+          title="Sign up"
+          onPress={() => this.props.navigation.navigate("AuthSignUp")}
+        />
+        <Button
+          title="Sign in"
+          onPress={() => this.props.navigation.navigate("AuthSignIn")}
+        />
       </ScrollView>
     );
   }

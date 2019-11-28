@@ -1,11 +1,9 @@
-/* eslint-disable */
-// this is an auto generated file. This will be overwritten
-
 export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
     createdAt
     updatedAt
+    cognitoUserId
     phone
     firstName
     lastName
@@ -35,20 +33,35 @@ export const listUsers = `query ListUsers(
       id
       createdAt
       updatedAt
+      cognitoUserId
       phone
       firstName
       lastName
       isParent
       contacts {
-        nextToken
+        items {
+          id
+          createdAt
+          updatedAt
+          type
+          phone
+          firstName
+          lastName
+          user {
+              id
+              phone
+              firstName
+              lastName
+          }
+        }
       }
     }
     nextToken
   }
 }
 `;
-export const getContact = `query GetContact($phone: AWSPhone!) {
-  getContact(phone: $phone) {
+export const getContact = `query GetContact($id: ID!) {
+  getContact(id: $id) {
     id
     createdAt
     updatedAt
@@ -60,6 +73,7 @@ export const getContact = `query GetContact($phone: AWSPhone!) {
       id
       createdAt
       updatedAt
+      cognitoUserId
       phone
       firstName
       lastName
@@ -72,19 +86,11 @@ export const getContact = `query GetContact($phone: AWSPhone!) {
 }
 `;
 export const listContacts = `query ListContacts(
-  $phone: AWSPhone
   $filter: ModelContactFilterInput
   $limit: Int
   $nextToken: String
-  $sortDirection: ModelSortDirection
 ) {
-  listContacts(
-    phone: $phone
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    sortDirection: $sortDirection
-  ) {
+  listContacts(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       createdAt
@@ -97,10 +103,87 @@ export const listContacts = `query ListContacts(
         id
         createdAt
         updatedAt
+        cognitoUserId
         phone
         firstName
         lastName
         isParent
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const userByCognitoUserId = `query UserByCognitoUserId(
+  $cognitoUserId: String
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  userByCognitoUserId(
+    cognitoUserId: $cognitoUserId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      createdAt
+      updatedAt
+      cognitoUserId
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        items {
+          id
+          createdAt
+          updatedAt
+          type
+          phone
+          firstName
+          lastName
+          user {
+              id
+              phone
+              firstName
+              lastName
+          }
+        }
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const userByPhone = `query UserByPhone(
+  $phone: AWSPhone
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  userByPhone(
+    phone: $phone
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      createdAt
+      updatedAt
+      cognitoUserId
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
       }
     }
     nextToken

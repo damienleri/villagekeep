@@ -12,15 +12,7 @@
 			"providerPlugin": "awscloudformation",
 			"output": {
 				"authConfig": {
-					"additionalAuthenticationProviders": [
-						{
-							"authenticationType": "API_KEY",
-							"apiKeyConfig": {
-								"description": "villagekeep",
-								"apiKeyExpirationDays": "100"
-							}
-						}
-					],
+					"additionalAuthenticationProviders": [],
 					"defaultAuthentication": {
 						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
 						"userPoolConfig": {
@@ -29,6 +21,29 @@
 					}
 				}
 			}
+		}
+	},
+	"storage": {
+		"dynamod4778965": {
+			"service": "DynamoDB",
+			"providerPlugin": "awscloudformation"
+		}
+	},
+	"function": {
+		"villagekeep5a7b72e5": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [
+				{
+					"category": "storage",
+					"resourceName": "dynamod4778965",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			]
 		}
 	}
 }
