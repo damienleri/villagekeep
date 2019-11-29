@@ -19,10 +19,10 @@ export default class AuthLoadingScreen extends React.Component {
         bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
       console.log("logged in");
-      this.props.navigation.navigate("Home");
+      this.props.navigation.navigate("EditAccountScreen");
     } catch (e) {
-      console.log("Error from currentAuthenticatedUser", e);
-      this.props.navigation.navigate("AuthSignUp");
+      console.log("not logged in");
+      this.props.navigation.navigate("AuthHome");
     }
   };
 

@@ -19,7 +19,6 @@ export const getCurrentUser = async () => {
 
 export const createCurrentUser = async ({ firstName, lastName, isParent }) => {
   const cognitoUser = await Auth.currentAuthenticatedUser();
-  console.log(cognitoUser.attributes);
   const { sub: cognitoUserId, phone_number: phone } = cognitoUser.attributes;
   console.log(`Adding user with cognito id ${cognitoUserId} (${phone})`);
   const user = {

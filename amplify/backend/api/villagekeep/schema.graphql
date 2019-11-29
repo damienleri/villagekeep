@@ -20,7 +20,6 @@
 
 ## Notes:
 # AWSTimestamp is preferred over datetime
-
 type User
   @model
   @key(

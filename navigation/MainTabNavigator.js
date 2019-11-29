@@ -10,6 +10,7 @@ import HomeScreen from "../screens/HomeScreen";
 import TestApiScreen from "../screens/TestApiScreen";
 import ContactsScreen from "../screens/ContactsScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import EditAccountScreen from "../screens/EditAccountScreen";
 
 const config = Platform.select({
   web: { headerMode: "screen" },
@@ -19,6 +20,7 @@ const config = Platform.select({
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
+    EditAccount: EditAccountScreen,
     TestApi: TestApiScreen
   },
   config

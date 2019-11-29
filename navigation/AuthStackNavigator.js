@@ -2,9 +2,9 @@ import React from "react";
 import { createStackNavigator } from "react-navigation";
 
 import AuthVerifyScreen from "../screens/AuthVerifyScreen";
-import AuthSignUpScreen from "../screens/AuthSignUpScreen";
+import AuthHomeScreen from "../screens/AuthHomeScreen";
 
 export default createStackNavigator({
-  AuthSignUp: AuthSignUpScreen,
+  AuthHome: AuthHomeScreen,
   AuthVerify: AuthVerifyScreen
 });

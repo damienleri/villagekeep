@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Icon, Layout, Text } from "react-native-ui-kitten";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
@@ -9,10 +9,7 @@ import { Auth } from "aws-amplify";
 import { phoneNumberIsTaken } from "../utils/api";
 
 const minPasswordLength = 8;
-export default class AuthSignUpScreen extends React.Component {
-  static navigationOptions = {
-    title: "Sign up"
-  };
+export default class AuthSignUpTab extends React.Component {
   state = {
     isValidPhone: false,
     isValidPassword: false,
@@ -28,7 +25,7 @@ export default class AuthSignUpScreen extends React.Component {
     this.phoneInputRef = React.createRef();
   }
   componentDidMount() {
-    this.phoneInputRef.current.focus();
+    // this.phoneInputRef.current.focus();
     // for testing:
     if (false) {
       this.setState({
@@ -98,7 +95,7 @@ export default class AuthSignUpScreen extends React.Component {
       this.setState({
         phoneErrorMessage:
           e.code === "UsernameExistsException"
-            ? "That phone is already signed up. Try the Sign in or Forgot password links."
+            ? "That phone is already signed up. Please check the number, or else login or reset your password."
             : e.message
       });
     }
@@ -115,67 +112,67 @@ export default class AuthSignUpScreen extends React.Component {
       isValidPassword
     } = this.state;
     return (
-      <Layout style={styles.container}>
-        <Form style={styles.form}>
-          <Text category="h5" style={styles.header}>
-            Create your account
-          </Text>
-          <FormInput
-            label="Phone Number"
-            placeholder="Your phone"
-            onChangeText={this.handleChangePhone}
-            value={phone}
-            status={
-              !phone.length
-                ? null
-                : phoneErrorMessage || !isValidPhone
-                ? "danger"
-                : "success"
-            }
-            caption={phoneErrorMessage}
-            keyboardType={"phone-pad"}
-            returnKeyType="done"
-            autoCapitalize="none"
-            autoCorrect={false}
-            ref={this.phoneInputRef}
-          />
-          <FormInput
-            label="Password"
-            placeholder={`At least ${minPasswordLength} characters`}
-            secureTextEntry={!showPassword}
-            onChangeText={this.handleChangePassword}
-            value={password}
-            status={
-              !password.length
-                ? null
-                : passwordErrorMessage || !isValidPassword
-                ? "danger"
-                : "success"
-            }
-            icon={style => (
-              <Icon
-                {...style}
-                name={showPassword ? "eye-outline" : "eye-off-2-outline"}
-              />
-            )}
-            onIconPress={() => this.setState({ showPassword: !showPassword })}
-            caption={passwordErrorMessage}
-          />
-          <FormSubmitButton
-            onPress={this.handleSubmit}
-            disabled={!isValidPhone || !isValidPassword}
-          >
-            Sign up
-          </FormSubmitButton>
-        </Form>
-      </Layout>
+      <Form style={styles.form}>
+        <Text category="h6" style={styles.header}>
+          Get started now
+        </Text>
+        <FormInput
+          label="Phone Number"
+          placeholder="Your phone"
+          onChangeText={this.handleChangePhone}
+          value={phone}
+          status={
+            !phone.length
+              ? null
+              : phoneErrorMessage || !isValidPhone
+              ? "danger"
+              : "success"
+          }
+          caption={phoneErrorMessage}
+          keyboardType={"phone-pad"}
+          returnKeyType="done"
+          autoCapitalize="none"
+          autoCorrect={false}
+          ref={this.phoneInputRef}
+        />
+        <FormInput
+          label="Password"
+          placeholder={`At least ${minPasswordLength} characters`}
+          secureTextEntry={!showPassword}
+          onChangeText={this.handleChangePassword}
+          value={password}
+          status={
+            !password.length
+              ? null
+              : passwordErrorMessage || !isValidPassword
+              ? "danger"
+              : "success"
+          }
+          icon={style => (
+            <Icon
+              {...style}
+              name={showPassword ? "eye-outline" : "eye-off-2-outline"}
+            />
+          )}
+          onIconPress={() => this.setState({ showPassword: !showPassword })}
+          caption={passwordErrorMessage}
+        />
+        <FormSubmitButton
+          onPress={this.handleSubmit}
+          disabled={!isValidPhone || !isValidPassword}
+        >
+          Sign up
+        </FormSubmitButton>
+      </Form>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  header: { marginTop: 50, marginBottom: 20 }
+  header: {
+    marginTop: 30,
+    marginBottom: 20,
+    textAlign: "center",
+    color: "#666"
+  }
 });

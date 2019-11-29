@@ -1,15 +1,10 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Icon, Layout, Text, Button } from "react-native-ui-kitten";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
-// import {
-//   ConfirmSignUp
-// } from "aws-amplify-react-native";
-
-import amplifyConfig from "../aws-exports";
-import { Auth, Hub, Logger } from "aws-amplify";
+import { Auth } from "aws-amplify";
 
 const codeLength = 6;
 
@@ -18,6 +13,14 @@ export default class AuthVerifyScreen extends React.Component {
     title: "Verify Phone"
   };
   state = { code: "" };
+
+  constructor() {
+    super();
+    this.codeInputRef = React.createRef();
+  }
+  componentDidMount() {
+    this.codeInputRef.current.focus();
+  }
 
   handleChangeCode = async code => {
     if (code.length === codeLength) {
@@ -29,7 +32,7 @@ export default class AuthVerifyScreen extends React.Component {
     } else {
       this.setState({
         code,
-        isValidCode: false,
+        isCorrectLength: false,
         codeErrorMessage: null
       });
     }
@@ -41,11 +44,19 @@ export default class AuthVerifyScreen extends React.Component {
 
     try {
       await Auth.confirmSignUp(phone, code);
-      this.props.navigation.navigate("Home");
     } catch (e) {
       console.log("error verifying", e);
-      this.setState({ codeErrorMessage: e.message, isResent: false }); //todo
+      this.setState({ codeErrorMessage: e.message, isResent: false });
+      return;
     }
+
+    const { error: createUserError, user } = await createCurrentUser();
+    if (createUserError) {
+      this.setState({ codeErrorMessage: createUserError });
+      return;
+    }
+    console.log("created api user", user);
+    this.props.navigation.navigate("Home");
   };
   handleResend = async () => {
     const phone = this.props.navigation.getParam("phone");
@@ -54,9 +65,10 @@ export default class AuthVerifyScreen extends React.Component {
       this.setState({ isResent: true });
     } catch (e) {
       console.log("error resending", e);
-      this.setState({ resendErrorMessage: e.message }); //todo
+      this.setState({ resendErrorMessage: e.message });
     }
   };
+
   render() {
     const {
       code,
@@ -86,6 +98,7 @@ export default class AuthVerifyScreen extends React.Component {
             returnKeyType="done"
             autoCapitalize="none"
             autoCorrect={false}
+            ref={this.codeInputRef}
           />
           <FormSubmitButton
             onPress={this.handleSubmit}
