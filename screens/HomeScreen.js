@@ -9,9 +9,6 @@ import { getCurrentUser } from "../utils/api";
 import { gutterWidth } from "../utils/style";
 
 export default class HomeScreen extends React.Component {
-  static navigationOptions = props => ({
-    header: <TopNavigation {...props} />
-  });
   state = {};
   componentDidMount = async () => {
     await this.loadUserData();
@@ -42,7 +39,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingVertical: 50,
+    paddingVertical: 20,
     paddingHorizontal: gutterWidth
   },
   generalErrorMessage: {

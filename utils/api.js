@@ -12,14 +12,16 @@ export const getCurrentUser = async () => {
     const res = await API.graphql(
       graphqlOperation(queries.userByCognitoUserId, { cognitoUserId })
     );
-    console.log("result", res);
+    console.log("userByCognitoUserId result", res);
     const user = res.data.userByCognitoUserId.items[0];
-    if (!user)
+    if (!user) {
+      console.log("No account found.");
       return {
         cognitoUser,
         error:
           "Your user account was not created. Please report this to tech support."
       };
+    }
     return { cognitoUser, user };
   } catch (e) {
     return { error: `Error getting current login: ${e}` };
@@ -41,7 +43,29 @@ export const createCurrentUser = async () => {
     );
     return { cognitoUser, user: res.data.createUser };
   } catch (e) {
-    return { error: `Error saving user record: ${e}` };
+    return { error: `Error creating account: ${e}` };
+  }
+};
+export const deleteCurrentUser = async () => {
+  const { cognitoUser, user: currentUser } = await getCurrentUser();
+
+  console.log(`Deleting user with id ${currentUser.id}`);
+
+  const user = {
+    id: currentUser.id
+  };
+
+  try {
+    const res = await API.graphql(
+      graphqlOperation(mutations.deleteUser, { input: user })
+    );
+    console.log("deleteuser response", res);
+    console.log(`Deleting cognito user`);
+    const cognitoRes = await cognitoUser.deleteUser();
+    console.log("delete cognito response", cognitoRes);
+    return {};
+  } catch (e) {
+    return { error: `Error deleting account: ${e}` };
   }
 };
 
@@ -58,17 +82,16 @@ export const createContact = async ({ type, phone, firstName, lastName }) => {
     lastName,
     contactUserId: currentUser.id
   };
-  let contact = null;
+
   try {
     const res = await API.graphql(
       graphqlOperation(mutations.createContact, { input: contactInput })
     );
-    contact = res.data.createContact;
+    const contact = res.data.createContact;
+    return { contact };
   } catch (e) {
     return { error: `Error saving contact record: ${e}` };
   }
-
-  return { contact };
 
   // let contacts = [];
   // contacts.push(contact.id);

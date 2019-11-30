@@ -1,18 +1,16 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Icon, Layout, Text, Button } from "react-native-ui-kitten";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import { Auth } from "aws-amplify";
 import { createCurrentUser } from "../utils/api";
+import { gutterWidth } from "../utils/style";
 
 const codeLength = 6;
 
 export default class AuthVerifyScreen extends React.Component {
-  static navigationOptions = {
-    title: "Verify Phone"
-  };
   state = { code: "" };
 
   constructor() {
@@ -40,15 +38,24 @@ export default class AuthVerifyScreen extends React.Component {
   };
   handleSubmit = async () => {
     const phone = this.props.navigation.getParam("phone");
+    const password = this.props.navigation.getParam("password");
     const { code } = this.state;
-    console.log(phone, code);
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true, isResent: false });
     try {
       await Auth.confirmSignUp(phone, code);
     } catch (e) {
       this.setState({
-        codeErrorMessage: e.message,
-        isResent: false,
+        codeErrorMessage: `Error verifying: ${e.message}`,
+        isLoading: false
+      });
+      return;
+    }
+
+    try {
+      await Auth.signIn(phone, password);
+    } catch (e) {
+      this.setState({
+        codeErrorMessage: `Error signing in: ${e.message}`,
         isLoading: false
       });
       return;
@@ -60,7 +67,7 @@ export default class AuthVerifyScreen extends React.Component {
       return;
     }
     console.log("created api user", user);
-    return this.props.navigation.navigate("Main", { fromSignup: true });
+    return this.props.navigation.navigate("AuthEditAccount");
   };
 
   handleResend = async () => {
@@ -87,7 +94,7 @@ export default class AuthVerifyScreen extends React.Component {
     } = this.state;
     return (
       <Layout style={styles.container}>
-        <Form style={styles.form}>
+        <View style={styles.intro}>
           <Text category="h5" style={styles.header}>
             Verify your phone number
           </Text>
@@ -95,6 +102,8 @@ export default class AuthVerifyScreen extends React.Component {
             Please enter the code sent to you by text message. It expires after
             24 hours.
           </Text>
+        </View>
+        <Form>
           <FormInput
             label={`${codeLength}-digit code`}
             placeholder=""
@@ -135,6 +144,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
-  header: { marginTop: 50, marginBottom: 20 },
+  intro: { marginHorizontal: gutterWidth },
+  header: { marginTop: 50, marginBottom: 10 },
   introText: { marginBottom: 10 }
 });

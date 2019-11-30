@@ -1,14 +1,44 @@
-import React from 'react';
-import { ExpoConfigView } from '@expo/samples';
+import React from "react";
+import { Platform, SafeAreaView, StyleSheet, View } from "react-native";
+import {} from "react-navigation";
+import {
+  Layout,
+  Button,
+  List,
+  ListItem,
+  Card,
+  Text
+} from "react-native-ui-kitten";
+import { gutterWidth } from "../utils/style";
 
-export default function SettingsScreen() {
-  /**
-   * Go ahead and delete ExpoConfigView and replace it with your content;
-   * we just wanted to give you a quick view of your config.
-   */
-  return <ExpoConfigView />;
+export default class SettingsScreen extends React.Component {
+  render() {
+    const isDeveloper = true;
+    return (
+      <Layout style={styles.container}>
+        <Text category="h4">Settings</Text>
+        {isDeveloper && (
+          <View style={styles.row}>
+            <Button
+              appearance="outline"
+              status="danger"
+              onPress={() => this.props.navigation.navigate("TestApi")}
+            >
+              Test the API
+            </Button>
+          </View>
+        )}
+      </Layout>
+    );
+  }
 }
 
-SettingsScreen.navigationOptions = {
-  title: 'app.json',
-};
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingVertical: 20,
+    paddingHorizontal: gutterWidth
+  },
+  row: { marginVertical: 20 },
+  devItem: {}
+});

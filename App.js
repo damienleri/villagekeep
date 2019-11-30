@@ -49,7 +49,7 @@ export default function App(props) {
           >
             <View style={styles.container}>
               {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-              <AppNavigator />
+              <AppNavigator theme={colorScheme} />
             </View>
           </ApplicationProvider>
         </AppearanceProvider>

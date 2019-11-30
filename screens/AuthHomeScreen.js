@@ -12,9 +12,7 @@ class AuthHomeScreen extends React.Component {
       selectedIndex: this.props.navigation.getParam("selectedIndex") || 0
     };
   }
-  static navigationOptions = props => ({
-    header: <TopNavigation {...props} />
-  });
+
   render() {
     return (
       <Layout style={styles.container}>

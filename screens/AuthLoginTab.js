@@ -97,7 +97,7 @@ export default class AuthSignUpTab extends React.Component {
       isLoading
     } = this.state;
     return (
-      <Form style={styles.form}>
+      <Form>
         <Text category="h6" style={styles.header}>
           Welcome back
         </Text>

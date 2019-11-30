@@ -6,10 +6,7 @@ import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import { Auth } from "aws-amplify";
 
-export default class EditAccountScreen extends React.Component {
-  static navigationOptions = {
-    title: "Account"
-  };
+export default class ForgotPasswordScreen extends React.Component {
   state = { firstName: "", lastName: "", isParent: null };
 
   constructor() {

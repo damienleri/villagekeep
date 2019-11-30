@@ -1006,20 +1006,20 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@eva-design/dss@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@eva-design/dss/-/dss-1.2.0.tgz#a7043fb0c7042fddabe46affd10faa0bcbb601eb"
-  integrity sha512-iBmaj33uniTENTvt54lrgU+qxkURh1oAGZeG11tuEOV4muhqFKOUeH7LvvgGeOVPfNOkOmPZR2hpJD77v+iiaw==
+"@eva-design/dss@^1.3.0-beta.1":
+  version "1.3.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@eva-design/dss/-/dss-1.3.0-beta.1.tgz#5acad80422ba5980655a6b3f187675a82d045e8f"
+  integrity sha512-AMW4MGx1Nqm5pwxY+aHQjwRjDN6ernvd9rBgFlePzbBgRUIdcwSWsn963j2QiXSx78PrC8VODqUPGEWHnWCw3w==
 
 "@eva-design/eva@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@eva-design/eva/-/eva-1.2.0.tgz#dc7714f31b7abfd928a8a3cefc28726a506afc60"
   integrity sha512-6yXXCTaYUozHJmn1ksi/JBFCt2JFd1glgKuimT8BRcocaXNGHcmYPyPLpIDpcP0VZ+LyQr5cMMC0hzf3OXUlqQ==
 
-"@eva-design/processor@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@eva-design/processor/-/processor-1.2.0.tgz#8a064d41061810b8da3d7a813ae5b4da7c996ff0"
-  integrity sha512-UDx+c8B9GOUY/ccrAE+0D3cN6Mz51i2Ihy7fyi4NWOmL1MM7CgOy52RrMCpj/zUvdU64mOSIvlLVgTJ7lj4bLA==
+"@eva-design/processor@^1.3.0-beta.1":
+  version "1.3.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@eva-design/processor/-/processor-1.3.0-beta.1.tgz#26ed5c8fb2bda0535ea113c90af4575631c367e5"
+  integrity sha512-Avt9TXSQ5Kg+uXn8LlESo+INudoikItm1BZUGUHluARrLIjnMJgu+twjzz0jk4k6WB+giXZU4JAWYAoDvnahrw==
 
 "@expo/samples@~3.0.3":
   version "3.0.3"
@@ -6726,13 +6726,13 @@ react-native-tab-view@^1.2.0, react-native-tab-view@^1.4.1:
   dependencies:
     prop-types "^15.6.1"
 
-react-native-ui-kitten@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-ui-kitten/-/react-native-ui-kitten-4.2.0.tgz#f8992d4a664d93fc9a3076e5d24fca49ae2fb05e"
-  integrity sha512-3ml/hENusELwY7QtwTfl9Kd3qDaWvSNc3reIujBZniX961fJGRMnVRaEYIETFBm/aG6lN0y4Eu2El3geagcGWg==
+react-native-ui-kitten@^4.3.0-beta.1:
+  version "4.3.0-beta.1"
+  resolved "https://registry.yarnpkg.com/react-native-ui-kitten/-/react-native-ui-kitten-4.3.0-beta.1.tgz#14f4fe930bb5412a3ba1554ae2db1ffe6303aec9"
+  integrity sha512-Fg80xIgaLpNi5gRyJ/ZHAO3EGkLekuyT2lziHMRuLl+ctXDQNfKvXP/F/wAAitqvuQVzbCabeKg3QUV4ijY7Aw==
   dependencies:
-    "@eva-design/dss" "^1.2.0"
-    "@eva-design/processor" "^1.2.0"
+    "@eva-design/dss" "^1.3.0-beta.1"
+    "@eva-design/processor" "^1.3.0-beta.1"
     fecha "3.0.3"
     hoist-non-react-statics "^3.2.1"
     lodash.merge "^4.6.1"

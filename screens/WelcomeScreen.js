@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, SafeAreaView, View } from "react-native";
 import { Icon, Layout, Text, Button } from "react-native-ui-kitten";
 import AuthHomeScreen from "./AuthHomeScreen";
+import { gutterWidth } from "../utils/style";
 
 export default class WelcomeScreen extends React.Component {
   state = {};
@@ -14,7 +15,10 @@ export default class WelcomeScreen extends React.Component {
       <Layout style={styles.container}>
         <SafeAreaView>
           <Text category="h4" style={styles.header}>
-            It takes a village
+            It takes a village to raise a kid.
+          </Text>
+          <Text category="h6" style={styles.subHeader}>
+            Now keep the village in your pocket!
           </Text>
 
           <Button
@@ -38,6 +42,12 @@ export default class WelcomeScreen extends React.Component {
   }
 }
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingVertical: 30, paddingHorizontal: 32 },
-  header: { marginTop: 50, marginBottom: 30 }
+  container: { flex: 1, paddingVertical: 30, paddingHorizontal: gutterWidth },
+  header: { marginTop: 50, fontWeight: "normal", textAlign: "center" },
+  subHeader: {
+    marginTop: 10,
+    marginBottom: 80,
+    fontStyle: "italic",
+    textAlign: "center"
+  }
 });

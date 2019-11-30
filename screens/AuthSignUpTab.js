@@ -23,9 +23,12 @@ export default class AuthSignUpTab extends React.Component {
         isValidPassword: true,
         phone: "+12678086023",
         fullPhone: "+12678086023",
-        password: "testtest"
+        password: "testtest1"
       });
-      this.props.navigation.navigate("AuthVerify", { phone: "+12678086023" });
+      this.props.navigation.navigate("AuthVerify", {
+        phone: "+12678086023",
+        password: "testtest1"
+      });
     }
   }
 
@@ -64,7 +67,10 @@ export default class AuthSignUpTab extends React.Component {
         username: fullPhone,
         password
       });
-      this.props.navigation.navigate("AuthVerify", { phone: fullPhone });
+      this.props.navigation.navigate("AuthVerify", {
+        phone: fullPhone,
+        password /* The verify screen uses the password to login the user once verified. */
+      });
     } catch (e) {
       this.setState({
         isLoading: false,
@@ -88,7 +94,7 @@ export default class AuthSignUpTab extends React.Component {
       isLoading
     } = this.state;
     return (
-      <Form style={styles.form}>
+      <Form>
         <Text category="h6" style={styles.header}>
           Get started now
         </Text>

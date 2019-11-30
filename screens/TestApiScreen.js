@@ -1,6 +1,6 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
-import { Button, ListItem } from "react-native-elements";
+import { StyleSheet } from "react-native";
+import { Layout, Button } from "react-native-ui-kitten";
 import API, { graphqlOperation } from "@aws-amplify/api";
 import { Auth } from "aws-amplify";
 import * as mutations from "../graphql/mutations";
@@ -8,12 +8,13 @@ import {
   getCurrentUser,
   createCurrentUser,
   createContact,
-  getContacts
+  getContacts,
+  deleteCurrentUser
 } from "../utils/api";
 
 import * as queries from "../graphql/queries";
 
-export default class ContactsScreen extends React.Component {
+export default class TestApiScreen extends React.Component {
   static navigationOptions = {
     title: "Contacts"
   };
@@ -49,25 +50,29 @@ export default class ContactsScreen extends React.Component {
       console.log("error listing users", e);
     }
   };
+
+  deleteUser = async () => {
+    await deleteCurrentUser();
+    return this.props.navigation.navigate("AuthVerify", {
+      phone: "+12678086023",
+      password: "testtest1"
+    });
+  };
+
   render() {
     return (
-      <ScrollView style={styles.container}>
-        <Button title="Add User" onPress={() => this.addUser()} />
-        <Button
-          title="Add a Kid"
-          onPress={() => this.addContact({ type: "kid" })}
-        />
-        <Button title="List contacts" onPress={() => this.listContacts()} />
-        <Button title="List users" onPress={() => this.listUsers()} />
-        <Button
-          title="Sign up"
-          onPress={() => this.props.navigation.navigate("AuthSignUp")}
-        />
-        <Button
-          title="Sign in"
-          onPress={() => this.props.navigation.navigate("AuthSignIn")}
-        />
-      </ScrollView>
+      <Layout style={styles.container}>
+        <Button onPress={this.addUser}>Add User</Button>
+        <Button onPress={() => this.addContact({ type: "kid" })}>
+          Add a kid
+        </Button>
+        <Button onPress={this.listContacts}>List contacts</Button>
+        <Button onPress={this.listUsers}>List users</Button>
+        <Button onPress={this.deleteUser}>Delete current user</Button>
+        <Button onPress={() => this.props.navigation.navigate("Welcome")}>
+          Welcome screen
+        </Button>
+      </Layout>
     );
   }
 }
@@ -75,7 +80,6 @@ export default class ContactsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
-    backgroundColor: "#fff"
+    paddingTop: 15
   }
 });
