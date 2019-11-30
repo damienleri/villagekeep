@@ -13,11 +13,18 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { ApplicationProvider, IconRegistry } from "react-native-ui-kitten";
 
 import Amplify from "@aws-amplify/core";
+import {
+  AppearanceProvider,
+  Appearance,
+  useColorScheme
+} from "react-native-appearance";
+
 import awsConfig from "./aws-exports";
 
 import AppNavigator from "./navigation/AppNavigator";
 
 Amplify.configure(awsConfig);
+const colorScheme = Appearance.getColorScheme();
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -34,13 +41,18 @@ export default function App(props) {
   } else {
     return (
       <React.Fragment>
-        <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider mapping={mapping} theme={lightTheme}>
-          <View style={styles.container}>
-            {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-            <AppNavigator />
-          </View>
-        </ApplicationProvider>
+        <AppearanceProvider>
+          <IconRegistry icons={EvaIconsPack} />
+          <ApplicationProvider
+            mapping={mapping}
+            theme={colorScheme === "dark" ? darkTheme : lightTheme}
+          >
+            <View style={styles.container}>
+              {Platform.OS === "ios" && <StatusBar barStyle="default" />}
+              <AppNavigator />
+            </View>
+          </ApplicationProvider>
+        </AppearanceProvider>
       </React.Fragment>
     );
   }

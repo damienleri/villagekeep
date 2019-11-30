@@ -92,18 +92,3 @@ export const getContacts = async () => {
     return { error: `Error listing contacts: ${e}` };
   }
 };
-export const phoneNumberIsTaken = async phone => {
-  try {
-    console.log("phoneNumberIsTaken...", queries.userByPhone, phone);
-    const res = await API.graphql(
-      graphqlOperation(queries.userByPhone, { phone })
-      // graphqlOperation(queries.listContacts, { contactUserId: userId })
-    );
-    console.log(res);
-    const isTaken = true;
-    return { isTaken };
-  } catch (e) {
-    console.log("error", e);
-    return { error: `Error checking phone uniquenuess: ${e}` };
-  }
-};

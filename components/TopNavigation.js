@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, SafeAreaView, View } from "react-native";
 import {
+  Layout,
   Icon,
   TopNavigation,
   TopNavigationAction
@@ -18,8 +19,10 @@ const EditAction = props => <TopNavigationAction {...props} icon={EditIcon} />;
 
 const MenuAction = props => <TopNavigationAction {...props} icon={MenuIcon} />;
 
-export default React.forwardRef((props, ref) => {
-  const onBackPress = () => {};
+export default function(props) {
+  const onBackPress = () => {
+    props.navigation.goBack();
+  };
 
   const renderLeftControl = () => <BackAction onPress={onBackPress} />;
 
@@ -27,12 +30,14 @@ export default React.forwardRef((props, ref) => {
   // const renderRightControls = () => [<EditAction />, <MenuAction />];
 
   return (
-    <SafeAreaView>
-      <TopNavigation
-        title={props.title}
-        leftControl={renderLeftControl()}
-        rightControls={renderRightControls()}
-      />
-    </SafeAreaView>
+    <Layout>
+      <SafeAreaView>
+        <TopNavigation
+          title={props.title}
+          leftControl={renderLeftControl()}
+          rightControls={renderRightControls()}
+        />
+      </SafeAreaView>
+    </Layout>
   );
-});
+}

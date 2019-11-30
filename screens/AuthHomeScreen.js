@@ -2,22 +2,19 @@ import React from "react";
 import { StyleSheet, SafeAreaView, View } from "react-native";
 import { Icon, Layout, Text, Tab, TabView } from "react-native-ui-kitten";
 import AuthSignUpTab from "./AuthSignUpTab";
-import Form from "../components/Form";
+import AuthLoginTab from "./AuthLoginTab";
 import TopNavigation from "../components/TopNavigation";
 
-export default class AuthHomeScreen extends React.Component {
-  state = {
-    selectedIndex: 0
-  };
-  static navigationOptions = {
-    header: <TopNavigation />
-    // header: null
-  };
-  componentDidMount() {
-    this.setState({
-      selectedIndex: 1
-    });
+class AuthHomeScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedIndex: this.props.navigation.getParam("selectedIndex") || 0
+    };
   }
+  static navigationOptions = props => ({
+    header: <TopNavigation {...props} />
+  });
   render() {
     return (
       <Layout style={styles.container}>
@@ -25,9 +22,11 @@ export default class AuthHomeScreen extends React.Component {
           selectedIndex={this.state.selectedIndex}
           onSelect={selectedIndex => this.setState({ selectedIndex })}
         >
-          <Tab title="Log in"></Tab>
+          <Tab title="Log in">
+            <AuthLoginTab navigation={this.props.navigation} />
+          </Tab>
           <Tab title="Sign up">
-            <AuthSignUpTab />
+            <AuthSignUpTab navigation={this.props.navigation} />
           </Tab>
         </TabView>
       </Layout>
@@ -39,3 +38,4 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
+export default AuthHomeScreen;

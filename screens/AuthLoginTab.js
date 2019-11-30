@@ -7,7 +7,6 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import { Auth } from "aws-amplify";
 
-const minPasswordLength = 8;
 export default class AuthSignUpTab extends React.Component {
   state = {
     phone: "",
@@ -20,12 +19,10 @@ export default class AuthSignUpTab extends React.Component {
     if (false) {
       this.setState({
         isValidPhone: true,
-        isValidPassword: true,
         phone: "+12678086023",
         fullPhone: "+12678086023",
         password: "testtest"
       });
-      this.props.navigation.navigate("AuthVerify", { phone: "+12678086023" });
     }
   }
 
@@ -40,19 +37,11 @@ export default class AuthSignUpTab extends React.Component {
       phoneErrorMessage: null
     });
   };
+
   handleChangePassword = async password => {
-    const tooShort = password.length < minPasswordLength;
-    const tooSimple = password.match(/^([A-Za-z]+|\d+)$/);
     this.setState({
       password,
-      isValidPassword: !tooShort && !tooSimple,
-      passwordErrorMessage: !password.length
-        ? null
-        : tooShort
-        ? "At least 8 characters please"
-        : tooSimple
-        ? "Include numbers or other characters please"
-        : null
+      passwordErrorMessage: null
     });
   };
 
@@ -60,18 +49,31 @@ export default class AuthSignUpTab extends React.Component {
     const { fullPhone, password } = this.state;
     this.setState({ isLoading: true });
     try {
-      const newUser = await Auth.signUp({
-        username: fullPhone,
-        password
-      });
-      this.props.navigation.navigate("AuthVerify", { phone: fullPhone });
+      const newUser = await Auth.signIn(fullPhone, password);
+      this.props.navigation.navigate("Main", { fromLogin: true });
     } catch (e) {
+      let phoneErrorMessage = null,
+        passwordErrorMessage = null;
+
+      if (e.code === "UserNotConfirmedException") {
+        // Account was not verified
+        await Auth.resendSignUp(phone);
+        return this.props.navigation.navigate("AuthVerify");
+      } else if (e.code === "PasswordResetRequiredException") {
+        passwordErrorMessage =
+          "Your password was reset by an administrator. Please use the Forgot password feature to reset it.";
+      } else if (e.code === "UserNotFoundException") {
+        phoneErrorMessage =
+          "That phone is not signed up. Please go to Sign up.";
+      } else if (e.code === "NotAuthorizedException") {
+        passwordErrorMessage = "Sorry, that's not the right password.";
+      } else {
+        passwordErrorMessage = `Error from server: ${e.message}`;
+      }
       this.setState({
-        isLoading: false,
-        phoneErrorMessage:
-          e.code === "UsernameExistsException"
-            ? "That phone is already signed up. Please check the number, or else login or reset your password."
-            : e.message
+        phoneErrorMessage,
+        passwordErrorMessage,
+        isLoading: false
       });
     }
   };
@@ -84,17 +86,16 @@ export default class AuthSignUpTab extends React.Component {
       passwordErrorMessage,
       showPassword,
       isValidPhone,
-      isValidPassword,
       isLoading
     } = this.state;
     return (
       <Form style={styles.form}>
         <Text category="h6" style={styles.header}>
-          Get started now
+          Welcome back
         </Text>
         <FormInput
           label="Phone number"
-          placeholder="Your phone"
+          placeholder=""
           onChangeText={this.handleChangePhone}
           value={phone}
           status={
@@ -112,14 +113,14 @@ export default class AuthSignUpTab extends React.Component {
         />
         <FormInput
           label="Password"
-          placeholder={`At least ${minPasswordLength} characters`}
+          placeholder={``}
           secureTextEntry={!showPassword}
           onChangeText={this.handleChangePassword}
           value={password}
           status={
             !password.length
               ? null
-              : passwordErrorMessage || !isValidPassword
+              : passwordErrorMessage
               ? "danger"
               : "success"
           }
@@ -134,9 +135,9 @@ export default class AuthSignUpTab extends React.Component {
         />
         <FormSubmitButton
           onPress={this.handleSubmit}
-          disabled={!isValidPhone || !isValidPassword || isLoading}
+          disabled={!isValidPhone || !password.length || isLoading}
         >
-          {isLoading ? "Signing up..." : "Sign up"}
+          {isLoading ? "Logging in..." : "Log in"}
         </FormSubmitButton>
       </Form>
     );

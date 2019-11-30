@@ -45,7 +45,6 @@ export default class AuthVerifyScreen extends React.Component {
     try {
       await Auth.confirmSignUp(phone, code);
     } catch (e) {
-      console.log("error verifying", e);
       this.setState({ codeErrorMessage: e.message, isResent: false });
       return;
     }
@@ -56,8 +55,9 @@ export default class AuthVerifyScreen extends React.Component {
       return;
     }
     console.log("created api user", user);
-    this.props.navigation.navigate("Home");
+    return this.props.navigation.navigate("Main", { fromSignup: true });
   };
+
   handleResend = async () => {
     const phone = this.props.navigation.getParam("phone");
     try {
