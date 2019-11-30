@@ -70,7 +70,7 @@ export const deleteCurrentUser = async () => {
 };
 
 export const createContact = async ({ type, phone, firstName, lastName }) => {
-  const { currentUser } = await getCurrentUser();
+  const { user: currentUser } = await getCurrentUser();
   if (!currentUser) {
     return { error: "Can't find current currentUser" };
   }

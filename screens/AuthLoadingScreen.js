@@ -15,7 +15,8 @@ export default class AuthLoadingScreen extends React.Component {
         // for testing
         await Auth.signIn("+12678086023", "testtest1");
         console.log("Debugging: signed in");
-        this.props.navigation.navigate("EditContact", { type: "kid" });
+        return this.props.navigation.navigate("People");
+        // this.props.navigation.navigate("EditContact", { type: "kid" });
       }
 
       const user = await Auth.currentAuthenticatedUser({

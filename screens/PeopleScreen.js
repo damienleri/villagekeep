@@ -120,6 +120,11 @@ export default class PeopleScreen extends React.Component {
     console.log(filtered);
     return (
       <View>
+        <AddContactActions
+          isParent={isParent}
+          handleAddContact={this.handleAddContact}
+          appearance="ghost"
+        />
         <Text style={styles.contactsHeader} category="h6">
           {isParent ? "Your kids" : "Your parents"}
         </Text>
@@ -164,7 +169,7 @@ const styles = StyleSheet.create({
   generalErrorMessage: {
     marginVertical: 20
   },
-  contactsContainer: { paddingVertical: 48 },
+  contactsContainer: { paddingVertical: 0 },
   contact: { paddingVertical: 10 },
   contactName: { fontWeight: "bold" },
   contactPhone: {},

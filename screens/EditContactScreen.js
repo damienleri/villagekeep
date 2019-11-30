@@ -21,10 +21,16 @@ import { getCurrentUser, createContact } from "../utils/api";
 import { gutterWidth } from "../utils/style";
 
 export default class EditContactScreen extends React.Component {
-  state = {};
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.firstNameInputRef = React.createRef();
+    const contact = props.navigation.getParam("contact");
+    this.state = {
+      firstName: contact ? contact.firstName : "",
+      lastName: contact ? contact.lastName : "",
+      phone: contact ? contact.phone : "",
+      validPhone: null
+    };
   }
   componentDidMount() {
     this.firstNameInputRef.current.focus();
@@ -32,21 +38,22 @@ export default class EditContactScreen extends React.Component {
   handleChangePhone = async text => {
     const parsed = parsePhoneNumberFromString(text, "US");
     const isValidPhone = !!parsed && parsed.isValid();
-    const phone = new AsYouType("US").input(text);
+    const isBackspace = text.length < this.state.phone.length;
+    const phone = isBackspace ? text : new AsYouType("US").input(text);
     this.setState({
       phone,
-      isValidPhone,
-      fullPhone: isValidPhone ? parsed.format("E.164") : null,
+      validPhone: isValidPhone ? parsed.format("E.164") : null,
       phoneErrorMessage: null
     });
   };
 
   handleSubmit = async () => {
-    const type = navigation.getParam("type");
+    const type = this.props.navigation.getParam("type");
+    const { firstName, lastName, validPhone } = this.state;
     const { contact, error: createContactError } = await createContact({
       firstName,
       lastName,
-      phone,
+      phone: validPhone,
       type
     });
     if (createContactError) {
@@ -54,6 +61,7 @@ export default class EditContactScreen extends React.Component {
       return;
     }
     console.log("created contact", contact);
+    this.props.navigation.goBack();
   };
   render() {
     const { navigation } = this.props;
@@ -64,7 +72,7 @@ export default class EditContactScreen extends React.Component {
       phone,
       isLoading,
       phoneErrorMessage,
-      isValidPhone
+      validPhone
     } = this.state;
     const contact = navigation.getParam("contact");
     const type = navigation.getParam("type");
@@ -109,7 +117,7 @@ export default class EditContactScreen extends React.Component {
             status={
               !phone.length
                 ? null
-                : phoneErrorMessage || !isValidPhone
+                : phoneErrorMessage || !validPhone
                 ? "danger"
                 : "success"
             }
@@ -126,7 +134,7 @@ export default class EditContactScreen extends React.Component {
           )}
           <FormSubmitButton
             onPress={this.handleSubmit}
-            disabled={!firstName || !lastName || !phone || isLoading}
+            disabled={!firstName || !lastName || !validPhone || isLoading}
           >
             {isLoading ? "Saving contact" : "Save"}
           </FormSubmitButton>

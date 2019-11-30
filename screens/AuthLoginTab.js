@@ -29,7 +29,8 @@ export default class AuthSignUpTab extends React.Component {
   handleChangePhone = async text => {
     const parsed = parsePhoneNumberFromString(text, "US");
     const isValidPhone = !!parsed && parsed.isValid();
-    const phone = new AsYouType("US").input(text);
+    const isBackspace = text.length < this.state.phone.length;
+    const phone = isBackspace ? text : new AsYouType("US").input(text);
     this.setState({
       phone,
       isValidPhone,

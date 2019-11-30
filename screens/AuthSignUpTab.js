@@ -11,7 +11,7 @@ const minPasswordLength = 8;
 export default class AuthSignUpTab extends React.Component {
   state = {
     phone: "",
-    fullPhone: "",
+    validPhone: "",
     password: ""
   };
 
@@ -22,7 +22,7 @@ export default class AuthSignUpTab extends React.Component {
         isValidPhone: true,
         isValidPassword: true,
         phone: "+12678086023",
-        fullPhone: "+12678086023",
+        validPhone: "+12678086023",
         password: "testtest1"
       });
       this.props.navigation.navigate("AuthVerify", {
@@ -35,11 +35,12 @@ export default class AuthSignUpTab extends React.Component {
   handleChangePhone = async text => {
     const parsed = parsePhoneNumberFromString(text, "US");
     const isValidPhone = !!parsed && parsed.isValid();
-    const phone = new AsYouType("US").input(text);
+    const isBackspace = text.length < this.state.phone.length;
+    const phone = isBackspace ? text : new AsYouType("US").input(text);
+
     this.setState({
       phone,
-      isValidPhone,
-      fullPhone: isValidPhone ? parsed.format("E.164") : null,
+      validPhone: isValidPhone ? parsed.format("E.164") : null,
       phoneErrorMessage: null
     });
   };
@@ -60,15 +61,15 @@ export default class AuthSignUpTab extends React.Component {
   };
 
   handleSubmit = async () => {
-    const { fullPhone, password } = this.state;
+    const { validPhone, password } = this.state;
     this.setState({ isLoading: true });
     try {
       const newUser = await Auth.signUp({
-        username: fullPhone,
+        username: validPhone,
         password
       });
       this.props.navigation.navigate("AuthVerify", {
-        phone: fullPhone,
+        phone: validPhone,
         password /* The verify screen uses the password to login the user once verified. */
       });
     } catch (e) {
@@ -89,7 +90,7 @@ export default class AuthSignUpTab extends React.Component {
       phoneErrorMessage,
       passwordErrorMessage,
       showPassword,
-      isValidPhone,
+      validPhone,
       isValidPassword,
       isLoading
     } = this.state;
@@ -106,7 +107,7 @@ export default class AuthSignUpTab extends React.Component {
           status={
             !phone.length
               ? null
-              : phoneErrorMessage || !isValidPhone
+              : phoneErrorMessage || !validPhone
               ? "danger"
               : "success"
           }
@@ -140,7 +141,7 @@ export default class AuthSignUpTab extends React.Component {
         />
         <FormSubmitButton
           onPress={this.handleSubmit}
-          disabled={!isValidPhone || !isValidPassword || isLoading}
+          disabled={!validPhone || !isValidPassword || isLoading}
         >
           {isLoading ? "Signing up..." : "Sign up"}
         </FormSubmitButton>
