@@ -5,6 +5,7 @@ import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import { Auth } from "aws-amplify";
+import { createCurrentUser } from "../utils/api";
 
 const codeLength = 6;
 
@@ -41,17 +42,21 @@ export default class AuthVerifyScreen extends React.Component {
     const phone = this.props.navigation.getParam("phone");
     const { code } = this.state;
     console.log(phone, code);
-
+    this.setState({ isLoading: true });
     try {
       await Auth.confirmSignUp(phone, code);
     } catch (e) {
-      this.setState({ codeErrorMessage: e.message, isResent: false });
+      this.setState({
+        codeErrorMessage: e.message,
+        isResent: false,
+        isLoading: false
+      });
       return;
     }
 
     const { error: createUserError, user } = await createCurrentUser();
     if (createUserError) {
-      this.setState({ codeErrorMessage: createUserError });
+      this.setState({ codeErrorMessage: createUserError, isLoading: false });
       return;
     }
     console.log("created api user", user);
@@ -60,12 +65,13 @@ export default class AuthVerifyScreen extends React.Component {
 
   handleResend = async () => {
     const phone = this.props.navigation.getParam("phone");
+    this.setState({ isLoadingResend: true });
     try {
       await Auth.resendSignUp(phone);
-      this.setState({ isResent: true });
+      this.setState({ isResent: true, isLoadingResend: false });
     } catch (e) {
       console.log("error resending", e);
-      this.setState({ resendErrorMessage: e.message });
+      this.setState({ resendErrorMessage: e.message, isLoadingResend: false });
     }
   };
 
@@ -75,7 +81,9 @@ export default class AuthVerifyScreen extends React.Component {
       codeErrorMessage,
       isCorrectLength,
       isResent,
-      resendErrorMessage
+      resendErrorMessage,
+      isLoading,
+      isLoadingResend
     } = this.state;
     return (
       <Layout style={styles.container}>
@@ -102,16 +110,20 @@ export default class AuthVerifyScreen extends React.Component {
           />
           <FormSubmitButton
             onPress={this.handleSubmit}
-            disabled={!isCorrectLength}
+            disabled={!isCorrectLength || isLoading}
           >
-            Verify
+            {isLoading ? "Verifying..." : "Verify"}
           </FormSubmitButton>
           {resendErrorMessage && (
             <Text status="danger">{resendErrorMessage}</Text>
           )}
           {isResent && <Text status="success">Code resent.</Text>}
-          <Button appearance="ghost" onPress={this.handleResend}>
-            Send another code
+          <Button
+            appearance="ghost"
+            onPress={this.handleResend}
+            disabled={isLoadingResend}
+          >
+            {isLoadingResend ? "Sending another code..." : "Send another code"}
           </Button>
         </Form>
       </Layout>

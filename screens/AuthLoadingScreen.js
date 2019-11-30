@@ -11,10 +11,10 @@ export default class AuthLoadingScreen extends React.Component {
 
     if (true) {
       // for testing
-      await Auth.signIn("+12678086023", "testtest");
+      await Auth.signIn("+12678086023", "testtest1");
       console.log("Debugging: signed in");
-      // this.props.navigation.navigate("TestApi");
-      this.props.navigation.navigate("EditAccount");
+      return this.props.navigation.navigate("Main");
+      // return this.props.navigation.navigate("EditAccount");
     }
     try {
       const user = await Auth.currentAuthenticatedUser({
@@ -36,7 +36,7 @@ export default class AuthLoadingScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#aa73b7",
+    backgroundColor: "#3366FF",
     alignItems: "center",
     justifyContent: "center"
   }

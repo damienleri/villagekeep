@@ -1,38 +1,54 @@
 import React from "react";
-import {
-  Image,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from "react-native";
+import { StyleSheet } from "react-native";
+import { Icon, Layout, Text, Button, Radio } from "react-native-ui-kitten";
+import Form from "../components/Form";
+import FormInput from "../components/FormInput";
+import FormSubmitButton from "../components/FormSubmitButton";
+import TopNavigation from "../components/TopNavigation";
+import { getCurrentUser } from "../utils/api";
+import { gutterWidth } from "../utils/style";
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <View style={styles.welcomeContainer}>
-          <Text>Main</Text>
-        </View>
-      </ScrollView>
-    </View>
-  );
+export default class HomeScreen extends React.Component {
+  static navigationOptions = props => ({
+    header: <TopNavigation {...props} />
+  });
+  state = {};
+  componentDidMount = async () => {
+    await this.loadUserData();
+  };
+  loadUserData = async () => {
+    const { user, error: currentUserError } = await getCurrentUser();
+    if (currentUserError)
+      return this.setState({
+        generalErrorMessage: `Error: ${currentUserError}`
+      });
+  };
+
+  render() {
+    const { generalErrorMessage } = this.state;
+    return (
+      <Layout style={styles.container}>
+        {generalErrorMessage && (
+          <Text status="danger" style={styles.generalErrorMessage}>
+            {generalErrorMessage}
+          </Text>
+        )}
+        <Text>Main</Text>
+      </Layout>
+    );
+  }
 }
-
-HomeScreen.navigationOptions = {
-  header: null
-};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff"
+    paddingVertical: 50,
+    paddingHorizontal: gutterWidth
   },
+  generalErrorMessage: {
+    marginVertical: 20
+  },
+
   contentContainer: {
     paddingTop: 30
   },

@@ -1,6 +1,6 @@
 projects:
   villagekeep:
-    schemaPath: graphql/schema.json
+    schemaPath: src/graphql/schema.json
     includes:
       - graphql/**/*.js
     excludes:
@@ -9,7 +9,4 @@ projects:
       amplify:
         codeGenTarget: javascript
         generatedFileName: ''
-        docsFilePath: graphql
-extensions:
-  amplify:
-    version: 3
+        docsFilePath: src/graphql

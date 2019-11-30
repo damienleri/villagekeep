@@ -54,11 +54,19 @@ export default class AuthSignUpTab extends React.Component {
     } catch (e) {
       let phoneErrorMessage = null,
         passwordErrorMessage = null;
-
+      console.log(e);
       if (e.code === "UserNotConfirmedException") {
         // Account was not verified
-        await Auth.resendSignUp(phone);
-        return this.props.navigation.navigate("AuthVerify");
+        try {
+          await Auth.resendSignUp(fullPhone);
+          return this.props.navigation.navigate("AuthVerify", {
+            phone: fullPhone
+          });
+        } catch (e) {
+          this.setState({
+            phoneErrorMessage: `Error resending your verification code: ${e.message}`
+          });
+        }
       } else if (e.code === "PasswordResetRequiredException") {
         passwordErrorMessage =
           "Your password was reset by an administrator. Please use the Forgot password feature to reset it.";

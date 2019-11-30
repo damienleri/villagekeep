@@ -11,6 +11,7 @@ import {
   Platform
 } from "react-native";
 import { Input, Icon } from "react-native-ui-kitten";
+import { gutterWidth } from "../utils/style";
 
 export default function Form(props) {
   // return (
@@ -35,6 +36,6 @@ export default function Form(props) {
   );
 }
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: 32 }
+  container: { paddingHorizontal: gutterWidth }
   // inner: { flex: 1, justifyContent: "flex-end" }
 });

@@ -12,7 +12,15 @@
 			"providerPlugin": "awscloudformation",
 			"output": {
 				"authConfig": {
-					"additionalAuthenticationProviders": [],
+					"additionalAuthenticationProviders": [
+						{
+							"authenticationType": "API_KEY",
+							"apiKeyConfig": {
+								"description": "vk-admin",
+								"apiKeyExpirationDays": "100"
+							}
+						}
+					],
 					"defaultAuthentication": {
 						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
 						"userPoolConfig": {

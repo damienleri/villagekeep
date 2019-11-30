@@ -5,6 +5,8 @@ import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
+import { getCurrentUser, updateUser } from "../utils/api";
+// import API, { graphqlOperation } from "@aws-amplify/api";
 
 export default class EditAccountScreen extends React.Component {
   static navigationOptions = props => ({
@@ -22,16 +24,30 @@ export default class EditAccountScreen extends React.Component {
 
   handleSubmit = async () => {
     const { firstName, lastName, isParent } = this.state;
-    console.log(firstName, lastName, isParent);
+    this.setState({ isLoading: true });
+    const {
+      user: currentUser,
+      error: getCurrentUserError
+    } = await getCurrentUser();
 
-    try {
-    } catch (e) {
-      console.log("error updating user", e);
-      this.setState({ errorMessage: e.message });
-      return;
+    console.log(firstName, lastName, isParent, currentUser);
+
+    if (getCurrentUserError)
+      return this.setState({ errorMessage: getCurrentUserError });
+
+    const { error } = await updateUser({
+      id: currentUser.id,
+      firstName,
+      lastName,
+      isParent
+    });
+
+    if (error) {
+      console.log("error updating user", error);
+      this.setState({ errorMessage: error, isLoading: false });
+    } else {
+      this.props.navigation.navigate("Main");
     }
-
-    this.props.navigation.navigate("Home");
   };
 
   render() {
@@ -41,7 +57,8 @@ export default class EditAccountScreen extends React.Component {
       lastName,
       isParent,
       isParentMessage,
-      isKid
+      isKid,
+      isLoading
     } = this.state;
     return (
       <Layout style={styles.container}>
@@ -50,10 +67,10 @@ export default class EditAccountScreen extends React.Component {
             Last step
           </Text>
           <Text style={styles.introText}>
-            This identifies you within the "village".
+            This identifes you to friends and family.
           </Text>
           <FormInput
-            label="First Name"
+            label="First name"
             placeholder=""
             onChangeText={firstName =>
               this.setState({ firstName, errorMessage: false })
@@ -64,7 +81,7 @@ export default class EditAccountScreen extends React.Component {
             ref={this.firstNameInputRef}
           />
           <FormInput
-            label="Last Name"
+            label="Last name"
             placeholder=""
             onChangeText={lastName =>
               this.setState({ lastName, errorMessage: false })
@@ -77,7 +94,7 @@ export default class EditAccountScreen extends React.Component {
             <Radio
               style={styles.radio}
               status="primary"
-              text="Parent/Guardian"
+              text="Parent or guardian"
               checked={isParent}
               onChange={isParent =>
                 this.setState({
@@ -104,13 +121,19 @@ export default class EditAccountScreen extends React.Component {
               {isParentMessage}
             </Text>
           )}
+          {errorMessage && (
+            <Text style={styles.errorMessage} status="danger">
+              {errorMessage}
+            </Text>
+          )}
           <FormSubmitButton
             onPress={this.handleSubmit}
-            disabled={firstName && lastName && (isParent || isKid)}
+            disabled={
+              !firstName || !lastName || !(isParent || isKid) || isLoading
+            }
           >
-            Get started
+            {isLoading ? "Getting started..." : "Get started"}
           </FormSubmitButton>
-          {errorMessage && <Text status="danger">{errorMessage}</Text>}
         </Form>
       </Layout>
     );
@@ -133,6 +156,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 4
   },
   isParentMessage: {
+    marginTop: 4,
+    marginBottom: 8,
+    textAlign: "center"
+  },
+  errorMessage: {
     marginTop: 4,
     marginBottom: 8,
     textAlign: "center"

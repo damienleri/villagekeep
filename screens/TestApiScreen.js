@@ -31,11 +31,7 @@ export default class ContactsScreen extends React.Component {
     console.log(contact);
   };
   addUser = async () => {
-    const { error, user } = await createCurrentUser({
-      firstName: "The Real Dale",
-      lastName: "Cooper",
-      isParent: true
-    });
+    const { error, user } = await createCurrentUser();
     console.log(user);
   };
 
