@@ -62,7 +62,7 @@ AddContactActions = ({ isParent, appearance, handleAddContact }) => (
 
 ContactsEmptyState = ({ isParent, handleAddContact }) => (
   <View>
-    <Text category="h6" style={{ fontWeight: "normal" }}>
+    <Text category="h6" style={styles.emptyStateIntroText}>
       You are ready to add {isParent ? "a teeny bopper" : "parents and friends"}
       . Let's do this!
     </Text>
@@ -215,5 +215,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly"
   },
   addContactButton: { marginVertical: 10 },
-  addContactButtonText: { textTransform: "uppercase" }
+  addContactButtonText: { textTransform: "uppercase" },
+  emptyStateIntroText: { marginTop: 20, fontWeight: "normal" }
 });

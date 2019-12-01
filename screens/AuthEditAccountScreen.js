@@ -6,10 +6,10 @@ import AccountForm from "./AccountForm";
 import { gutterWidth } from "../utils/style";
 
 export default class AuthEditAccountScreen extends React.Component {
+  handleSave = async () => {
+    this.props.navigation.navigate("Main");
+  };
   render() {
-    handleSave = async () => {
-      this.props.navigation.navigate("Main");
-    };
     return (
       <Layout style={styles.container}>
         <View style={styles.intro}>

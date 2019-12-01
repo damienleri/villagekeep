@@ -8,11 +8,11 @@ export const getCurrentUser = async () => {
   if (!cognitoUser) return { error: "You are not logged in." };
   const cognitoUserId = cognitoUser.attributes.sub;
   try {
-    console.log("getting user for ", cognitoUserId);
+    // console.log("getting user for ", cognitoUserId);
     const res = await API.graphql(
       graphqlOperation(queries.userByCognitoUserId, { cognitoUserId })
     );
-    console.log("userByCognitoUserId result", res);
+    // console.log("userByCognitoUserId result", res);
     const user = res.data.userByCognitoUserId.items[0];
     if (!user) {
       console.log("No account found.");
@@ -61,8 +61,10 @@ export const deleteCurrentUser = async () => {
     );
     console.log("deleteuser response", res);
     console.log(`Deleting cognito user`);
-    const cognitoRes = await cognitoUser.deleteUser();
-    console.log("delete cognito response", cognitoRes);
+    cognitoUser.deleteUser((err, res) => {
+      console.log("delete cognito response", res, err);
+    });
+
     return {};
   } catch (e) {
     return { error: `Error deleting account: ${e}` };

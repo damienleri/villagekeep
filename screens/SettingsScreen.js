@@ -9,11 +9,12 @@ import {
   Card,
   Text
 } from "react-native-ui-kitten";
+import * as Device from "expo-device";
 import { gutterWidth } from "../utils/style";
 
 export default class SettingsScreen extends React.Component {
   render() {
-    const isDeveloper = true;
+    const isDeveloper = !Device.isDevice; // in simulator
     return (
       <Layout style={styles.container}>
         <Text category="h4">Settings</Text>

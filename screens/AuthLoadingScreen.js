@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { Auth } from "aws-amplify";
+import * as Device from "expo-device";
 import { deleteCurrentUser } from "../utils/api";
 
 export default class AuthLoadingScreen extends React.Component {
@@ -11,7 +12,8 @@ export default class AuthLoadingScreen extends React.Component {
     console.log("\n******Auth loading*******\n");
 
     try {
-      if (true) {
+      if (!Device.isDevice) {
+        // in simulator
         // for testing
         await Auth.signIn("+12678086023", "testtest1");
         console.log("Debugging: signed in");
