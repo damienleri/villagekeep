@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import {
   Icon,
   Layout,
@@ -12,6 +12,7 @@ import {
   ListItem,
   Spinner
 } from "react-native-ui-kitten";
+import { groupBy } from "lodash";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
@@ -136,16 +137,12 @@ export default class PeopleScreen extends React.Component {
     //   <Text>267</Text>
     // </Card>
     const { user } = this.state;
-
     const { isParent } = user;
-    // const contacts = [
-    //   { firstName: "d", lastName: "l", phone: "22", isParent: false }
-    // ];
 
-    const filtered = user.contacts.items.filter(c =>
-      isParent ? !c.isParent : c.isParent
-    );
-    if (!filtered.length) return null;
+    const contactsByType = groupBy(user.contacts.items, "type");
+    if (isParent && !contactsByType.kid) return null;
+    if (!isParent && !contactsByType.parent && !contactsByType.friend)
+      return null;
 
     return (
       <View>
@@ -154,10 +151,44 @@ export default class PeopleScreen extends React.Component {
           handleAddContact={this.handleAddContact}
           appearance="ghost"
         />
-        <Text style={styles.contactsHeader} category="h6">
-          {isParent ? "Your kids" : "Your parents"}
-        </Text>
-        {filtered.map(this.renderContact)}
+        {isParent ? (
+          <View style={styles.contactsSection}>
+            <Text style={styles.contactsHeader} appearance="hint" category="h6">
+              Your {contactsByType.kid.length > 1 ? " kids" : " kid"}
+            </Text>
+            {contactsByType.kid.map(this.renderContact)}
+          </View>
+        ) : (
+          <React.Fragment>
+            {contactsByType.parent && (
+              <View style={styles.contactsSection}>
+                <Text
+                  style={styles.contactsHeader}
+                  appearance="hint"
+                  category="h6"
+                >
+                  Your{" "}
+                  {contactsByType.parent.length > 1
+                    ? " loving guardians"
+                    : " loving guardian"}
+                </Text>
+                {contactsByType.parent.map(this.renderContact)}
+              </View>
+            )}
+            {contactsByType.friend && (
+              <View style={styles.contactsSection}>
+                <Text
+                  style={styles.contactsHeader}
+                  appearance="hint"
+                  category="h6"
+                >
+                  Your {contactsByType.parent.length > 1 ? "friends" : "friend"}
+                </Text>
+                {contactsByType.friend.map(this.renderContact)}
+              </View>
+            )}
+          </React.Fragment>
+        )}
       </View>
     );
   };
@@ -165,25 +196,29 @@ export default class PeopleScreen extends React.Component {
     const { generalErrorMessage, user, userLoaded } = this.state;
 
     return (
-      <Layout style={styles.container}>
-        {generalErrorMessage && (
-          <Text status="danger" style={styles.generalErrorMessage}>
-            {generalErrorMessage}
-          </Text>
-        )}
-        <Text category="h4">This is your village</Text>
-        <View style={styles.contactsContainer}>
-          {!userLoaded ? (
-            <Spinner />
-          ) : (
-            this.renderContactsList() || (
-              <ContactsEmptyState
-                isParent={user.isParent}
-                handleAddContact={this.handleAddContact}
-              />
-            )
+      <Layout style={{ flex: 1 }}>
+        <ScrollView style={styles.container}>
+          {generalErrorMessage && (
+            <Text status="danger" style={styles.generalErrorMessage}>
+              {generalErrorMessage}
+            </Text>
           )}
-        </View>
+          <Text category="h4" style={styles.header}>
+            This is your village
+          </Text>
+          <View style={styles.contactsContainer}>
+            {!userLoaded ? (
+              <Spinner />
+            ) : (
+              this.renderContactsList() || (
+                <ContactsEmptyState
+                  isParent={user.isParent}
+                  handleAddContact={this.handleAddContact}
+                />
+              )
+            )}
+          </View>
+        </ScrollView>
       </Layout>
     );
   }
@@ -191,14 +226,20 @@ export default class PeopleScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingVertical: 20,
     paddingHorizontal: gutterWidth
+  },
+  header: {
+    marginBottom: 10,
+    fontWeight: "normal"
   },
   generalErrorMessage: {
     marginVertical: 20
   },
   contactsContainer: { paddingVertical: 0 },
+  contactsSection: {
+    marginVertical: 10
+  },
   contact: {
     paddingVertical: 10,
     paddingHorizontal: 10,
@@ -206,10 +247,11 @@ const styles = StyleSheet.create({
     borderColor: "#aaa",
     marginVertical: 10
   },
+  contactsHeader: {},
   contactName: { fontWeight: "bold" },
   contactPhone: { color: textLinkColor, marginVertical: 5 },
   addContactActions: {
-    marginVertical: 20,
+    marginVertical: 10,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-evenly"

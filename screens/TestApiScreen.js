@@ -39,7 +39,7 @@ export default class TestApiScreen extends React.Component {
   listContacts = async () => {
     const { user, error } = await getCurrentUser();
     if (error) console.log(`error from getCurrentUser: ${error}`);
-    // console.log("all contacts", await getContacts());
+    console.log("all contacts", await getContacts());
     console.log("my contacts", user.contacts.items.length);
   };
   listUsers = async () => {

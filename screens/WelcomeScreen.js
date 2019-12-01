@@ -30,6 +30,7 @@ export default class WelcomeScreen extends React.Component {
           </Button>
           <Button
             appearance="ghost"
+            style={styles.loginButton}
             onPress={() =>
               this.props.navigation.navigate("AuthHome", { selectedIndex: 0 })
             }
@@ -44,6 +45,7 @@ export default class WelcomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: { flex: 1, paddingVertical: 30, paddingHorizontal: gutterWidth },
   header: { marginTop: 50, fontWeight: "normal", textAlign: "center" },
+  loginButton: { marginTop: 20 },
   subHeader: {
     marginTop: 10,
     marginBottom: 80,

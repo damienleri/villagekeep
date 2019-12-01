@@ -70,6 +70,32 @@ export const deleteCurrentUser = async () => {
     return { error: `Error deleting account: ${e}` };
   }
 };
+export const deleteContact = async ({ contactId }) => {
+  try {
+    const res = await API.graphql(
+      graphqlOperation(mutations.deleteContact, {
+        input: { id: contactId }
+      })
+    );
+    console.log("deleteuser response", res);
+    return {};
+  } catch (e) {
+    return { error: `Error deleting contact: ${e}` };
+  }
+};
+// export const deleteContact = async ({ contactId }) => {
+//   try {
+//     const res = await API.graphql(
+//       graphqlOperation(mutations.updateContact, {
+//         input: { id: contactId, deletedAt: new Date().getTime() }
+//       })
+//     );
+//     console.log("deleteuser response", res);
+//     return {};
+//   } catch (e) {
+//     return { error: `Error deleting contact: ${e}` };
+//   }
+// };
 
 export const createContact = async ({ type, phone, firstName, lastName }) => {
   const { user: currentUser } = await getCurrentUser();

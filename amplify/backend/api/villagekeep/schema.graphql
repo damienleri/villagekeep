@@ -37,6 +37,7 @@ type User
   lastName: String
   isParent: Boolean
   contacts: [Contact] @connection(name: "UserContacts")
+  deletedAt: AWSTimestamp
   # createdContacts: [Contact]
   #   @connection(keyName: "createdByUser", fields: ["id"])
   # ownedContacts: [Contact] @connection(keyName: "ownedByUser", fields: ["id"])
@@ -73,6 +74,7 @@ type Contact @model {
   # createdByUserId: ID!
   # ownedByUserId: ID
   user: User @connection(name: "UserContacts")
+  deletedAt: AWSTimestamp
   # createdByUserId: ID!
   # createdByUser: User! @connection(fields: ["createdByUserId"])
   # createdByUserId: ID!

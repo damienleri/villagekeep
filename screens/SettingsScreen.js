@@ -11,8 +11,17 @@ import {
 } from "react-native-ui-kitten";
 import * as Device from "expo-device";
 import { gutterWidth } from "../utils/style";
+import { Auth } from "aws-amplify";
 
 export default class SettingsScreen extends React.Component {
+  handleLogout = async () => {
+    try {
+      await Auth.signOut();
+      this.props.navigation.navigate("AuthHome");
+    } catch (e) {
+      this.setState({ errorMessage: e });
+    }
+  };
   render() {
     const isDeveloper = !Device.isDevice; // in simulator
     return (
@@ -24,6 +33,15 @@ export default class SettingsScreen extends React.Component {
             onPress={() => this.props.navigation.navigate("SettingsEditAccont")}
           >
             Edit account
+          </Button>
+        </View>
+        <View style={styles.row}>
+          <Button
+            appearance="outline"
+            status="basic"
+            onPress={this.handleLogout}
+          >
+            Log Out
           </Button>
         </View>
 

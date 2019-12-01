@@ -14,7 +14,7 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import { getCurrentUser, updateUser } from "../utils/api";
 
 export default class AccountForm extends React.Component {
-  state = { firstName: "", lastName: "" };
+  state = { firstName: "", lastName: "", isParent: null };
   constructor(props) {
     super(props);
     this.firstNameInputRef = React.createRef();
@@ -32,8 +32,8 @@ export default class AccountForm extends React.Component {
     this.setState({
       isLoading: false,
       user,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
       isParent: user.isParent
     });
   }
@@ -53,7 +53,6 @@ export default class AccountForm extends React.Component {
       console.log("error updating user", error);
       return this.setState({ errorMessage: error, isSubmitting: false });
     }
-
     await onSave();
   };
 
@@ -64,7 +63,7 @@ export default class AccountForm extends React.Component {
       lastName,
       isParent,
       isParentMessage,
-      isKid,
+
       isLoading,
       isSubmitting
     } = this.state;
@@ -110,10 +109,10 @@ export default class AccountForm extends React.Component {
             style={styles.radio}
             status="primary"
             text="Teen"
-            checked={isKid}
+            checked={isParent === false}
             onChange={isKid =>
               this.setState({
-                isKid,
+                isParent: !isKid,
                 isParentMessage: "Small fry are the future!"
               })
             }
@@ -132,7 +131,7 @@ export default class AccountForm extends React.Component {
         <FormSubmitButton
           onPress={this.handleSubmit}
           disabled={
-            !firstName || !lastName || !(isParent || isKid) || isSubmitting
+            !firstName || !lastName || isParent === null || isSubmitting
           }
         >
           {isNewUser && isSubmitting
