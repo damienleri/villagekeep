@@ -16,6 +16,7 @@ import TestApiScreen from "../screens/TestApiScreen";
 import PeopleScreen from "../screens/PeopleScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import EditContactScreen from "../screens/EditContactScreen";
+import SettingsEditAccountScreen from "../screens/SettingsEditAccountScreen";
 import TopNavigation from "../components/TopNavigation";
 
 const config = {
@@ -92,6 +93,7 @@ const PeopleStack = createStackNavigator(
 const SettingsStack = createStackNavigator(
   {
     Settings: SettingsScreen,
+    SettingsEditAccont: SettingsEditAccountScreen,
     TestApi: TestApiScreen
   },
   config

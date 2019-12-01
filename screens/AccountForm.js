@@ -1,38 +1,49 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Icon, Layout, Text, Button, Radio } from "react-native-ui-kitten";
+import {
+  Icon,
+  Layout,
+  Text,
+  Button,
+  Radio,
+  Spinner
+} from "react-native-ui-kitten";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import { getCurrentUser, updateUser } from "../utils/api";
 
 export default class AccountForm extends React.Component {
-  state = { firstName: "", lastName: "", isParent: null };
-
-  constructor() {
-    super();
+  state = { firstName: "", lastName: "" };
+  constructor(props) {
+    super(props);
     this.firstNameInputRef = React.createRef();
   }
-  componentDidMount() {
-    this.firstNameInputRef.current.focus();
+  async componentDidMount() {
+    if (this.props.isNewUser) this.firstNameInputRef.current.focus();
+    this.setState({ isLoading: true });
+    const { user, error: getCurrentUserError } = await getCurrentUser();
+    if (getCurrentUserError)
+      return this.setState({
+        errorMessage: getCurrentUserError,
+        isLoading: false
+      });
+
+    this.setState({
+      isLoading: false,
+      user,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      isParent: user.isParent
+    });
   }
 
   handleSubmit = async () => {
-    const { navigation, onSave } = this.props;
-    const { firstName, lastName, isParent } = this.state;
-    this.setState({ isLoading: true });
-    const {
-      user: currentUser,
-      error: getCurrentUserError
-    } = await getCurrentUser();
-
-    console.log("accountform", firstName, lastName, isParent, currentUser);
-
-    if (getCurrentUserError)
-      return this.setState({ errorMessage: getCurrentUserError });
-
+    const { navigation, onSave, isNewUser = false } = this.props;
+    const { user, firstName, lastName, isParent } = this.state;
+    this.setState({ isSubmitting: true });
     const { error } = await updateUser({
-      id: currentUser.id,
+      id: user.id,
       firstName,
       lastName,
       isParent
@@ -40,7 +51,7 @@ export default class AccountForm extends React.Component {
 
     if (error) {
       console.log("error updating user", error);
-      return this.setState({ errorMessage: error, isLoading: false });
+      return this.setState({ errorMessage: error, isSubmitting: false });
     }
 
     await onSave();
@@ -54,8 +65,11 @@ export default class AccountForm extends React.Component {
       isParent,
       isParentMessage,
       isKid,
-      isLoading
+      isLoading,
+      isSubmitting
     } = this.state;
+    const { isNewUser } = this.props;
+    if (isLoading) return <Spinner size="giant" />;
     return (
       <Form>
         <FormInput
@@ -118,10 +132,16 @@ export default class AccountForm extends React.Component {
         <FormSubmitButton
           onPress={this.handleSubmit}
           disabled={
-            !firstName || !lastName || !(isParent || isKid) || isLoading
+            !firstName || !lastName || !(isParent || isKid) || isSubmitting
           }
         >
-          {isLoading ? "Getting started..." : "Get started"}
+          {isNewUser && isSubmitting
+            ? "Getting started..."
+            : isNewUser
+            ? "Get started"
+            : isSubmitting
+            ? "Saving..."
+            : "Save"}
         </FormSubmitButton>
       </Form>
     );

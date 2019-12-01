@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, SafeAreaView, View } from "react-native";
+import { StyleSheet, SafeAreaView, View, Platform } from "react-native";
 import {
   Layout,
   Icon,
@@ -31,15 +31,19 @@ export default function(props) {
   const renderRightControls = () => [];
   // const renderRightControls = () => [<EditAction />, <MenuAction />];
 
+  /* Not using SafeAreaView as it causes the screen to be vertically jumpy when switching tabs */
   return (
-    <Layout>
-      <SafeAreaView>
-        <TopNavigation
-          title={props.title}
-          leftControl={renderLeftControl()}
-          rightControls={renderRightControls()}
-        />
-      </SafeAreaView>
+    <Layout style={styles.container}>
+      <TopNavigation
+        title={props.title}
+        leftControl={renderLeftControl()}
+        rightControls={renderRightControls()}
+      />
     </Layout>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Platform.OS === "ios" ? 28 : 10
+  }
+});

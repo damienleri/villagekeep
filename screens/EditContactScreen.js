@@ -17,23 +17,38 @@ import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
-import { getCurrentUser, createContact } from "../utils/api";
+import { getCurrentUser, createContact, updateContact } from "../utils/api";
 import { gutterWidth } from "../utils/style";
+import { formatPhone } from "../utils/etc";
 
 export default class EditContactScreen extends React.Component {
   constructor(props) {
     super(props);
     this.firstNameInputRef = React.createRef();
     const contact = props.navigation.getParam("contact");
-    this.state = {
-      firstName: contact ? contact.firstName : "",
-      lastName: contact ? contact.lastName : "",
-      phone: contact ? contact.phone : "",
-      validPhone: null
-    };
+    if (contact) {
+      /* Update mode */
+
+      this.state = {
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        phone: formatPhone(contact.phone),
+        validPhone: contact ? contact.phone : null
+      };
+    } else {
+      /* Create mode */
+      this.state = {
+        firstName: "",
+        lastName: "",
+        phone: "",
+        validPhone: null
+      };
+    }
   }
+
   componentDidMount() {
-    this.firstNameInputRef.current.focus();
+    const contact = this.props.navigation.getParam("contact");
+    if (!contact) this.firstNameInputRef.current.focus();
   }
   handleChangePhone = async text => {
     const parsed = parsePhoneNumberFromString(text, "US");
@@ -48,19 +63,41 @@ export default class EditContactScreen extends React.Component {
   };
 
   handleSubmit = async () => {
-    const type = this.props.navigation.getParam("type");
     const { firstName, lastName, validPhone } = this.state;
-    const { contact, error: createContactError } = await createContact({
-      firstName,
-      lastName,
-      phone: validPhone,
-      type
-    });
-    if (createContactError) {
-      this.setState({ errorMessage: createContactError });
-      return;
+    const contact = this.props.navigation.getParam("contact");
+    const type = this.props.navigation.getParam("type");
+    if (contact) {
+      /* Update mode */
+      console.log("updating contact id", contact.id);
+      const {
+        contact: updatedContact,
+        error: updateContactError
+      } = await updateContact({
+        id: contact.id,
+        firstName,
+        lastName,
+        phone: validPhone
+      });
+      if (updateContactError) {
+        this.setState({ errorMessage: updateContactError });
+        return;
+      }
+      console.log("updated contact", updatedContact);
+    } else {
+      /* Create mode */
+      const { contact, error: createContactError } = await createContact({
+        firstName,
+        lastName,
+        phone: validPhone,
+        type
+      });
+      if (createContactError) {
+        this.setState({ errorMessage: createContactError });
+        return;
+      }
+      console.log("created contact", contact);
     }
-    console.log("created contact", contact);
+
     this.props.navigation.goBack();
   };
   render() {

@@ -16,8 +16,10 @@ import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
+import { Linking } from "expo";
 import { getCurrentUser, createContact } from "../utils/api";
-import { gutterWidth } from "../utils/style";
+import { formatPhone } from "../utils/etc";
+import { gutterWidth, textLinkColor } from "../utils/style";
 
 const AddContactButton = props => (
   <Button
@@ -75,8 +77,18 @@ ContactsEmptyState = ({ isParent, handleAddContact }) => (
 export default class PeopleScreen extends React.Component {
   state = {};
   componentDidMount = async () => {
-    await this.loadUserData();
+    /* call loadUserData() whenever this screen is displayed, in case data has changed */
+
+    this.loadUserDataSubcription = this.props.navigation.addListener(
+      "didFocus",
+      async () => {
+        await this.loadUserData();
+      }
+    );
   };
+  componentWillUnmount() {
+    this.loadUserDataSubcription.remove();
+  }
   loadUserData = async () => {
     const { user, error: currentUserError } = await getCurrentUser();
     if (currentUserError)
@@ -89,13 +101,32 @@ export default class PeopleScreen extends React.Component {
   handleAddContact = ({ type }) => {
     this.props.navigation.navigate("EditContact", { type });
   };
+  handleEditContact = ({ contact }) => {
+    this.props.navigation.navigate("EditContact", { contact });
+  };
+
+  handlePhonePress = ({ phone }) => {
+    Linking.openURL(`tel:${phone}`);
+  };
   renderContact = (contact, index) => {
     let { firstName, lastName, phone, isParent } = contact;
-    console.log(firstName);
     return (
       <View key={index} style={styles.contact}>
-        <Text style={styles.contactName}>{firstName}</Text>
-        <Text style={styles.contactPhone}>{lastName}</Text>
+        <Text style={styles.contactName}>
+          {firstName} {lastName}
+        </Text>
+        <Text
+          style={styles.contactPhone}
+          onPress={() => this.handlePhonePress({ phone })}
+        >
+          {formatPhone(phone)}
+        </Text>
+        <Button
+          appearance="ghost"
+          onPress={() => this.handleEditContact({ contact })}
+        >
+          Edit
+        </Button>
       </View>
     );
   };
@@ -105,7 +136,6 @@ export default class PeopleScreen extends React.Component {
     //   <Text>267</Text>
     // </Card>
     const { user } = this.state;
-    console.log(user);
 
     const { isParent } = user;
     // const contacts = [
@@ -117,7 +147,6 @@ export default class PeopleScreen extends React.Component {
     );
     if (!filtered.length) return null;
 
-    console.log(filtered);
     return (
       <View>
         <AddContactActions
@@ -170,9 +199,15 @@ const styles = StyleSheet.create({
     marginVertical: 20
   },
   contactsContainer: { paddingVertical: 0 },
-  contact: { paddingVertical: 10 },
+  contact: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "#aaa",
+    marginVertical: 10
+  },
   contactName: { fontWeight: "bold" },
-  contactPhone: {},
+  contactPhone: { color: textLinkColor, marginVertical: 5 },
   addContactActions: {
     marginVertical: 20,
     flexDirection: "row",

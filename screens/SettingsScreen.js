@@ -17,6 +17,15 @@ export default class SettingsScreen extends React.Component {
     return (
       <Layout style={styles.container}>
         <Text category="h4">Settings</Text>
+        <View style={styles.row}>
+          <Button
+            appearance="outline"
+            onPress={() => this.props.navigation.navigate("SettingsEditAccont")}
+          >
+            Edit account
+          </Button>
+        </View>
+
         {isDeveloper && (
           <View style={styles.row}>
             <Button

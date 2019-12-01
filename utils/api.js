@@ -92,23 +92,35 @@ export const createContact = async ({ type, phone, firstName, lastName }) => {
   } catch (e) {
     return { error: `Error saving contact record: ${e}` };
   }
-
-  // let contacts = [];
-  // contacts.push(contact.id);
-  // console.log("saving contact ids:", contacts);
-  // try {
-  //   const res = await API.graphql(
-  //     graphqlOperation(mutations.updateUser, {
-  //       input: { id: currentUser.id, userContactID: contacts }
-  //     })
-  //   );
-  //   console.log("result from updateUser", res.data.updateUser);
-  //   return { contact };
-  // } catch (e) {
-  //   console.log("error saving contact record", e);
-  //   return { error: `Error saving contact record: ${e}` };
-  // }
 };
+
+export const updateContact = async contactInput => {
+  try {
+    const res = await API.graphql(
+      graphqlOperation(mutations.updateContact, { input: contactInput })
+    );
+    const contact = res.data.updateContact;
+    return { contact };
+  } catch (e) {
+    return { error: `Error saving contact record: ${e}` };
+  }
+};
+
+// let contacts = [];
+// contacts.push(contact.id);
+// console.log("saving contact ids:", contacts);
+// try {
+//   const res = await API.graphql(
+//     graphqlOperation(mutations.updateUser, {
+//       input: { id: currentUser.id, userContactID: contacts }
+//     })
+//   );
+//   console.log("result from updateUser", res.data.updateUser);
+//   return { contact };
+// } catch (e) {
+//   console.log("error saving contact record", e);
+//   return { error: `Error saving contact record: ${e}` };
+// }
 
 export const updateUser = async input => {
   try {
