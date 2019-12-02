@@ -1,3 +1,6 @@
+/* eslint-disable */
+// this is an auto generated file. This will be overwritten
+
 export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
@@ -17,31 +20,19 @@ export const getUser = `query GetUser($id: ID!) {
         phone
         firstName
         lastName
-        user {
-            id
-            phone
-            firstName
-            lastName
-            isParent
-            contacts {
-              items {
-                id
-                type
-                phone
-                firstName
-                lastName
-                user {
-                    id
-                    phone
-                    firstName
-                    lastName
-                }
-              }
-            }
-        }
       }
       nextToken
     }
+    events {
+      items {
+        id
+        createdAt
+        updatedAt
+        title
+      }
+      nextToken
+    }
+    deletedAt
   }
 }
 `;
@@ -61,21 +52,74 @@ export const listUsers = `query ListUsers(
       lastName
       isParent
       contacts {
-        items {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      deletedAt
+    }
+    nextToken
+  }
+}
+`;
+export const getEvent = `query GetEvent($id: ID!) {
+  getEvent(id: $id) {
+    id
+    createdAt
+    title
+    user {
+      id
+      firstName
+      lastName
+    }
+    attendees {
+      items {
+        id
+        eventId
+        attendeeId
+        contact: {
           id
-          createdAt
-          updatedAt
-          type
-          phone
           firstName
           lastName
-          user {
-              id
-              phone
-              firstName
-              lastName
+          phone
+          user: {
+            id
+            firstName
+            lastName
+            phone
           }
         }
+      }
+      nextToken
+    }
+  }
+}
+`;
+export const listEvents = `query ListEvents(
+  $filter: ModelEventFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listEvents(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        createdAt
+        updatedAt
+        cognitoUserId
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      attendees {
+        nextToken
       }
     }
     nextToken
@@ -103,6 +147,18 @@ export const getContact = `query GetContact($id: ID!) {
       contacts {
         nextToken
       }
+      events {
+        nextToken
+      }
+      deletedAt
+    }
+    events {
+      items {
+        id
+        eventId
+        attendeeId
+      }
+      nextToken
     }
   }
 }
@@ -130,6 +186,10 @@ export const listContacts = `query ListContacts(
         firstName
         lastName
         isParent
+        deletedAt
+      }
+      events {
+        nextToken
       }
     }
     nextToken
@@ -160,22 +220,12 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       lastName
       isParent
       contacts {
-        items {
-          id
-          createdAt
-          updatedAt
-          type
-          phone
-          firstName
-          lastName
-          user {
-              id
-              phone
-              firstName
-              lastName
-          }
-        }
+        nextToken
       }
+      events {
+        nextToken
+      }
+      deletedAt
     }
     nextToken
   }
@@ -207,6 +257,10 @@ export const userByPhone = `query UserByPhone(
       contacts {
         nextToken
       }
+      events {
+        nextToken
+      }
+      deletedAt
     }
     nextToken
   }

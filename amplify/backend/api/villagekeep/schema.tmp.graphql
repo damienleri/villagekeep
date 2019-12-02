@@ -1,0 +1,111 @@
+# type Blog @model {
+#   id: ID!
+#   name: String!
+#   posts: [Post] @connection(name: "BlogPosts")
+# }
+# type Post @model {
+#   id: ID!
+#   title: String!
+#   blog: Blog @connection(name: "BlogPosts")
+#   comments: [Comment] @connection(name: "PostComments")
+# }
+# type Comment @model {
+#   id: ID!
+#   content: String
+#   post: Post @connection(name: "PostComments")
+# }
+
+## Documentation:
+# Examples https://aws-amplify.github.io/docs/cli-toolchain/graphql#data-access-patterns
+
+## Notes:
+# AWSTimestamp is preferred over datetime
+type User
+  @model
+  @key(
+    name: "byCognitoUserId"
+    fields: ["cognitoUserId"]
+    queryField: "userByCognitoUserId"
+  )
+  @key(name: "byPhone", fields: ["phone"], queryField: "userByPhone") {
+  id: ID!
+  createdAt: String
+  updatedAt: String
+  cognitoUserId: String
+  phone: AWSPhone!
+  firstName: String
+  lastName: String
+  isParent: Boolean
+  contacts: [Contact] @connection(name: "UserContacts")
+  events: [Event] @connection(name: "UserEvents")
+  deletedAt: AWSTimestamp
+  # createdContacts: [Contact]
+  #   @connection(keyName: "createdByUser", fields: ["id"])
+  # ownedContacts: [Contact] @connection(keyName: "ownedByUser", fields: ["id"])
+}
+
+type Contact @model {
+  # @key(
+  #   name: "byPhone"
+  #   fields: ["phone", "contactUserId"]
+  #   queryField: "contactByPhone"
+  # )  # @key(name: "createdByUser", fields: ["createdByUserId"])
+  # @key(name: "ownedByUser", fields: ["ownedByUserId"])
+
+  # @key(name: "byUser", fields: ["userId", "id"], queryField: "contactByUser")
+
+  # @key(
+  #   name: "byCreator"
+  #   fields: ["createdByUserId"]
+  #   queryField: "contactByCreator"
+  # )
+  # @key(
+  #   name: "byOwner"
+  #   fields: ["ownedByUserId"]
+  #   queryField: "contactByOwner"
+  # )
+  id: ID!
+  createdAt: String
+  updatedAt: String
+  type: ContactType ## 'parent', 'kid', or 'friend'
+  phone: AWSPhone!
+  firstName: String
+  lastName: String
+  # userId: ID
+  # createdByUserId: ID!
+  # ownedByUserId: ID
+  user: User @connection(name: "UserContacts")
+  events: [ContactEventEdge] @connection(name: "ContactContactEventEdges")
+  # deletedAt: AWSTimestamp
+
+  # createdByUserId: ID!
+  # createdByUser: User! @connection(fields: ["createdByUserId"])
+  # createdByUserId: ID!
+  # createdByUser: User! @connection(fields: ["createdByUserId"])
+  # ownedByUserId: ID
+  # ownedByUser: User @connection(fields: ["ownedByUserId"])
+}
+
+type ContactEventEdge @model {
+  id: ID!
+  createdAt: String
+  updatedAt: String
+  contact: Contact! @connection(name: "ContactContactEventEdges")
+  event: Event! @connection(name: "EventContactEventEdges")
+  # deletedAt: AWSTimestamp
+}
+type Event @model {
+  id: ID!
+  createdAt: String
+  updatedAt: String
+  title: String
+  user: User @connection(name: "UserEvents")
+  contacts: [ContactEventEdge] @connection(name: "EventContactEventEdges")
+}
+
+enum ContactType {
+  parent
+  kid
+  friend
+  other
+}

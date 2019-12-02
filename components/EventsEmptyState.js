@@ -72,15 +72,15 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       {isParent && (
         <Step
           name="1. Add your teens"
-          description="They will be invited via text message."
+          description="They are invited via text message."
           onPress={() => navigation.navigate("EditContact", { type: "kid" })}
           isDone={contactsByType.kid}
         />
       )}
       {isParent && (
         <Step
-          name="2. Your kid adds their friends"
-          description="And those kids can invite their parents."
+          name="2. Your teens add their friends"
+          description="Who in turn can invite their parents."
           onPress={() =>
             navigation.navigate("EditContact", { type: "friend", user })
           }
@@ -89,8 +89,8 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
       {isParent && (
         <Step
-          name="3. One of the kids adds an event"
-          description="The app notifies you - and any other parents of the kids involved in the event."
+          name="3. Teens add events with specific friends"
+          description="The app keeps all the parents in the loop."
           onPress={() => navigation.navigate("People")}
           isDone={false}
         />

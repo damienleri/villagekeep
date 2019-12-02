@@ -1,6 +1,3 @@
-/* eslint-disable */
-// this is an auto generated file. This will be overwritten
-
 export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
@@ -20,6 +17,28 @@ export const getUser = `query GetUser($id: ID!) {
         phone
         firstName
         lastName
+        user {
+            id
+            phone
+            firstName
+            lastName
+            isParent
+            contacts {
+              items {
+                id
+                type
+                phone
+                firstName
+                lastName
+                user {
+                    id
+                    phone
+                    firstName
+                    lastName
+                }
+              }
+            }
+        }
       }
       nextToken
     }
@@ -42,7 +61,21 @@ export const listUsers = `query ListUsers(
       lastName
       isParent
       contacts {
-        nextToken
+        items {
+          id
+          createdAt
+          updatedAt
+          type
+          phone
+          firstName
+          lastName
+          user {
+              id
+              phone
+              firstName
+              lastName
+          }
+        }
       }
     }
     nextToken
@@ -127,7 +160,21 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       lastName
       isParent
       contacts {
-        nextToken
+        items {
+          id
+          createdAt
+          updatedAt
+          type
+          phone
+          firstName
+          lastName
+          user {
+              id
+              phone
+              firstName
+              lastName
+          }
+        }
       }
     }
     nextToken

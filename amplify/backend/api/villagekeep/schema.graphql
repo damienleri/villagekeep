@@ -1,25 +1,3 @@
-# type Blog @model {
-#   id: ID!
-#   name: String!
-#   posts: [Post] @connection(name: "BlogPosts")
-# }
-# type Post @model {
-#   id: ID!
-#   title: String!
-#   blog: Blog @connection(name: "BlogPosts")
-#   comments: [Comment] @connection(name: "PostComments")
-# }
-# type Comment @model {
-#   id: ID!
-#   content: String
-#   post: Post @connection(name: "PostComments")
-# }
-
-## Documentation:
-# Examples https://aws-amplify.github.io/docs/cli-toolchain/graphql#data-access-patterns
-
-## Notes:
-# AWSTimestamp is preferred over datetime
 type User
   @model
   @key(
@@ -37,50 +15,38 @@ type User
   lastName: String
   isParent: Boolean
   contacts: [Contact] @connection(name: "UserContacts")
+  events: [Event] @connection(name: "UserEvents")
   deletedAt: AWSTimestamp
-  # createdContacts: [Contact]
-  #   @connection(keyName: "createdByUser", fields: ["id"])
-  # ownedContacts: [Contact] @connection(keyName: "ownedByUser", fields: ["id"])
 }
 
-type Contact @model {
-  # @key(
-  #   name: "byPhone"
-  #   fields: ["phone", "contactUserId"]
-  #   queryField: "contactByPhone"
-  # )  # @key(name: "createdByUser", fields: ["createdByUserId"])
-  # @key(name: "ownedByUser", fields: ["ownedByUserId"])
-
-  # @key(name: "byUser", fields: ["userId", "id"], queryField: "contactByUser")
-
-  # @key(
-  #   name: "byCreator"
-  #   fields: ["createdByUserId"]
-  #   queryField: "contactByCreator"
-  # )
-  # @key(
-  #   name: "byOwner"
-  #   fields: ["ownedByUserId"]
-  #   queryField: "contactByOwner"
-  # )
+type Event @model {
   id: ID!
   createdAt: String
   updatedAt: String
-  type: ContactType ## 'parent', 'kid', or 'friend'
+  title: String
+  user: User @connection(name: "UserEvents")
+  attendees: [EventAttendee] @connection(keyName: "byEvent", fields: ["id"])
+}
+type EventAttendee
+  @model(queries: null)
+  @key(name: "byEvent", fields: ["eventId", "attendeeId"])
+  @key(name: "byAttendee", fields: ["attendeeId", "eventId"]) {
+  id: ID!
+  eventId: ID!
+  attendeeId: ID!
+  event: Event! @connection(fields: ["eventId"])
+  contact: Contact! @connection(fields: ["attendeeId"])
+}
+type Contact @model {
+  id: ID!
+  createdAt: String
+  updatedAt: String
+  type: ContactType ## enum, defined below
   phone: AWSPhone!
   firstName: String
   lastName: String
-  # userId: ID
-  # createdByUserId: ID!
-  # ownedByUserId: ID
   user: User @connection(name: "UserContacts")
-  deletedAt: AWSTimestamp
-  # createdByUserId: ID!
-  # createdByUser: User! @connection(fields: ["createdByUserId"])
-  # createdByUserId: ID!
-  # createdByUser: User! @connection(fields: ["createdByUserId"])
-  # ownedByUserId: ID
-  # ownedByUser: User @connection(fields: ["ownedByUserId"])
+  events: [EventAttendee] @connection(keyName: "byAttendee", fields: ["id"])
 }
 
 enum ContactType {
@@ -89,46 +55,3 @@ enum ContactType {
   friend
   other
 }
-# type Person @model {
-#   id: ID!
-#   createdAt: String
-#   updatedAt: String
-#   phone: AWSPhone!
-#   user: User @connection
-#   parents: [Person] @connection
-# }
-#
-# type UserKnowsPerson @model {
-#   id: ID!
-#   createdAt: String
-#   updatedAt: String
-#   user: User @connection
-#   person: Person @connection
-#   firstName: String
-#   lastName: String
-# }
-
-# Add your teen:
-## Parent submits teen's phone, first, last
-##   System creates Contact: phone, first, last, type='kid', createdbyuserid
-##   System sends invitation to contact.phone
-## Kid creates an account with phone:
-##  If existing contact with same phone:
-##    System sets contact.ownedByUser and prepopulates first, last, and isParent (from most recent contact with this phone)
-##    User is prompted to add (with one-click) reciprocal contacts for each user who added them as contact. If they approve the one for parent:
-##       System creates Contact: parent's phone, first, last, type='parent', createdByUser
-## Kid invites friend:
-
-# pseudocode.... query getUser() {
-#   id ## the parent
-#   contacts: {
-#     firstName
-#     lastName
-#     user: {
-#       id ## the teen
-#       contacts: {
-#       firstName # their friends
-#       }
-#     }
-#   }
-# }
