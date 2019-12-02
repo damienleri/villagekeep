@@ -148,8 +148,10 @@ export default class EditContactScreen extends React.Component {
       validPhone
     } = this.state;
     const contact = navigation.getParam("contact");
+    const user = navigation.getParam("user");
+    const { isParent } = user;
     const type = contact ? contact.type : navigation.getParam("type");
-    console.log(gutterWidth);
+
     return (
       <Layout style={styles.container}>
         <View style={styles.intro}>
@@ -157,7 +159,14 @@ export default class EditContactScreen extends React.Component {
             {contact ? "Let's fix this " : "It's time to add this "}
             {type === "parent" ? "parent/guardian" : type}.
           </Text>
-          <Text style={styles.introText}></Text>
+          {isParent ? (
+            <Text style={styles.introText}></Text>
+          ) : (
+            <Text style={styles.introText}>
+              Your parents will have access to the names and numbers you add
+              here.
+            </Text>
+          )}
         </View>
 
         <Form>

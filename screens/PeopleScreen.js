@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
 import {
   Icon,
   Layout,
@@ -98,12 +98,22 @@ export default class PeopleScreen extends React.Component {
       });
     this.setState({ user, userLoaded: true });
   };
-
+  handleRefresh = async () => {
+    this.setState({ isRefreshing: true });
+    await this.loadUserData();
+    this.setState({ isRefreshing: false });
+  };
   handleAddContact = ({ type }) => {
-    this.props.navigation.navigate("EditContact", { type });
+    this.props.navigation.navigate("EditContact", {
+      type,
+      user: this.state.user
+    });
   };
   handleEditContact = ({ contact }) => {
-    this.props.navigation.navigate("EditContact", { contact });
+    this.props.navigation.navigate("EditContact", {
+      contact,
+      user: this.state.user
+    });
   };
 
   handlePhonePress = ({ phone }) => {
@@ -193,11 +203,19 @@ export default class PeopleScreen extends React.Component {
     );
   };
   render() {
-    const { generalErrorMessage, user, userLoaded } = this.state;
+    const { generalErrorMessage, user, userLoaded, isRefreshing } = this.state;
 
     return (
       <Layout style={{ flex: 1 }}>
-        <ScrollView style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={this.handleRefresh}
+            />
+          }
+        >
           {generalErrorMessage && (
             <Text status="danger" style={styles.generalErrorMessage}>
               {generalErrorMessage}

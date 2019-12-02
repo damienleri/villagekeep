@@ -39,7 +39,7 @@ export default class ForgotPasswordScreen extends React.Component {
       }
     }
 
-    // this.props.navigation.navigate("Home");
+    // this.props.navigation.navigate("Main");
   };
 
   render() {

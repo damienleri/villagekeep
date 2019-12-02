@@ -11,7 +11,7 @@ import {
 } from "react-native-ui-kitten";
 
 import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
+import EventsScreen from "../screens/EventsScreen";
 import TestApiScreen from "../screens/TestApiScreen";
 import PeopleScreen from "../screens/PeopleScreen";
 import SettingsScreen from "../screens/SettingsScreen";
@@ -47,15 +47,15 @@ const TabBarComponent = ({ navigation }) => {
   );
 };
 
-const HomeStack = createStackNavigator(
+const EventsStack = createStackNavigator(
   {
-    Home: HomeScreen
+    Events: EventsScreen
   },
   config
 );
 
-// HomeStack.navigationOptions = {
-//   tabBarLabel: "Home",
+// EventsStack.navigationOptions = {
+//   tabBarLabel: "Events",
 //   tabBarIcon: ({ focused }) => (
 //     <TabBarIcon
 //       focused={focused}
@@ -68,7 +68,7 @@ const HomeStack = createStackNavigator(
 //   )
 // };
 //
-// HomeStack.path = "";
+// EventsStack.path = "";
 
 const PeopleStack = createStackNavigator(
   {
@@ -113,7 +113,7 @@ const SettingsStack = createStackNavigator(
 
 const tabNavigator = createBottomTabNavigator(
   {
-    HomeStack,
+    EventsStack,
     PeopleStack,
     SettingsStack
   },

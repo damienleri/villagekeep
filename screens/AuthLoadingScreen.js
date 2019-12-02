@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { Auth } from "aws-amplify";
 import * as Device from "expo-device";
 import { deleteCurrentUser } from "../utils/api";
+import { primaryColor } from "../utils/style";
 
 export default class AuthLoadingScreen extends React.Component {
   componentDidMount = async () => {
@@ -17,7 +18,7 @@ export default class AuthLoadingScreen extends React.Component {
         // for testing
         await Auth.signIn("+12678086023", "testtest1");
         console.log("Debugging: signed in");
-        return this.props.navigation.navigate("People");
+        return this.props.navigation.navigate("Main");
         // this.props.navigation.navigate("EditContact", { type: "kid" });
       }
 
@@ -42,7 +43,7 @@ export default class AuthLoadingScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3366FF",
+    backgroundColor: primaryColor,
     alignItems: "center",
     justifyContent: "center"
   }
