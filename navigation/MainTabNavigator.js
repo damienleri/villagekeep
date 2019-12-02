@@ -16,6 +16,7 @@ import TestApiScreen from "../screens/TestApiScreen";
 import PeopleScreen from "../screens/PeopleScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import EditContactScreen from "../screens/EditContactScreen";
+import EditEventScreen from "../screens/EditEventScreen";
 import SettingsEditAccountScreen from "../screens/SettingsEditAccountScreen";
 import TopNavigation from "../components/TopNavigation";
 
@@ -49,7 +50,8 @@ const TabBarComponent = ({ navigation }) => {
 
 const EventsStack = createStackNavigator(
   {
-    Events: EventsScreen
+    Events: EventsScreen,
+    EditEvent: EditEventScreen
   },
   config
 );

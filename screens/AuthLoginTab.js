@@ -105,6 +105,7 @@ export default class AuthSignUpTab extends React.Component {
         <FormInput
           label="Phone number"
           placeholder=""
+          textContentType="telephoneNumber"
           onChangeText={this.handleChangePhone}
           value={phone}
           status={
@@ -124,6 +125,7 @@ export default class AuthSignUpTab extends React.Component {
           label="Password"
           placeholder={``}
           secureTextEntry={!showPassword}
+          textContentType="password"
           onChangeText={this.handleChangePassword}
           value={password}
           status={

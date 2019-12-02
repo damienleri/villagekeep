@@ -20,20 +20,32 @@ import { primaryColor, successColor } from "../utils/style";
 import AddEventActions from "./AddEventActions";
 
 const Step = ({ name, description, isDone, onPress }) => {
-  const color = isDone ? successColor : primaryColor;
+  // const color = isDone ? successColor : primaryColor;
+  // const color = isDone ? successColor : "white";
   return (
     <View style={styles.step}>
       <View style={styles.stepRow}>
-        <Ionicons
-          name={isDone ? "ios-checkbox-outline" : "md-square-outline"}
-          size={32}
-          color={color}
-          style={{ marginRight: 10 }}
-          onPress={onPress}
-        />
-        <Text style={[styles.stepName, { color }]} onPress={onPress}>
-          {name} {"  "}
-        </Text>
+        {isDone ? (
+          <Text style={styles.stepName} status="success" onPress={onPress}>
+            {name}
+          </Text>
+        ) : (
+          <Text
+            style={[styles.stepName, { paddingVertical: 8 }]}
+            onPress={onPress}
+          >
+            {name}
+          </Text>
+        )}
+        {isDone && (
+          <Ionicons
+            name={isDone ? "md-checkmark" : "md-square-outline"}
+            size={28}
+            color={successColor}
+            style={{ marginHorizontal: 10 }}
+            onPress={onPress}
+          />
+        )}
       </View>
       <Text style={styles.stepDescription} appearance="hint">
         {description}
@@ -44,7 +56,7 @@ const Step = ({ name, description, isDone, onPress }) => {
 
 const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
   let { isParent } = user;
-  isParent = false;
+  // isParent = false;
   const contacts = user.contacts.items;
   const contactsByType = groupBy(contacts, "type");
 
@@ -53,13 +65,13 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       <Text category="h5" style={styles.stepsHeader}>
         Welcome.
         <Text style={styles.stepsHeaderHint} category="h5">
-          {"  "}How to use the app:
+          {"  "}Here's how to use this.
         </Text>
       </Text>
 
       {isParent && (
         <Step
-          name="Add your teens"
+          name="1. Add your teens"
           description="They will be invited via text message."
           onPress={() => navigation.navigate("EditContact", { type: "kid" })}
           isDone={contactsByType.kid}
@@ -67,15 +79,25 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
       {isParent && (
         <Step
-          name="Someone add an event"
-          description=""
+          name="2. Your kid adds their friends"
+          description="And those kids can invite their parents."
+          onPress={() =>
+            navigation.navigate("EditContact", { type: "friend", user })
+          }
+          isDone={contactsByType.friend}
+        />
+      )}
+      {isParent && (
+        <Step
+          name="3. One of the kids adds an event"
+          description="The app notifies you - and any other parents of the kids involved in the event."
           onPress={() => navigation.navigate("People")}
-          isDone={contactsByType.kid}
+          isDone={false}
         />
       )}
       {!isParent && (
         <Step
-          name="Add a parent or guardian"
+          name="1. Add a parent or guardian"
           description="The app helps to manage their nagging."
           onPress={() =>
             navigation.navigate("EditContact", { type: "parent", user })
@@ -85,8 +107,8 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
       {!isParent && (
         <Step
-          name="Add some IRL friends"
-          description="The app texts them an invitation."
+          name="2. Add some IRL friends"
+          description="The app texts them invitations."
           onPress={() =>
             navigation.navigate("EditContact", { type: "friend", user })
           }
@@ -95,16 +117,16 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
       {!isParent && (
         <Step
-          name="Add events"
+          name="3. Add events"
           description="The app keeps parents in the loop."
           onPress={() => navigation.navigate("EditEvent")}
-          isDone={contactsByType.friend}
+          isDone={false}
         />
       )}
 
       {contacts.length > 0 && (
         <AddEventActions
-          isParent={isParent}
+          user={user}
           handleAddEvent={handleAddEvent}
           appearance="primary"
         />
@@ -118,9 +140,9 @@ const styles = StyleSheet.create({
   stepsHeader: { marginVertical: 20 },
   stepsHeaderHint: { fontWeight: "normal" },
 
-  step: { marginVertical: 10 },
+  step: { marginVertical: 20 },
   stepRow: { flexDirection: "row", alignItems: "center" },
 
   stepName: { fontWeight: "bold", fontSize: 18 },
-  stepDescription: { fontSize: 18, marginTop: 4 }
+  stepDescription: { fontSize: 18, marginTop: 5 }
 });

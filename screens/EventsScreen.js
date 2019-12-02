@@ -53,10 +53,16 @@ export default class PeopleScreen extends React.Component {
     this.setState({ isRefreshing: false });
   };
   handleAddEvent = ({ type }) => {
-    this.props.navigation.navigate("EditEvent", { type });
+    this.props.navigation.navigate("EditEvent", {
+      type,
+      user: this.state.user
+    });
   };
   handleEditEvent = ({ event }) => {
-    this.props.navigation.navigate("EditEvent", { event });
+    this.props.navigation.navigate("EditEvent", {
+      event,
+      user: this.state.user
+    });
   };
 
   handlePhonePress = ({ phone }) => {
@@ -70,7 +76,7 @@ export default class PeopleScreen extends React.Component {
 
         <Button
           appearance="ghost"
-          onPress={() => this.handleEditEvent({ event })}
+          onPress={() => this.handleEditEvent({ event, user: this.state.user })}
         >
           Edit
         </Button>
@@ -86,7 +92,7 @@ export default class PeopleScreen extends React.Component {
     return (
       <View>
         <AddEventActions
-          isParent={isParent}
+          user={user}
           handleAddEvent={this.handleAddEvent}
           appearance="ghost"
         />

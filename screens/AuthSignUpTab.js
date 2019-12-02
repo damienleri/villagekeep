@@ -104,6 +104,7 @@ export default class AuthSignUpTab extends React.Component {
           placeholder="Your phone"
           onChangeText={this.handleChangePhone}
           value={phone}
+          textContentType="telephoneNumber"
           status={
             !phone.length
               ? null
@@ -121,6 +122,7 @@ export default class AuthSignUpTab extends React.Component {
           label="Password"
           placeholder={`At least ${minPasswordLength} characters`}
           secureTextEntry={!showPassword}
+          textContentType="newPassword"
           onChangeText={this.handleChangePassword}
           value={password}
           status={

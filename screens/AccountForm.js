@@ -74,6 +74,7 @@ export default class AccountForm extends React.Component {
         <FormInput
           label="First name"
           placeholder=""
+          textContentType="givenName"
           onChangeText={firstName =>
             this.setState({ firstName, errorMessage: false })
           }
@@ -85,6 +86,7 @@ export default class AccountForm extends React.Component {
         <FormInput
           label="Last name"
           placeholder=""
+          textContentType="familyName"
           onChangeText={lastName =>
             this.setState({ lastName, errorMessage: false })
           }

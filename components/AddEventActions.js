@@ -25,12 +25,12 @@ const AddEventButton = props => (
   </Button>
 );
 
-const AddEventActions = ({ isParent, appearance, handleAddEvent }) => (
+const AddEventActions = ({ user, appearance, handleAddEvent }) => (
   <View style={styles.addEventActions}>
-    {isParent ? (
+    {user.isParent ? (
       <AddEventButton
         appearance={appearance}
-        onPress={() => handleAddEvent({ type: "family" })}
+        onPress={() => handleAddEvent({ type: "family", user })}
       >
         Add Family event
       </AddEventButton>
@@ -38,13 +38,13 @@ const AddEventActions = ({ isParent, appearance, handleAddEvent }) => (
       <React.Fragment>
         <AddEventButton
           appearance={appearance}
-          onPress={() => handleAddEvent({ type: "friends" })}
+          onPress={() => handleAddEvent({ type: "friends", user })}
         >
           Add Friend event
         </AddEventButton>
         <AddEventButton
           appearance={appearance}
-          onPress={() => handleAddEvent({ type: "family" })}
+          onPress={() => handleAddEvent({ type: "family", user })}
         >
           Add Family event
         </AddEventButton>

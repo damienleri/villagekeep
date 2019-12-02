@@ -111,6 +111,7 @@ export default class AuthVerifyScreen extends React.Component {
             value={code}
             status={codeErrorMessage ? "danger" : null}
             caption={codeErrorMessage}
+            oneTimeCode="oneTimeCode"
             keyboardType={"number-pad"}
             returnKeyType="done"
             autoCapitalize="none"
