@@ -69,10 +69,10 @@ export default AddEventActions;
 
 const styles = StyleSheet.create({
   addEventActions: {
-    marginVertical: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between"
+    marginVertical: 10
+    // flexDirection: "row",
+    // flexWrap: "wrap",
+    // justifyContent: "space-between"
   },
   addEventButton: { marginVertical: 10 },
   addEventButtonText: { textTransform: "uppercase" }
