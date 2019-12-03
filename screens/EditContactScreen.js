@@ -70,6 +70,7 @@ export default class EditContactScreen extends React.Component {
     const { firstName, lastName, validPhone } = this.state;
     const contact = this.props.navigation.getParam("contact");
     const type = this.props.navigation.getParam("type");
+    const user = this.props.navigation.getParam("user");
     this.setState({ isSubmitting: true });
     if (contact) {
       /* Update mode */
@@ -94,6 +95,7 @@ export default class EditContactScreen extends React.Component {
     } else {
       /* Create mode */
       const { contact, error: createContactError } = await createContact({
+        userId: user.id,
         firstName,
         lastName,
         phone: validPhone,

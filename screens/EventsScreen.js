@@ -28,7 +28,6 @@ export default class PeopleScreen extends React.Component {
   state = {};
   componentDidMount = async () => {
     /* call loadUserData() whenever this screen is displayed, in case data has changed */
-
     this.loadUserDataSubcription = this.props.navigation.addListener(
       "didFocus",
       async () => {
@@ -45,6 +44,9 @@ export default class PeopleScreen extends React.Component {
       return this.setState({
         generalErrorMessage: `Error: ${currentUserError}`
       });
+    console.log("currentuser", user);
+    // const events = user.events.items;
+    // console.log("events", events);
     this.setState({ user, userLoaded: true });
   };
   handleRefresh = async () => {
@@ -54,7 +56,7 @@ export default class PeopleScreen extends React.Component {
   };
   handleAddEvent = ({ type }) => {
     this.props.navigation.navigate("EditEvent", {
-      type,
+      // type,
       user: this.state.user
     });
   };

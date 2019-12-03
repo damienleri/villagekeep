@@ -24,7 +24,8 @@ export const getCurrentUser = async () => {
     }
     return { cognitoUser, user };
   } catch (e) {
-    return { error: `Error getting current login: ${e}` };
+    console.log("error from auth", e);
+    return { error: `Error getting current login: ${e.message}` };
   }
 };
 
@@ -70,19 +71,6 @@ export const deleteCurrentUser = async () => {
     return { error: `Error deleting account: ${e}` };
   }
 };
-export const deleteContact = async ({ contactId }) => {
-  try {
-    const res = await API.graphql(
-      graphqlOperation(mutations.deleteContact, {
-        input: { id: contactId }
-      })
-    );
-    console.log("deleteuser response", res);
-    return {};
-  } catch (e) {
-    return { error: `Error deleting contact: ${e}` };
-  }
-};
 // export const deleteContact = async ({ contactId }) => {
 //   try {
 //     const res = await API.graphql(
@@ -97,26 +85,20 @@ export const deleteContact = async ({ contactId }) => {
 //   }
 // };
 
-export const createContact = async ({ type, phone, firstName, lastName }) => {
-  const { user: currentUser } = await getCurrentUser();
-  if (!currentUser) {
-    return { error: "Can't find current currentUser" };
-  }
-  console.log(`Adding ${type} contact owned by currentUser:`, currentUser);
-  const contactInput = {
-    type,
-    phone,
-    firstName,
-    lastName,
-    contactUserId: currentUser.id
-  };
-
+export const createContact = async ({
+  userId,
+  type,
+  phone,
+  firstName,
+  lastName
+}) => {
   try {
     const res = await API.graphql(
-      graphqlOperation(mutations.createContact, { input: contactInput })
+      graphqlOperation(mutations.createContact, {
+        input: { type, phone, firstName, lastName, contactUserId: userId }
+      })
     );
-    const contact = res.data.createContact;
-    return { contact };
+    return { contact: res.data.createContact };
   } catch (e) {
     return { error: `Error saving contact record: ${e}` };
   }
@@ -127,10 +109,61 @@ export const updateContact = async contactInput => {
     const res = await API.graphql(
       graphqlOperation(mutations.updateContact, { input: contactInput })
     );
-    const contact = res.data.updateContact;
-    return { contact };
+    return { contact: res.data.updateContact };
   } catch (e) {
     return { error: `Error saving contact record: ${e}` };
+  }
+};
+export const deleteContact = async ({ contactId }) => {
+  try {
+    const res = await API.graphql(
+      graphqlOperation(mutations.deleteContact, {
+        input: { id: contactId }
+      })
+    );
+    return {};
+  } catch (e) {
+    return { error: `Error deleting contact: ${e}` };
+  }
+};
+
+export const createEvent = async ({ title, userId }) => {
+  try {
+    // console.log(`createing event for user ${userId}`);
+    const res = await API.graphql(
+      graphqlOperation(mutations.createEvent, {
+        input: {
+          title,
+          eventUserId: userId
+        }
+      })
+    );
+    return { event: res.data.createEvent };
+  } catch (e) {
+    return { error: `Error saving event record: ${e}` };
+  }
+};
+
+export const updateEvent = async eventInput => {
+  try {
+    const res = await API.graphql(
+      graphqlOperation(mutations.updateEvent, { input: eventInput })
+    );
+    return { event: res.data.updateEvent };
+  } catch (e) {
+    return { error: `Error saving event record: ${e}` };
+  }
+};
+export const deleteEvent = async ({ eventId }) => {
+  try {
+    const res = await API.graphql(
+      graphqlOperation(mutations.deleteEvent, {
+        input: { id: eventId }
+      })
+    );
+    return {};
+  } catch (e) {
+    return { error: `Error deleting event: ${e}` };
   }
 };
 

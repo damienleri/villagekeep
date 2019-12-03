@@ -18,19 +18,19 @@ export default class TestApiScreen extends React.Component {
   static navigationOptions = {
     title: "Contacts"
   };
-
-  addContact = async ({ type }) => {
-    const phone = "+12678086023";
-    const firstName = "Dale";
-    const lastName = "Cooper";
-    const { error, contact } = await createContact({
-      type,
-      phone,
-      firstName,
-      lastName
-    });
-    console.log(contact);
-  };
+  //
+  // addContact = async ({ type }) => {
+  //   const phone = "+12678086023";
+  //   const firstName = "Dale";
+  //   const lastName = "Cooper";
+  //   const { error, contact } = await createContact({
+  //     type,
+  //     phone,
+  //     firstName,
+  //     lastName
+  //   });
+  //   console.log(contact);
+  // };
   addUser = async () => {
     const { error, user } = await createCurrentUser();
     console.log(user);
@@ -60,12 +60,13 @@ export default class TestApiScreen extends React.Component {
   };
 
   render() {
+    // <Button onPress={() => this.addContact({ type: "kid" })}>
+    //   Add a kid
+    // </Button>
+
     return (
       <Layout style={styles.container}>
         <Button onPress={this.addUser}>Add User</Button>
-        <Button onPress={() => this.addContact({ type: "kid" })}>
-          Add a kid
-        </Button>
         <Button onPress={this.listContacts}>List contacts</Button>
         <Button onPress={this.listUsers}>List users</Button>
         <Button onPress={this.deleteUser}>Delete current user</Button>

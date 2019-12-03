@@ -67,7 +67,8 @@ export default class AuthVerifyScreen extends React.Component {
       return;
     }
     console.log("created api user", user);
-    return this.props.navigation.navigate("AuthEditAccount");
+    this.props.navigation.navigate("AuthEditAccount");
+    return;
   };
 
   handleResend = async () => {

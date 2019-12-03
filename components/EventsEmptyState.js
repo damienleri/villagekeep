@@ -57,6 +57,7 @@ const Step = ({ name, description, isDone, onPress }) => {
 const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
   let { isParent } = user;
   // isParent = false;
+  console.log(user);
   const contacts = user.contacts.items;
   const contactsByType = groupBy(contacts, "type");
 

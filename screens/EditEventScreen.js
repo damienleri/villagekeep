@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, View, Alert, ScrollView } from "react-native";
 import {
   Icon,
   Layout,
@@ -10,7 +10,9 @@ import {
   CardHeader,
   List,
   ListItem,
-  Spinner
+  Spinner,
+  Select,
+  Datepicker
 } from "react-native-ui-kitten";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import Form from "../components/Form";
@@ -24,22 +26,25 @@ import {
   deleteEvent
 } from "../utils/api";
 import { gutterWidth } from "../utils/style";
-import { formatPhone } from "../utils/etc";
+import { formatPhone, getFormattedNameFromContact } from "../utils/etc";
 
 export default class EditEventScreen extends React.Component {
   constructor(props) {
     super(props);
     const event = props.navigation.getParam("event");
-    this.setState({
+    this.state = {
       isLoading: false,
-      title: event ? event.title : ""
-    });
+      title: event ? event.title : "",
+      date: event ? event.date : new Date(),
+      selectedContactOption: []
+    };
   }
 
   handleSubmit = async () => {
     const { title } = this.state;
     const event = this.props.navigation.getParam("event");
-    const type = this.props.navigation.getParam("type");
+    // const type = this.props.navigation.getParam("type"); //not used
+    const user = this.props.navigation.getParam("user");
     this.setState({ isSubmitting: true });
     if (event) {
       /* Update mode */
@@ -49,8 +54,7 @@ export default class EditEventScreen extends React.Component {
         error: updateEventError
       } = await updateEvent({
         id: event.id,
-        title: event.title,
-        type
+        title
       });
       if (updateEventError) {
         this.setState({
@@ -63,8 +67,8 @@ export default class EditEventScreen extends React.Component {
     } else {
       /* Create mode */
       const { event, error: createEventError } = await createEvent({
-        title,
-        type
+        userId: user.id,
+        title
       });
       if (createEventError) {
         this.setState({
@@ -102,65 +106,80 @@ export default class EditEventScreen extends React.Component {
     );
   };
 
+  handleSelectContact = selectedContactOption => {
+    this.setState({ selectedContactOption });
+  };
+  handleDateChange = date => {
+    this.setState({ date });
+  };
+
+  renderContact = (contact, index) => {
+    return (
+      <View key={index} style={{ height: 20, borderWidth: 1 }}>
+        <Text>{getFormattedNameFromContact(contact)}</Text>
+      </View>
+    );
+  };
+  renderContacts = () => {
+    const user = this.props.navigation.getParam("user");
+    return (
+      <ScrollView style={{ height: 50 }}>
+        {user.contacts.items.map(this.renderContact)}
+      </ScrollView>
+    );
+  };
+
   render() {
-    const { navigation } = this.props;
     const {
       errorMessage,
       title,
       isRefreshing,
       isLoading,
-      isSubmitting
+      isSubmitting,
+      date
     } = this.state;
-    const event = navigation.getParam("event");
-    const user = navigation.getParam("user");
+    const event = this.props.navigation.getParam("event");
+    const user = this.props.navigation.getParam("user");
     const { isParent } = user;
-    const type = event ? event.type : navigation.getParam("type");
+    // const type = event ? event.type : navigation.getParam("type");
+    const contactsOptions = user.contacts.items.map(c => ({
+      text: getFormattedNameFromContact(c)
+    }));
+
+    //
+    //   <Select
+    //     data={contactsOptions}
+    //     multiSelect={true}
+    //     selectedOption={selectedContactOption}
+    //     onSelect={this.handleSelectContact}
+    //   />
 
     return (
       <Layout style={styles.container}>
-        <View style={styles.intro}>
+        {/*<View style={styles.intro}>
           <Text category="h5" style={styles.header}>
-            {event ? "Let's fix this " : "It's time to add this "}
-            {type === "parent" ? "parent/guardian" : type}.
+            {event ? "Updating event " : "New event "}
           </Text>
           {isParent ? (
             <Text style={styles.introText}></Text>
           ) : (
-            <Text style={styles.introText}>
-              Your parents will have access to the names and numbers you add
-              here.
-            </Text>
+            <Text style={styles.introText}></Text>
           )}
         </View>
-
+        */}
         <Form>
+          <Datepicker date={date} onSelect={this.handleDateChange} />
           <FormInput
-            label="Event name"
-            placeholder="Describe what you are doing or have planned"
+            label="What"
+            placeholder="A name for the event"
             onChangeText={title =>
               this.setState({ title, errorMessage: false })
             }
             value={title}
             returnKeyType="done"
           />
-          <FormInput
-            label="Phone number"
-            placeholder=""
-            onChangeText={this.handleChangePhone}
-            value={phone}
-            status={
-              !phone.length
-                ? null
-                : phoneErrorMessage || !validPhone
-                ? "danger"
-                : "success"
-            }
-            caption={phoneErrorMessage}
-            keyboardType={"phone-pad"}
-            returnKeyType="done"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
+
+          {this.renderContacts()}
           {errorMessage && (
             <Text style={styles.errorMessage} status="danger">
               {errorMessage}
@@ -168,12 +187,12 @@ export default class EditEventScreen extends React.Component {
           )}
           <FormSubmitButton
             onPress={this.handleSubmit}
-            disabled={!firstName || !lastName || !validPhone || isSubmitting}
+            disabled={!title || isSubmitting}
           >
-            {isSubmitting ? "Saving contact" : "Save"}
+            {isSubmitting ? "Saving event" : "Save"}
           </FormSubmitButton>
 
-          {contact && (
+          {event && (
             <Button
               style={styles.deleteButton}
               appearance="ghost"
@@ -194,7 +213,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   intro: { marginHorizontal: gutterWidth },
-  header: { marginTop: 20, marginBottom: 10, fontWeight: "normal" },
+  // header: { marginTop: 20, marginBottom: 10, fontWeight: "normal" },
   introText: { marginBottom: 10 },
   deleteButton: { marginTop: 20 },
   errorMessage: {

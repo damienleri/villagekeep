@@ -25,33 +25,46 @@ const AddEventButton = props => (
   </Button>
 );
 
-const AddEventActions = ({ user, appearance, handleAddEvent }) => (
-  <View style={styles.addEventActions}>
-    {user.isParent ? (
+const AddEventActions = ({ user, appearance, handleAddEvent }) => {
+  return (
+    <View style={styles.addEventActions}>
       <AddEventButton
         appearance={appearance}
         onPress={() => handleAddEvent({ type: "family", user })}
       >
-        Add Family event
+        Add event
       </AddEventButton>
-    ) : (
-      <React.Fragment>
-        <AddEventButton
-          appearance={appearance}
-          onPress={() => handleAddEvent({ type: "friends", user })}
-        >
-          Add Friend event
-        </AddEventButton>
-        <AddEventButton
-          appearance={appearance}
-          onPress={() => handleAddEvent({ type: "family", user })}
-        >
-          Add Family event
-        </AddEventButton>
-      </React.Fragment>
-    )}
-  </View>
-);
+    </View>
+  );
+
+  // return (
+  //   <View style={styles.addEventActions}>
+  //     {user.isParent ? (
+  //       <AddEventButton
+  //         appearance={appearance}
+  //         onPress={() => handleAddEvent({ type: "family", user })}
+  //       >
+  //         Add Family event
+  //       </AddEventButton>
+  //     ) : (
+  //       <React.Fragment>
+  //         <AddEventButton
+  //           appearance={appearance}
+  //           onPress={() => handleAddEvent({ type: "friends", user })}
+  //         >
+  //           Add Friend event
+  //         </AddEventButton>
+  //         <AddEventButton
+  //           appearance={appearance}
+  //           onPress={() => handleAddEvent({ type: "family", user })}
+  //         >
+  //           Add Family event
+  //         </AddEventButton>
+  //       </React.Fragment>
+  //     )}
+  //   </View>
+  // );
+};
 export default AddEventActions;
 
 const styles = StyleSheet.create({

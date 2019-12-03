@@ -1,115 +1,41 @@
-export const userByCognitoUserId = `query UserByCognitoUserId(
-  $cognitoUserId: String
-  $sortDirection: ModelSortDirection
-  $filter: ModelUserFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  userByCognitoUserId(
-    cognitoUserId: $cognitoUserId
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      createdAt
-      updatedAt
-      cognitoUserId
-      phone
-      firstName
-      lastName
-      isParent
-      contacts {
-        items {
-          id
-          type
-          firstName
-          lastName
-          phone
-          user {
-            id
-            firstName
-            lastName
-            phone
-          }
-        }
-        nextToken
+/* eslint-disable */
+// this is an auto generated file. This will be overwritten
+
+export const getUser = `query GetUser($id: ID!) {
+  getUser(id: $id) {
+    id
+    createdAt
+    updatedAt
+    cognitoUserId
+    phone
+    firstName
+    lastName
+    isParent
+    contacts {
+      items {
+        id
+        createdAt
+        updatedAt
+        type
+        phone
+        firstName
+        lastName
       }
-      events {
-        items {
-          id
-          createdAt
-          updatedAt
-          title
-          attendees {
-            items {
-              contact {
-              id
-              type
-              firstName
-              lastName
-              phone
-              user {
-                id
-                firstName
-                lastName
-                phone
-              }
-            }
-            }
-            nextToken
-          }
-        }
-        nextToken
-      }
+      nextToken
     }
-    nextToken
+    events {
+      items {
+        id
+        createdAt
+        updatedAt
+        title
+      }
+      nextToken
+    }
+    deletedAt
   }
 }
 `;
-// export const getUser = `query GetUser($id: ID!) {
-//   getUser(id: $id) {
-//     id
-//     createdAt
-//     updatedAt
-//     cognitoUserId
-//     phone
-//     firstName
-//     lastName
-//     isParent
-//     contacts {
-//       items {
-//         id
-//         createdAt
-//         updatedAt
-//         type
-//         phone
-//         firstName
-//         lastName
-//       }
-//       nextToken
-//     }
-//     events {
-//       items {
-//         id
-//         createdAt
-//         updatedAt
-//         title
-//         attendees: {
-//           items: {
-//             id
-//           }
-//           nextToken
-//         }
-//       }
-//       nextToken
-//     }
-//     deletedAt
-//   }
-// }
-// `;
 export const listUsers = `query ListUsers(
   $filter: ModelUserFilterInput
   $limit: Int
@@ -141,27 +67,30 @@ export const getEvent = `query GetEvent($id: ID!) {
   getEvent(id: $id) {
     id
     createdAt
+    updatedAt
     title
     user {
       id
+      createdAt
+      updatedAt
+      cognitoUserId
+      phone
       firstName
       lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      deletedAt
     }
     attendees {
       items {
         id
-        contact: {
-          id
-          firstName
-          lastName
-          phone
-          user: {
-            id
-            firstName
-            lastName
-            phone
-          }
-        }
+        eventId
+        attendeeId
       }
       nextToken
     }
@@ -268,7 +197,41 @@ export const listContacts = `query ListContacts(
   }
 }
 `;
-
+export const userByCognitoUserId = `query UserByCognitoUserId(
+  $cognitoUserId: String
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  userByCognitoUserId(
+    cognitoUserId: $cognitoUserId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      createdAt
+      updatedAt
+      cognitoUserId
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      deletedAt
+    }
+    nextToken
+  }
+}
+`;
 export const userByPhone = `query UserByPhone(
   $phone: AWSPhone
   $sortDirection: ModelSortDirection

@@ -18,7 +18,7 @@ import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import { Linking } from "expo";
-import { getCurrentUser, createContact } from "../utils/api";
+import { getCurrentUser } from "../utils/api";
 import { formatPhone } from "../utils/etc";
 import { gutterWidth, textLinkColor } from "../utils/style";
 
