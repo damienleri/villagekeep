@@ -1,15 +1,9 @@
 import React from "react";
 import { Platform, SafeAreaView, StyleSheet, View } from "react-native";
 import {} from "react-navigation";
-import {
-  Layout,
-  Button,
-  List,
-  ListItem,
-  Card,
-  Text
-} from "react-native-ui-kitten";
+import { Layout, List, ListItem, Card, Text } from "react-native-ui-kitten";
 import * as Device from "expo-device";
+import Button from "../components/Button";
 import { gutterWidth } from "../utils/style";
 import { Auth } from "aws-amplify";
 

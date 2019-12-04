@@ -4,7 +4,6 @@ import {
   Icon,
   Layout,
   Text,
-  Button,
   Radio,
   Card,
   CardHeader,
@@ -14,6 +13,7 @@ import {
 } from "react-native-ui-kitten";
 import { groupBy } from "lodash";
 import Form from "../components/Form";
+import Button from "../components/Button";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";

@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import { Auth } from "aws-amplify";
 import * as Device from "expo-device";
 import { deleteCurrentUser } from "../utils/api";
-import { primaryColor } from "../utils/style";
+import { colors } from "../utils/style";
 
 export default class AuthLoadingScreen extends React.Component {
   componentDidMount = async () => {
@@ -44,7 +44,7 @@ export default class AuthLoadingScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: primaryColor,
+    backgroundColor: colors.brandColor,
     alignItems: "center",
     justifyContent: "center"
   }

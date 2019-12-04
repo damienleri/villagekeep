@@ -1006,20 +1006,20 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@eva-design/dss@^1.3.0-beta.1":
-  version "1.3.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@eva-design/dss/-/dss-1.3.0-beta.1.tgz#5acad80422ba5980655a6b3f187675a82d045e8f"
-  integrity sha512-AMW4MGx1Nqm5pwxY+aHQjwRjDN6ernvd9rBgFlePzbBgRUIdcwSWsn963j2QiXSx78PrC8VODqUPGEWHnWCw3w==
+"@eva-design/dss@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@eva-design/dss/-/dss-1.3.0.tgz#f3e33192681d6ddc3dbddbe4040b248bc10e3612"
+  integrity sha512-g5VdOXycxRInC+aZif60q6IySLga78CuhYEdU7ry+oOUul6GXVhGcRe0q+4MVkZXBA90IDdqh/e8gN2SOqfIRQ==
 
 "@eva-design/eva@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@eva-design/eva/-/eva-1.2.0.tgz#dc7714f31b7abfd928a8a3cefc28726a506afc60"
   integrity sha512-6yXXCTaYUozHJmn1ksi/JBFCt2JFd1glgKuimT8BRcocaXNGHcmYPyPLpIDpcP0VZ+LyQr5cMMC0hzf3OXUlqQ==
 
-"@eva-design/processor@^1.3.0-beta.1":
-  version "1.3.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@eva-design/processor/-/processor-1.3.0-beta.1.tgz#26ed5c8fb2bda0535ea113c90af4575631c367e5"
-  integrity sha512-Avt9TXSQ5Kg+uXn8LlESo+INudoikItm1BZUGUHluARrLIjnMJgu+twjzz0jk4k6WB+giXZU4JAWYAoDvnahrw==
+"@eva-design/processor@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@eva-design/processor/-/processor-1.3.0.tgz#8fd0e7b946d3c3f5969fc8484bb609f3f8606eb4"
+  integrity sha512-wuVI00tjBfA6S4bKLLpxJFBVThFPyQUR+1uBN8OH7pEUUCfo/0u8UoW41SM2+BYdHbhaYCZzw6BXHXsHULZ2Ig==
 
 "@expo/samples@~3.0.3":
   version "3.0.3"
@@ -1401,6 +1401,17 @@
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/@types/zen-observable/-/zen-observable-0.5.4.tgz#b863a4191e525206819e008097ebf0fb2e3a1cdc"
   integrity sha512-sW6xN96wUak4tgc89d0tbTg7QDGYhGv5hvQIS6h4mRCd8h2btiZ80loPU8cyLwsBbA4ZeQt0FjvUhJ4rNhdsGg==
+
+"@ui-kitten/components@^4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@ui-kitten/components/-/components-4.3.1.tgz#2b7a90d77b36e4c764f8ebd1b1319f16fcfbb42a"
+  integrity sha512-/7rKWQDJaE3skSvlKreH9AFtzUOaaB3XPwaTds5Wd/KE2he1dUxtqD1vimu4q/MHS90mNG9A7NEbAYlCdjkEfQ==
+  dependencies:
+    "@eva-design/dss" "^1.3.0"
+    "@eva-design/processor" "^1.3.0"
+    fecha "3.0.3"
+    hoist-non-react-statics "^3.2.1"
+    lodash.merge "^4.6.1"
 
 "@ui-kitten/eva-icons@^4.2.0":
   version "4.2.0"
@@ -6733,13 +6744,13 @@ react-native-tab-view@^1.2.0, react-native-tab-view@^1.4.1:
   dependencies:
     prop-types "^15.6.1"
 
-react-native-ui-kitten@^4.3.0-beta.1:
-  version "4.3.0-beta.1"
-  resolved "https://registry.yarnpkg.com/react-native-ui-kitten/-/react-native-ui-kitten-4.3.0-beta.1.tgz#14f4fe930bb5412a3ba1554ae2db1ffe6303aec9"
-  integrity sha512-Fg80xIgaLpNi5gRyJ/ZHAO3EGkLekuyT2lziHMRuLl+ctXDQNfKvXP/F/wAAitqvuQVzbCabeKg3QUV4ijY7Aw==
+react-native-ui-kitten@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-ui-kitten/-/react-native-ui-kitten-4.3.1.tgz#a95084b1310705dcf4c95861647da4d5128b7c1c"
+  integrity sha512-RM67hI8KqMmJASel8Oaq3T6Uh07rY+//qcUY94cZ+HK/iSzgszcCD8BOjrqW26Ix8r9cwxjKTfUnri1sx/LiKw==
   dependencies:
-    "@eva-design/dss" "^1.3.0-beta.1"
-    "@eva-design/processor" "^1.3.0-beta.1"
+    "@eva-design/dss" "^1.3.0"
+    "@eva-design/processor" "^1.3.0"
     fecha "3.0.3"
     hoist-non-react-statics "^3.2.1"
     lodash.merge "^4.6.1"

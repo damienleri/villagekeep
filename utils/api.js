@@ -143,6 +143,36 @@ export const createEvent = async ({ title, userId }) => {
     return { error: `Error saving event record: ${e}` };
   }
 };
+export const createEventWithContacts = async ({ title, userId, contacts }) => {
+  console.log(`creating event for user ${userId}`);
+  const { event, error: createEventError } = await createEvent({
+    userId,
+    title
+  });
+  if (createEventError) return { error: createEventError };
+  console.log(`created event`, event);
+  console.log("adding contacts", contacts);
+  // return { error: "testing" };
+  try {
+    for (const contact of contacts) {
+      // console.log(contact.id, event.id);
+      if (!contact.id || !event.id) throw "Missing contact.id or event.id";
+      const res = await API.graphql(
+        graphqlOperation(mutations.createEventAttendee, {
+          input: {
+            eventId: event.id,
+            attendeeId: contact.id
+          }
+        })
+      );
+      console.log(`created eventattendee for contact ${contact.id}`, res);
+    }
+
+    return { event };
+  } catch (e) {
+    return { error: `Error adding people to newly created event: ${e}` };
+  }
+};
 
 export const updateEvent = async eventInput => {
   try {

@@ -4,7 +4,6 @@ import {
   Icon,
   Layout,
   Text,
-  Button,
   Radio,
   Card,
   CardHeader,
@@ -15,6 +14,7 @@ import {
   Datepicker
 } from "react-native-ui-kitten";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
+import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
@@ -35,8 +35,8 @@ export default class EditEventScreen extends React.Component {
     this.state = {
       isLoading: false,
       title: event ? event.title : "",
-      date: event ? event.date : new Date(),
-      selectedContactOption: []
+      date: event ? event.date : new Date()
+      // selectedContactOption: []
     };
   }
 
@@ -111,22 +111,6 @@ export default class EditEventScreen extends React.Component {
   };
   handleDateChange = date => {
     this.setState({ date });
-  };
-
-  renderContact = (contact, index) => {
-    return (
-      <View key={index} style={{ height: 20, borderWidth: 1 }}>
-        <Text>{getFormattedNameFromContact(contact)}</Text>
-      </View>
-    );
-  };
-  renderContacts = () => {
-    const user = this.props.navigation.getParam("user");
-    return (
-      <ScrollView style={{ height: 50 }}>
-        {user.contacts.items.map(this.renderContact)}
-      </ScrollView>
-    );
   };
 
   render() {

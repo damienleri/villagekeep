@@ -6,7 +6,7 @@ export default function FormSubmitButton(props) {
   return (
     <Button
       {...props}
-      size="large"
+      size="small"
       style={[props.style, styles.button]}
       textStyle={styles.textStyle}
     />
@@ -14,7 +14,7 @@ export default function FormSubmitButton(props) {
 }
 const styles = StyleSheet.create({
   button: {
-    marginVertical: 10
+    // marginVertical: 10
   },
   textStyle: {
     fontWeight: "normal"

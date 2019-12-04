@@ -24,7 +24,7 @@ type Event @model {
   createdAt: String
   updatedAt: String
   title: String
-  user: User @connection(name: "UserEvents")
+  user: User! @connection(name: "UserEvents")
   attendees: [EventAttendee] @connection(keyName: "byEvent", fields: ["id"])
 }
 type EventAttendee

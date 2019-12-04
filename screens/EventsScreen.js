@@ -4,23 +4,24 @@ import {
   Icon,
   Layout,
   Text,
-  Button,
   Radio,
   Card,
   CardHeader,
   List,
   ListItem,
   Spinner
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 import { groupBy } from "lodash";
+import moment from "moment";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import { Linking } from "expo";
+import Button from "../components/Button";
 import { getCurrentUser, createEvent } from "../utils/api";
-import { formatPhone } from "../utils/etc";
-import { gutterWidth, primaryColor, textLinkColor } from "../utils/style";
+import { formatPhone, getFormattedNameFromContact } from "../utils/etc";
+import { gutterWidth, colors, textLinkColor } from "../utils/style";
 import EventsEmptyState from "../components/EventsEmptyState";
 import AddEventActions from "../components/AddEventActions";
 
@@ -54,34 +55,46 @@ export default class PeopleScreen extends React.Component {
     await this.loadUserData();
     this.setState({ isRefreshing: false });
   };
-  handleAddEvent = ({ type }) => {
-    this.props.navigation.navigate("EditEvent", {
-      // type,
+  handleAddEvent = ({}) => {
+    this.props.navigation.navigate("EditEventContacts", {
       user: this.state.user
     });
   };
-  handleEditEvent = ({ event }) => {
-    this.props.navigation.navigate("EditEvent", {
-      event,
-      user: this.state.user
-    });
-  };
+  // handleEditEvent = ({ event }) => {
+  //   this.props.navigation.navigate("EditEvent", {
+  //     event,
+  //     user: this.state.user
+  //   });
+  // };
+  // handleEditEventContacts = ({ event }) => {};
 
   handlePhonePress = ({ phone }) => {
     Linking.openURL(`tel:${phone}`);
   };
   renderEvent = (event, index) => {
-    let { title } = event;
+    let { title, createdAt } = event;
+
+    const description = `Created ${moment(createdAt).fromNow()}`;
+    return (
+      <Card header={<CardHeader title={title} description={description} />}>
+        <Text>
+          {event.attendees.items.map(getFormattedNameFromContact).join(", ")}
+        </Text>
+      </Card>
+    );
     return (
       <View key={index} style={styles.event}>
-        <Text style={styles.eventTitle}>{title}</Text>
-
-        <Button
-          appearance="ghost"
-          onPress={() => this.handleEditEvent({ event, user: this.state.user })}
+        <Text
+          style={styles.eventTitle}
+          onPress={() =>
+            this.props.navigation.navigate("Event", {
+              event,
+              user: this.state.user
+            })
+          }
         >
-          Edit
-        </Button>
+          {title}
+        </Text>
       </View>
     );
   };
@@ -162,7 +175,7 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     textTransform: "uppercase",
     textAlign: "center",
-    color: primaryColor
+    color: colors.brandColor
   },
   generalErrorMessage: {
     marginVertical: 20

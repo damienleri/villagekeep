@@ -26,38 +26,45 @@ import AppNavigator from "./navigation/AppNavigator";
 Amplify.configure(awsConfig);
 const colorScheme = Appearance.getColorScheme();
 
-export default function App(props) {
-  const [isLoadingComplete, setLoadingComplete] = useState(false);
+// export default function App(props) {
+export default class App extends React.Component {
+  state = { colorScheme, isLoadingComplete: false };
+  //
+  // setGlobal = (name, value) => {
+  //   this.setState({ [name]: value });
+  // };
+  render() {
+    // const [isLoadingComplete, setLoadingComplete] = useState(false);
+    const { isLoadingComplete } = this.state;
 
-  if (!isLoadingComplete && !props.skipLoadingScreen) {
-    // if (false) {
-    return (
-      <AppLoading
-        startAsync={loadResourcesAsync}
-        onError={handleLoadingError}
-        onFinish={() => handleFinishLoading(setLoadingComplete)}
-      />
-    );
-  } else {
-    return (
-      <React.Fragment>
-        <AppearanceProvider>
-          <IconRegistry icons={EvaIconsPack} />
-          <ApplicationProvider
-            mapping={mapping}
-            theme={colorScheme === "dark" ? darkTheme : lightTheme}
-          >
-            <View style={styles.container}>
-              {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-              <AppNavigator theme={colorScheme} />
-            </View>
-          </ApplicationProvider>
-        </AppearanceProvider>
-      </React.Fragment>
-    );
+    if (!isLoadingComplete) {
+      return (
+        <AppLoading
+          startAsync={loadResourcesAsync}
+          onError={handleLoadingError}
+          onFinish={() => this.setState({ isLoadingComplete: true })}
+        />
+      );
+    } else {
+      return (
+        <React.Fragment>
+          <AppearanceProvider>
+            <IconRegistry icons={EvaIconsPack} />
+            <ApplicationProvider
+              mapping={mapping}
+              theme={colorScheme === "dark" ? darkTheme : lightTheme}
+            >
+              <View style={styles.container}>
+                {Platform.OS === "ios" && <StatusBar barStyle="default" />}
+                <AppNavigator theme={colorScheme} />
+              </View>
+            </ApplicationProvider>
+          </AppearanceProvider>
+        </React.Fragment>
+      );
+    }
   }
 }
-
 async function loadResourcesAsync() {
   return;
   await Promise.all([
@@ -79,10 +86,6 @@ function handleLoadingError(error) {
   // In this case, you might want to report the error to your error reporting
   // service, for example Sentry
   console.warn(error);
-}
-
-function handleFinishLoading(setLoadingComplete) {
-  setLoadingComplete(true);
 }
 
 const styles = StyleSheet.create({

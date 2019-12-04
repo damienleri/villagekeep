@@ -4,7 +4,6 @@ import {
   Icon,
   Layout,
   Text,
-  Button,
   Radio,
   Card,
   CardHeader,
@@ -12,28 +11,20 @@ import {
   ListItem,
   Spinner
 } from "react-native-ui-kitten";
+import Button from "./Button";
+import { colors } from "../utils/style";
+
 const AddIcon = style => <Icon {...style} name="star" />;
-const AddEventButton = props => (
-  <Button
-    {...props}
-    appearance={props.appearance}
-    size="small"
-    style={[props.style, styles.addEventButton]}
-    textStyle={styles.addEventButtonText}
-  >
-    {props.children}
-  </Button>
-);
 
 const AddEventActions = ({ user, appearance, handleAddEvent }) => {
   return (
     <View style={styles.addEventActions}>
-      <AddEventButton
+      <Button
         appearance={appearance}
         onPress={() => handleAddEvent({ type: "family", user })}
       >
         Add event
-      </AddEventButton>
+      </Button>
     </View>
   );
 
@@ -73,7 +64,5 @@ const styles = StyleSheet.create({
     // flexDirection: "row",
     // flexWrap: "wrap",
     // justifyContent: "space-between"
-  },
-  addEventButton: { marginVertical: 10 },
-  addEventButtonText: { textTransform: "uppercase" }
+  }
 });

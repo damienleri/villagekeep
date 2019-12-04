@@ -4,7 +4,6 @@ import {
   Icon,
   Layout,
   Text,
-  Button,
   Radio,
   Card,
   CardHeader,
@@ -13,6 +12,7 @@ import {
   Spinner
 } from "react-native-ui-kitten";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
+import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
