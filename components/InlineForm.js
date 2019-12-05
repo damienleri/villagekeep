@@ -10,22 +10,22 @@ import {
   Text,
   Platform
 } from "react-native";
-import { Input, Icon } from "react-native-ui-kitten";
+import { Input, Icon } from "@ui-kitten/components";
+import { defaults } from "lodash";
 import { gutterWidth } from "../utils/style";
 
 export default class InlineForm extends React.Component {
   state = {};
 
   render() {
-    return <View style={styles.inlineForm}>{props.children}</View>;
+    return <View style={styles.container}>{this.props.children}</View>;
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "row",
-    marginHorizontal: gutterWidth
+    marginHorizontal: gutterWidth,
+    flexWrap: "wrap"
   }
   // header: { marginTop: 20, marginBottom: 10, fontWeight: "normal" },
 });

@@ -11,7 +11,7 @@ import {
   List,
   ListItem,
   Spinner
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 import { groupBy } from "lodash";
 import { Ionicons } from "@expo/vector-icons";
 

@@ -29,6 +29,12 @@ export const getCurrentUser = async () => {
   }
 };
 
+export const getMessagesForEvent = async event => {
+  const messages = [{ text: "blah", id: "1" }, { text: "another te", id: "2" }];
+
+  return { messages };
+};
+
 export const createCurrentUser = async () => {
   const cognitoUser = await Auth.currentAuthenticatedUser();
   const { sub: cognitoUserId, phone_number: phone } = cognitoUser.attributes;

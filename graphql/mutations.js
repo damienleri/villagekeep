@@ -39,70 +39,12 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
 export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
   updateUser(input: $input) {
     id
-    createdAt
-    updatedAt
-    cognitoUserId
-    phone
-    firstName
-    lastName
-    isParent
-    contacts {
-      items {
-        id
-        createdAt
-        updatedAt
-        type
-        phone
-        firstName
-        lastName
-      }
-      nextToken
-    }
-    events {
-      items {
-        id
-        createdAt
-        updatedAt
-        title
-      }
-      nextToken
-    }
-    deletedAt
   }
 }
 `;
 export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
   deleteUser(input: $input) {
     id
-    createdAt
-    updatedAt
-    cognitoUserId
-    phone
-    firstName
-    lastName
-    isParent
-    contacts {
-      items {
-        id
-        createdAt
-        updatedAt
-        type
-        phone
-        firstName
-        lastName
-      }
-      nextToken
-    }
-    events {
-      items {
-        id
-        createdAt
-        updatedAt
-        title
-      }
-      nextToken
-    }
-    deletedAt
   }
 }
 `;
@@ -177,85 +119,12 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
 export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
   deleteEvent(input: $input) {
     id
-    createdAt
-    updatedAt
-    title
-    user {
-      id
-      createdAt
-      updatedAt
-      cognitoUserId
-      phone
-      firstName
-      lastName
-      isParent
-      contacts {
-        nextToken
-      }
-      events {
-        nextToken
-      }
-      deletedAt
-    }
-    attendees {
-      items {
-        id
-        eventId
-        attendeeId
-      }
-      nextToken
-    }
   }
 }
 `;
 export const createEventAttendee = `mutation CreateEventAttendee($input: CreateEventAttendeeInput!) {
   createEventAttendee(input: $input) {
     id
-    eventId
-    attendeeId
-    event {
-      id
-      createdAt
-      updatedAt
-      title
-      user {
-        id
-        createdAt
-        updatedAt
-        cognitoUserId
-        phone
-        firstName
-        lastName
-        isParent
-        deletedAt
-      }
-      attendees {
-        nextToken
-      }
-    }
-    contact {
-      id
-      createdAt
-      updatedAt
-      type
-      phone
-      firstName
-      lastName
-      user {
-        id
-        createdAt
-        updatedAt
-        cognitoUserId
-        phone
-        firstName
-        lastName
-        isParent
-        deletedAt
-      }
-      events {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -313,51 +182,6 @@ export const updateEventAttendee = `mutation UpdateEventAttendee($input: UpdateE
 export const deleteEventAttendee = `mutation DeleteEventAttendee($input: DeleteEventAttendeeInput!) {
   deleteEventAttendee(input: $input) {
     id
-    eventId
-    attendeeId
-    event {
-      id
-      createdAt
-      updatedAt
-      title
-      user {
-        id
-        createdAt
-        updatedAt
-        cognitoUserId
-        phone
-        firstName
-        lastName
-        isParent
-        deletedAt
-      }
-      attendees {
-        nextToken
-      }
-    }
-    contact {
-      id
-      createdAt
-      updatedAt
-      type
-      phone
-      firstName
-      lastName
-      user {
-        id
-        createdAt
-        updatedAt
-        cognitoUserId
-        phone
-        firstName
-        lastName
-        isParent
-        deletedAt
-      }
-      events {
-        nextToken
-      }
-    }
   }
 }
 `;
@@ -438,37 +262,6 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
 export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!) {
   deleteContact(input: $input) {
     id
-    createdAt
-    updatedAt
-    type
-    phone
-    firstName
-    lastName
-    user {
-      id
-      createdAt
-      updatedAt
-      cognitoUserId
-      phone
-      firstName
-      lastName
-      isParent
-      contacts {
-        nextToken
-      }
-      events {
-        nextToken
-      }
-      deletedAt
-    }
-    events {
-      items {
-        id
-        eventId
-        attendeeId
-      }
-      nextToken
-    }
   }
 }
 `;

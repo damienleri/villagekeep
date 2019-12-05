@@ -1,8 +1,9 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-import { Input, Icon } from "react-native-ui-kitten";
+import { StyleSheet, TextInput } from "react-native";
+import { Input, Icon } from "@ui-kitten/components";
 
 export default React.forwardRef((props, ref) => {
+  // return <TextInput {...props} ref={ref} style={[props.style, styles.input]} />;
   return (
     <Input
       {...props}
@@ -15,8 +16,5 @@ export default React.forwardRef((props, ref) => {
 const styles = StyleSheet.create({
   input: {
     marginVertical: 10
-  },
-  inputLabelStyle: {
-    textTransform: "uppercase"
   }
 });

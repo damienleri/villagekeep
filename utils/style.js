@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 export const gutterWidth = 32;
 export const colors = {
   textLinkColor: "#3366FF",
@@ -13,3 +15,6 @@ export const colors = {
   lightAccentColor3: "#BBDAE7",
   backgrounds: { dark: "#222B45", light: "#ffffff" }
 };
+
+export const topNavigationHeight = 80;
+export const topNavigationPaddingTop = Platform.OS === "ios" ? 28 : 10;

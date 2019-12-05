@@ -10,7 +10,7 @@ import {
   List,
   ListItem,
   Spinner
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import Button from "../components/Button";
 import Form from "../components/Form";
@@ -127,12 +127,12 @@ export default class EditContactScreen extends React.Component {
       "Delete this contact?",
       "",
       [
+        { text: "Delete", onPress: this.handleDelete, style: "destructive" },
         {
           text: "Nevermind",
           onPress: () => {},
           style: "cancel"
-        },
-        { text: "Delete", onPress: this.handleDelete, style: "destructive" }
+        }
       ],
       { cancelable: false }
     );

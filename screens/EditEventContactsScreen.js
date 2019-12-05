@@ -12,12 +12,12 @@ import {
   Spinner,
   Select,
   Datepicker
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
-import { Appearance } from "react-native-appearance";
-const colorScheme = Appearance.getColorScheme();
+// import { Appearance } from "react-native-appearance";
+// const colorScheme = Appearance.getColorScheme();
 
 import Button from "../components/Button";
 import Form from "../components/Form";
@@ -144,10 +144,7 @@ export default class EditEventContactsScreen extends React.Component {
 
     return (
       <List
-        style={{
-          ...styles.list,
-          backgroundColor: colors.backgrounds[colorScheme]
-        }}
+        style={styles.list}
         data={user.contacts.items}
         renderItem={this.renderListItem}
       />
@@ -155,7 +152,7 @@ export default class EditEventContactsScreen extends React.Component {
   };
 
   render() {
-    const { contactIdIsSelected, errorMessage } = this.state;
+    const { contactIdIsSelected, errorMessage, isSubmitting } = this.state;
     const numContactsSelected = Object.keys(contactIdIsSelected).length;
 
     return (
@@ -172,10 +169,10 @@ export default class EditEventContactsScreen extends React.Component {
         )}
         <Button
           style={styles.submitButton}
-          disabled={!numContactsSelected}
+          disabled={!numContactsSelected || isSubmitting}
           onPress={this.handleSubmit}
         >
-          Continue
+          {isSubmitting ? "Continuing" : "Continue"}
         </Button>
       </Layout>
     );

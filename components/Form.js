@@ -10,8 +10,8 @@ import {
   Text,
   Platform
 } from "react-native";
-import { Input, Icon } from "react-native-ui-kitten";
-import { gutterWidth } from "../utils/style";
+import { Input, Icon } from "@ui-kitten/components";
+import { gutterWidth, topNavigationHeight } from "../utils/style";
 
 export default function Form(props) {
   // return <View style={styles.container}>{props.children}</View>;
@@ -19,8 +19,18 @@ export default function Form(props) {
   return (
     <KeyboardAvoidingView
       style={[styles.container, props.style]}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      enabled
+      behavior={Platform.OS === "ios" ? "height" : null}
+      keyboardVerticalOffset={topNavigationHeight}
+    >
+      <React.Fragment>{props.children}</React.Fragment>
+    </KeyboardAvoidingView>
+  );
+
+  return (
+    <KeyboardAvoidingView
+      style={[styles.container, props.style]}
+      behavior={Platform.OS === "ios" ? "height" : null}
+      keyboardVerticalOffset={topNavigationHeight}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.inner}>
@@ -47,6 +57,7 @@ export default function Form(props) {
   // );
 }
 const styles = StyleSheet.create({
-  container: { paddingHorizontal: gutterWidth }
+  container: { flex: 1, paddingHorizontal: gutterWidth },
+  inner: { flex: 1 }
   // inner: { flex: 1, justifyContent: "flex-end" }
 });

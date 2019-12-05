@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Layout, Text } from "react-native-ui-kitten";
+import { Layout, Text } from "@ui-kitten/components";
 import Form from "../components/Form";
 import AccountForm from "./AccountForm";
 import { gutterWidth } from "../utils/style";

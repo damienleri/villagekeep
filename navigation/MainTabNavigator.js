@@ -8,7 +8,7 @@ import {
   BottomNavigation,
   BottomNavigationTab,
   Layout
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 
 import TabBarIcon from "../components/TabBarIcon";
 import EventsScreen from "../screens/EventsScreen";

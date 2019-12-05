@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Icon, Layout, Text, Radio } from "react-native-ui-kitten";
+import { Icon, Layout, Text, Radio } from "@ui-kitten/components";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";

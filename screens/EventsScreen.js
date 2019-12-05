@@ -1,5 +1,13 @@
 import React from "react";
-import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  RefreshControl,
+  FlatList,
+  SectionList,
+  TouchableOpacity
+} from "react-native";
 import {
   Icon,
   Layout,
@@ -7,12 +15,12 @@ import {
   Radio,
   Card,
   CardHeader,
-  List,
-  ListItem,
   Spinner
 } from "@ui-kitten/components";
 import { groupBy } from "lodash";
 import moment from "moment";
+// import { Appearance } from "react-native-appearance";
+// const colorScheme = Appearance.getColorScheme();
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
@@ -71,31 +79,75 @@ export default class PeopleScreen extends React.Component {
   handlePhonePress = ({ phone }) => {
     Linking.openURL(`tel:${phone}`);
   };
-  renderEvent = (event, index) => {
+  renderContact = contact => {
+    // <Text key={contact.id}>{getFormattedNameFromContact(contact)}</Text>
+    return getFormattedNameFromContact(contact);
+  };
+  renderAccessory = () => {
+    <Ionicons
+      name={"md-star"}
+      size={28}
+      color={colors.brandColor}
+      style={{ marginHorizontal: 10 }}
+    />;
+  };
+
+  renderHeader = () => {
+    // https://github.com/vikrantnegi/react-native-searchable-flatlist/blob/master/src/SearchableList.js
+    return (
+      <SearchBar
+        placeholder="Type Here..."
+        lightTheme
+        round
+        onChangeText={text => this.searchFilterFunction(text)}
+        autoCorrect={false}
+        value={this.state.value}
+      />
+    );
+  };
+
+  renderEvent = ({ item: event, index }) => {
     let { title, createdAt } = event;
 
     const description = `Created ${moment(createdAt).fromNow()}`;
+    const onPress = () =>
+      this.props.navigation.navigate("Event", {
+        event,
+        user: this.state.user
+      });
+
+    // accessory={style => this.renderAccessory()}
+    const contactsText =
+      event.attendees.items
+        .map(attendee => this.renderContact(attendee.contact))
+        .join(", ") || "";
+    console.log("ct", contactsText.length);
+
+    const creationTimeLabel = moment(createdAt).fromNow();
+    const lastMessageContactName = "you";
+    const lastMessageAt = moment().subtract(12, "hour");
+    const lastMessageTimeLabel = moment(lastMessageAt).fromNow();
+
     return (
-      <Card header={<CardHeader title={title} description={description} />}>
-        <Text>
-          {event.attendees.items.map(getFormattedNameFromContact).join(", ")}
-        </Text>
-      </Card>
-    );
-    return (
-      <View key={index} style={styles.event}>
-        <Text
-          style={styles.eventTitle}
-          onPress={() =>
-            this.props.navigation.navigate("Event", {
-              event,
-              user: this.state.user
-            })
-          }
-        >
-          {title}
-        </Text>
-      </View>
+      <TouchableOpacity onPress={onPress}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.contactsText}>{contactsText}</Text>
+            <Text style={styles.creationTimeLabel}>
+              {lastMessageContactName} posted {lastMessageTimeLabel}.
+            </Text>
+          </View>
+          <View style={{ justifyContent: "center" }}>
+            <Icon
+              name="chevron-right"
+              width={32}
+              height={32}
+              fill={colors.brandColor}
+            />
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   };
   renderEventsList = () => {
@@ -112,12 +164,15 @@ export default class PeopleScreen extends React.Component {
           appearance="ghost"
         />
 
-        <View style={styles.eventsSection}>
-          <Text style={styles.eventsHeader} appearance="hint" category="h6">
-            Events
-          </Text>
-          {events.map(this.renderEvent)}
-        </View>
+        <FlatList
+          style={styles.list}
+          renderItem={this.renderEvent}
+          data={events}
+          keyExtractor={event => event.id}
+          ItemSeparatorComponent={() => (
+            <View style={styles.listItemSeparator} />
+          )}
+        />
       </View>
     );
   };
@@ -184,13 +239,22 @@ const styles = StyleSheet.create({
   eventsSection: {
     marginVertical: 10
   },
-  event: {
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: "#aaa",
+  list: {
+    marginVertical: 20
+  },
+  listItemSeparator: {
+    height: 1,
+    backgroundColor: colors.brandColor,
     marginVertical: 10
   },
+  eventTopRow: {
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  title: { fontWeight: "normal", fontSize: 16, color: colors.brandColor },
+  // creationTimeContainer: { justifyContent: "flex-end" },
+  contactsText: { fontSize: 16, marginVertical: 5 },
+  creationTimeLabel: { color: "#aaa" },
   eventsHeader: {},
   eventName: { fontWeight: "bold" },
   eventPhone: { color: textLinkColor, marginVertical: 5 }

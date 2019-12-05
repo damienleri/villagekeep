@@ -10,7 +10,7 @@ import {
   List,
   ListItem,
   Spinner
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 import Button from "./Button";
 import { colors } from "../utils/style";
 

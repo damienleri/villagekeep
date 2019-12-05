@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Input, Icon } from "react-native-ui-kitten";
+import { Input, Icon } from "@ui-kitten/components";
 
 export default React.forwardRef((props, ref) => {
   return (

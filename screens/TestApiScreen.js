@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Layout, Button } from "react-native-ui-kitten";
+import { Layout, Button } from "@ui-kitten/components";
 import API, { graphqlOperation } from "@aws-amplify/api";
 import { Auth } from "aws-amplify";
 import * as mutations from "../graphql/mutations";

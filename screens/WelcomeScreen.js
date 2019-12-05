@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, SafeAreaView, View } from "react-native";
-import { Icon, Layout, Text, Button } from "react-native-ui-kitten";
+import { Icon, Layout, Text, Button } from "@ui-kitten/components";
 import AuthHomeScreen from "./AuthHomeScreen";
 import { gutterWidth } from "../utils/style";
 

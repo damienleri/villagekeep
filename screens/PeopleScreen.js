@@ -10,7 +10,7 @@ import {
   List,
   ListItem,
   Spinner
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 import { groupBy } from "lodash";
 import Form from "../components/Form";
 import Button from "../components/Button";

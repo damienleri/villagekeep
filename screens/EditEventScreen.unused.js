@@ -12,7 +12,7 @@ import {
   Spinner,
   Select,
   Datepicker
-} from "react-native-ui-kitten";
+} from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import Button from "../components/Button";
 import Form from "../components/Form";

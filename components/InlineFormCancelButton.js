@@ -3,16 +3,17 @@ import { StyleSheet } from "react-native";
 import { defaults } from "lodash";
 import Button from "../components/Button";
 
-export default function InlineFormSubmitButton(props) {
+export default function InlineFormCancelButton(props) {
   const buttonProps = defaults({}, props, {
+    status: "basic",
     appearance: "ghost",
     size: "small"
   });
   return (
     <Button
       {...buttonProps}
-      style={[props.style, styles.button]}
-      textStyle={styles.textStyle}
+      style={[styles.button, props.style]}
+      textStyle={[styles.textStyle, props.style]}
     />
   );
 }
@@ -22,7 +23,9 @@ const styles = StyleSheet.create({
     height: 35
   },
   textStyle: {
-    fontWeight: "normal"
+    fontWeight: "normal",
+    color: "#aaa"
+
     // textTransform: "uppercase"
   }
 });

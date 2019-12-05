@@ -10,7 +10,7 @@ import {
   dark as darkTheme
 } from "@eva-design/eva";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
-import { ApplicationProvider, IconRegistry } from "react-native-ui-kitten";
+import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 
 import Amplify from "@aws-amplify/core";
 import {

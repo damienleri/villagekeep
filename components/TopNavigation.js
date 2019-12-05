@@ -5,8 +5,8 @@ import {
   Icon,
   TopNavigation,
   TopNavigationAction
-} from "react-native-ui-kitten";
-
+} from "@ui-kitten/components";
+import { topNavigationHeight, topNavigationPaddingTop } from "../utils/style";
 const BackIcon = style => <Icon {...style} name="arrow-back" />;
 
 const EditIcon = style => <Icon {...style} name="edit" />;
@@ -38,12 +38,16 @@ export default function(props) {
         title={props.title}
         leftControl={renderLeftControl()}
         rightControls={renderRightControls()}
+        style={styles.navStyle}
       />
     </Layout>
   );
 }
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === "ios" ? 28 : 10
+    paddingTop: topNavigationPaddingTop
+  },
+  navStyle: {
+    height: topNavigationHeight - topNavigationPaddingTop
   }
 });
