@@ -27,8 +27,12 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import { Linking } from "expo";
 import Button from "../components/Button";
-import { getCurrentUser, createEvent } from "../utils/api";
-import { formatPhone, getFormattedNameFromContact } from "../utils/etc";
+import { getCurrentUser } from "../utils/api";
+import {
+  formatPhone,
+  getFormattedNameFromContact,
+  getFormattedNameFromUser
+} from "../utils/etc";
 import { gutterWidth, colors, textLinkColor } from "../utils/style";
 import EventsEmptyState from "../components/EventsEmptyState";
 import AddEventActions from "../components/AddEventActions";
@@ -53,7 +57,7 @@ export default class PeopleScreen extends React.Component {
       return this.setState({
         generalErrorMessage: `Error: ${currentUserError}`
       });
-    console.log("currentuser", user);
+    // console.log("currentuser", user);
     // const events = user.events.items;
     // console.log("events", events);
     this.setState({ user, userLoaded: true });
@@ -116,27 +120,27 @@ export default class PeopleScreen extends React.Component {
         user: this.state.user
       });
 
-    // accessory={style => this.renderAccessory()}
-    const contactsText =
-      event.attendees.items
-        .map(attendee => this.renderContact(attendee.contact))
-        .join(", ") || "";
-    console.log("ct", contactsText.length);
+    const contacts = event.attendees.items.map(a => a.contact);
+    const contactsText = contacts.map(this.renderContact).join(", ") || "";
 
-    const creationTimeLabel = moment(createdAt).fromNow();
-    const lastMessageContactName = "you";
-    const lastMessageAt = moment().subtract(12, "hour");
-    const lastMessageTimeLabel = moment(lastMessageAt).fromNow();
+    const lastMessage = event.messages.items[event.messages.items - 1];
+    // const creationTimeLabel = moment(createdAt).fromNow();
+    // const lastMessageContactName = "you";
+    // const lastMessageAt = moment().subtract(12, "hour");
+    // const lastMessageTimeLabel = moment(lastMessageAt).fromNow();
 
     return (
       <TouchableOpacity onPress={onPress}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={styles.listItem}>
           <View>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.contactsText}>{contactsText}</Text>
-            <Text style={styles.creationTimeLabel}>
-              {lastMessageContactName} posted {lastMessageTimeLabel}.
-            </Text>
+            {lastMessage && (
+              <Text style={styles.creationTimeLabel}>
+                {getFormattedNameFromUser(lastMessage.user)} posted{" "}
+                {moment(lastMessage.createdAt).fromNow()}.
+              </Text>
+            )}
           </View>
           <View style={{ justifyContent: "center" }}>
             <Icon
@@ -153,7 +157,8 @@ export default class PeopleScreen extends React.Component {
   renderEventsList = () => {
     const { user } = this.state;
     const { isParent } = user;
-    const events = user.events ? user.events.items : [];
+    const events = []; //todo
+
     if (!events.length) return null;
 
     return (
@@ -242,6 +247,7 @@ const styles = StyleSheet.create({
   list: {
     marginVertical: 20
   },
+  listItem: { flexDirection: "row", justifyContent: "space-between" },
   listItemSeparator: {
     height: 1,
     backgroundColor: colors.brandColor,

@@ -54,57 +54,13 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
     createdAt
     updatedAt
     title
-    user {
-      id
-      createdAt
-      updatedAt
-      cognitoUserId
-      phone
-      firstName
-      lastName
-      isParent
-      contacts {
-        nextToken
-      }
-      events {
-        nextToken
-      }
-      deletedAt
-    }
-    attendees {
-      items {
-        id
-        eventId
-        attendeeId
-      }
-      nextToken
-    }
   }
 }
 `;
 export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
   updateEvent(input: $input) {
     id
-    createdAt
-    updatedAt
     title
-    user {
-      id
-      createdAt
-      updatedAt
-      cognitoUserId
-      phone
-      firstName
-      lastName
-      isParent
-      contacts {
-        nextToken
-      }
-      events {
-        nextToken
-      }
-      deletedAt
-    }
     attendees {
       items {
         id
@@ -128,57 +84,6 @@ export const createEventAttendee = `mutation CreateEventAttendee($input: CreateE
   }
 }
 `;
-export const updateEventAttendee = `mutation UpdateEventAttendee($input: UpdateEventAttendeeInput!) {
-  updateEventAttendee(input: $input) {
-    id
-    eventId
-    attendeeId
-    event {
-      id
-      createdAt
-      updatedAt
-      title
-      user {
-        id
-        createdAt
-        updatedAt
-        cognitoUserId
-        phone
-        firstName
-        lastName
-        isParent
-        deletedAt
-      }
-      attendees {
-        nextToken
-      }
-    }
-    contact {
-      id
-      createdAt
-      updatedAt
-      type
-      phone
-      firstName
-      lastName
-      user {
-        id
-        createdAt
-        updatedAt
-        cognitoUserId
-        phone
-        firstName
-        lastName
-        isParent
-        deletedAt
-      }
-      events {
-        nextToken
-      }
-    }
-  }
-}
-`;
 export const deleteEventAttendee = `mutation DeleteEventAttendee($input: DeleteEventAttendeeInput!) {
   deleteEventAttendee(input: $input) {
     id
@@ -188,71 +93,21 @@ export const deleteEventAttendee = `mutation DeleteEventAttendee($input: DeleteE
 export const createContact = `mutation CreateContact($input: CreateContactInput!) {
   createContact(input: $input) {
     id
-    createdAt
-    updatedAt
-    type
-    phone
-    firstName
-    lastName
-    user {
-      id
-      createdAt
-      updatedAt
-      cognitoUserId
-      phone
-      firstName
-      lastName
-      isParent
-      contacts {
-        nextToken
-      }
-      events {
-        nextToken
-      }
-      deletedAt
-    }
-    events {
-      items {
-        id
-        eventId
-        attendeeId
-      }
-      nextToken
-    }
   }
 }
 `;
 export const updateContact = `mutation UpdateContact($input: UpdateContactInput!) {
   updateContact(input: $input) {
     id
-    createdAt
-    updatedAt
     type
     phone
     firstName
     lastName
-    user {
-      id
-      createdAt
-      updatedAt
-      cognitoUserId
-      phone
-      firstName
-      lastName
-      isParent
-      contacts {
-        nextToken
-      }
-      events {
-        nextToken
-      }
-      deletedAt
-    }
     events {
       items {
         id
         eventId
-        attendeeId
+        createdAt
       }
       nextToken
     }
@@ -261,6 +116,40 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
 `;
 export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!) {
   deleteContact(input: $input) {
+    id
+  }
+}
+`;
+export const createMessage = `mutation CreateMessage($input: CreateMessageInput!) {
+  createMessage(input: $input) {
+    id
+    createdAt
+    text
+    user {
+      id
+      firstName
+      lastName
+      isParent
+    }
+  }
+}
+`;
+export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!) {
+  updateMessage(input: $input) {
+    id
+    createdAt
+    text
+    user {
+      id
+      firstName
+      lastName
+      isParent
+    }
+  }
+}
+`;
+export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!) {
+  deleteMessage(input: $input) {
     id
   }
 }

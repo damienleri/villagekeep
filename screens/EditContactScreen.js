@@ -95,7 +95,7 @@ export default class EditContactScreen extends React.Component {
     } else {
       /* Create mode */
       const { contact, error: createContactError } = await createContact({
-        userId: user.id,
+        user,
         firstName,
         lastName,
         phone: validPhone,
@@ -116,8 +116,10 @@ export default class EditContactScreen extends React.Component {
   handleDelete = async () => {
     const contact = this.props.navigation.getParam("contact");
     console.log("deleting contact", contact);
-    // const { errorMessage } = await deleteContact(contact);
-    const { errorMessage } = await deleteContact({ contactId: contact.id });
+    // const { error: errorMessage } = await deleteContact(contact);
+    const { error: errorMessage } = await deleteContact({
+      contactId: contact.id
+    });
     if (errorMessage) return this.setState({ errorMessage });
     this.props.navigation.goBack();
   };

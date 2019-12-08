@@ -8,9 +8,17 @@ import {
   FlatList,
   Platform,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  TextInput
 } from "react-native";
-import { Icon, Layout, Text, Spinner, Input } from "@ui-kitten/components";
+import {
+  Icon,
+  Layout,
+  Text,
+  Spinner,
+  Input,
+  OverflowMenu
+} from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import moment from "moment";
 import Button from "../components/Button";
@@ -22,9 +30,18 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import InlineFormCancelButton from "../components/InlineFormCancelButton";
 import InlineFormSubmitButton from "../components/InlineFormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
-import { getMessagesForEvent, updateEvent, deleteEvent } from "../utils/api";
+import {
+  getEventByIdWithMessages,
+  updateEvent,
+  deleteEvent,
+  createMessage
+} from "../utils/api";
 import { gutterWidth, colors, topNavigationHeight } from "../utils/style";
-import { formatPhone, getFormattedNameFromContact } from "../utils/etc";
+import {
+  formatPhone,
+  getFormattedNameFromContact,
+  getFormattedNameFromUser
+} from "../utils/etc";
 
 export default class EventScreen extends React.Component {
   // static navigationOptions = props => ({
@@ -33,35 +50,59 @@ export default class EventScreen extends React.Component {
   constructor(props) {
     super(props);
     const event = props.navigation.getParam("event");
+    console.log(`constructor() on EventScreen`);
+    this.messageInputRef = React.createRef();
     this.state = {
-      isLoading: false,
       title: event.title,
       event
-      // date: event ? event.date : new Date()
-      // selectedContactOption: []
+      // isLoading: false,
+      // title: event.title,
+      // event
     };
-    this.loadMessagesSubcription = this.props.navigation.addListener(
+    this.loadEventSubcription = this.props.navigation.addListener(
       "didFocus",
       async () => {
-        await this.loadMessages();
+        await this.loadEventWithMessages();
       }
     );
   }
-  componentWillUnmount() {
-    this.loadMessagesSubcription.remove();
+  async componentDidMount() {
+    const isNewEvent = this.props.navigation.getParam("isNewEvent");
+    if (isNewEvent) this.messageInputRef.current.focus();
+    // await this.loadEventWithMessages();
   }
-  loadMessages = async () => {
-    const { event } = this.state;
-    const { messages, error: messagesError } = await getMessagesForEvent(event);
-    if (messagesError)
+  componentWillUnmount() {
+    this.loadEventSubcription.remove();
+  }
+  loadEventWithMessages = async () => {
+    const eventParam = this.props.navigation.getParam("event");
+    console.log("**loading event with all messages");
+
+    const { event, error: eventError } = await getEventByIdWithMessages(
+      eventParam.id
+    );
+    if (eventError)
       return this.setState({
-        errorMessage: `Error: ${messagesError}`
+        errorMessage: eventError
       });
-    console.log("messages", messages);
+    console.log("**loaded event");
+
     // const events = user.events.items;
-    // console.log("events", events);
-    this.setState({ messages, messagesAreLoaded: true });
+    console.log("event", event);
+    this.setState({ event, messagesAreLoaded: true });
   };
+  // loadMessages = async () => {
+  //   const { event } = this.state;
+  //   const { messages, error: messagesError } = await getMessagesForEvent(event);
+  //   if (messagesError)
+  //     return this.setState({
+  //       errorMessage: `Error: ${messagesError}`
+  //     });
+  //   console.log("messages", messages);
+  //   // const events = user.events.items;
+  //   // console.log("events", events);
+  //   this.setState({ messages, messagesAreLoaded: true });
+  // };
   handleSubmitTitle = async () => {
     const { title } = this.state;
     const event = this.props.navigation.getParam("event");
@@ -87,13 +128,18 @@ export default class EventScreen extends React.Component {
 
   handleDelete = async () => {
     const event = this.props.navigation.getParam("event");
-    console.log("deleting event", event);
-    const { errorMessage } = await deleteEvent({ eventId: event.id });
-    if (errorMessage) return this.setState({ errorMessage });
+    this.setState({ isLoading: true });
+
+    const { error: errorMessage } = await deleteEvent({ eventId: event.id });
+    if (errorMessage) {
+      this.setState({ errorMessage });
+      return;
+    }
     this.props.navigation.goBack();
   };
 
   handleDeletePress = () => {
+    this.setState({ showMoreActions: false });
     Alert.alert(
       "Delete this event?",
       "",
@@ -109,30 +155,34 @@ export default class EventScreen extends React.Component {
     );
   };
 
-  handleSelectContact = selectedContactOption => {
-    this.setState({ selectedContactOption });
-  };
-  handleDateChange = date => {
-    this.setState({ date });
-  };
+  // handleSelectContact = selectedContactOption => {
+  //   this.setState({ selectedContactOption });
+  // };
+  // handleDateChange = date => {
+  //   this.setState({ date });
+  // };
 
   renderMessage = ({ item: message }) => {
-    console.log(message);
     return (
       <View style={styles.message}>
         <Text style={styles.messageText}>{message.text}</Text>
-        <Text style={styles.messageAuthor}>Damien</Text>
         <Text style={styles.messageTime}>
-          {moment()
-            .subtract(1, "d")
-            .fromNow()}
+          {moment(message.createdAt).fromNow()} by{" "}
+          <Text style={styles.messageAuthor}>
+            {getFormattedNameFromUser(message.user)}
+          </Text>
         </Text>
       </View>
     );
   };
 
   renderMessageList = () => {
-    const { messages } = this.state;
+    const { event } = this.state;
+    const messages = event.messages.items;
+    // const messages = [
+    //   { text: "blah", id: "1" },
+    //   { text: "another test!", id: "2" }
+    // ];
     return (
       <FlatList
         style={styles.messageList}
@@ -144,8 +194,59 @@ export default class EventScreen extends React.Component {
     );
   };
 
-  renderMessageInput = () => {
-    return <Input style={styles.messageInput} />;
+  handleMessageSubmit = async () => {
+    const { inputText = "", event } = this.state;
+    const user = this.props.navigation.getParam("user");
+    if (!inputText.length) return;
+    const { error: createMessageError, message } = await createMessage({
+      text: inputText,
+      event,
+      user
+    });
+    if (createMessageError) {
+      this.setState({ errorMessage: createMessageError });
+      return;
+    }
+    console.log("created message", message);
+    this.setState({ inputText: "" });
+  };
+
+  renderMessageInputRow = () => {
+    const { inputText } = this.state;
+    return (
+      <View style={styles.messageInputRow}>
+        <TextInput
+          style={styles.messageInput}
+          value={inputText}
+          onChangeText={inputText => this.setState({ inputText })}
+          onSubmitEditing={this.handleMessageSubmit}
+          ref={this.messageInputRef}
+          returnKeyType="send"
+          placeholder="Type message"
+          placeholderTextColor={colors.brandColor}
+        />
+        <TouchableOpacity
+          onPress={this.handleMessageSubmit}
+          style={styles.messageSubmitContainer}
+        >
+          <View style={styles.messageSubmitButton}>
+            <Icon
+              name="arrow-upward"
+              fill={colors.brandColor}
+              height={40}
+              width={40}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  handleAddPerson = () => {
+    const { event } = this.state;
+    this.setState({ showMoreActions: false });
+    const user = this.props.navigation.getParam("user");
+    this.props.navigation.navigate("EditEventContacts", { event, user });
   };
   render() {
     const {
@@ -155,8 +256,22 @@ export default class EventScreen extends React.Component {
       isLoading,
       isEditingTitle,
       isSubmittingTitle,
-      messagesAreLoaded
+      messagesAreLoaded,
+      showMoreActions
     } = this.state;
+
+    const moreActionsData = [
+      {
+        title: "Add person",
+        icon: style => <Icon {...style} name="person-add" />,
+        onPress: this.handleAddPerson
+      },
+      {
+        title: "Delete event",
+        icon: style => <Icon {...style} name="trash" />,
+        onPress: this.handleDeletePress
+      }
+    ];
     const event = this.props.navigation.getParam("event");
     const user = this.props.navigation.getParam("user");
 
@@ -193,18 +308,37 @@ export default class EventScreen extends React.Component {
             </View>
           </InlineForm>
         ) : (
-          <TouchableOpacity
-            style={styles.titleContainer}
-            onPress={() => this.setState({ isEditingTitle: true })}
-          >
-            <Text style={styles.title}>{title}</Text>
-            <Icon
-              name="edit-outline"
-              width={24}
-              height={24}
-              fill={colors.brandColor}
-            />
-          </TouchableOpacity>
+          <View style={styles.topRow}>
+            <TouchableOpacity
+              style={styles.titleContainer}
+              onPress={() =>
+                this.setState({ isEditingTitle: true, title: event.title })
+              }
+            >
+              <Text style={styles.title}>{title}</Text>
+              <Icon
+                name="edit-outline"
+                width={24}
+                height={24}
+                fill={colors.brandColor}
+              />
+            </TouchableOpacity>
+            <OverflowMenu
+              data={moreActionsData}
+              visible={showMoreActions}
+              selectedIndex={null}
+              onSelect={index => moreActionsData[index].onPress()}
+              onBackdropPress={() => this.setState({ showMoreActions: false })}
+            >
+              <Icon
+                name="more-vertical"
+                width={24}
+                height={24}
+                fill={colors.brandColor}
+                onPress={() => this.setState({ showMoreActions: true })}
+              />
+            </OverflowMenu>
+          </View>
         )}
 
         {errorMessage && (
@@ -214,20 +348,11 @@ export default class EventScreen extends React.Component {
         )}
 
         <Form style={styles.messageForm}>
-          {!messagesAreLoaded ? <Spinner /> : this.renderMessageList()}
-          {this.renderMessageInput()}
+          <View style={styles.messageListContainer}>
+            {!messagesAreLoaded ? <Spinner /> : this.renderMessageList()}
+          </View>
+          {this.renderMessageInputRow()}
         </Form>
-
-        {false && event && (
-          <Button
-            style={styles.deleteButton}
-            appearance="ghost"
-            status="danger"
-            onPress={this.handleDeletePress}
-          >
-            Delete event
-          </Button>
-        )}
       </Layout>
     );
   }
@@ -238,24 +363,49 @@ const styles = StyleSheet.create({
     flex: 1
   },
   intro: { marginHorizontal: gutterWidth },
-  titleContainer: {
+  topRow: {
     flexDirection: "row",
     marginHorizontal: gutterWidth,
-    marginTop: gutterWidth,
-    marginBottom: gutterWidth
+    marginVertical: 10,
+    justifyContent: "space-between"
+  },
+
+  titleContainer: {
+    flexDirection: "row"
   },
   title: { fontSize: 18, marginRight: 20 },
   // header: { marginTop: 20, marginBottom: 10, fontWeight: "normal" },
   introText: { marginBottom: 10 },
 
-  messageForm: { paddingHorizontal: 0 },
-  messageList: { flex: 1 },
+  messageForm: { flex: 1, paddingHorizontal: 0 },
+  messageListContainer: { flex: 1 },
   message: { paddingHorizontal: gutterWidth, paddingVertical: 10 },
   messageText: {},
-  messageAuthor: {},
+  messageAuthor: { color: "#aaa", fontSize: 13, fontWeight: "bold" },
   messageTime: { color: "#aaa", fontSize: 13 },
-  messageInput: { borderWidth: 0 },
-
+  messageInputRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopColor: colors.brandColor,
+    borderTopWidth: 1
+    // backgroundColor: "white"
+  },
+  messageInput: {
+    borderWidth: 0,
+    flex: 2,
+    height: 50,
+    // backgroundColor: "white",
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    color: "white", // todo: detect theme
+    fontSize: 16
+  },
+  messageSubmitContainer: { paddingHorizontal: 10 }, //TouchableOpacity
+  messageSubmitButton: {
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  messageSubmitButtonIcon: {},
   deleteButton: { marginTop: 20 },
   errorMessage: {
     marginHorizontal: gutterWidth,

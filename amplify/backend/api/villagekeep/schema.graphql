@@ -5,48 +5,108 @@ type User
     fields: ["cognitoUserId"]
     queryField: "userByCognitoUserId"
   )
+  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
   @key(name: "byPhone", fields: ["phone"], queryField: "userByPhone") {
   id: ID!
+  cognitoUserId: String!
   createdAt: String
   updatedAt: String
-  cognitoUserId: String
   phone: AWSPhone!
   firstName: String
   lastName: String
   isParent: Boolean
   contacts: [Contact] @connection(name: "UserContacts")
   events: [Event] @connection(name: "UserEvents")
+  messages: [Message] @connection(name: "UserMessages")
+  eventPhones: [EventPhone] @connection(name: "UserEventPhones")
   deletedAt: AWSTimestamp
 }
-
-type Event @model {
+type Event
+  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
+  @model {
   id: ID!
+  cognitoUserId: String!
   createdAt: String
   updatedAt: String
   title: String
   user: User! @connection(name: "UserEvents")
-  attendees: [EventAttendee] @connection(keyName: "byEvent", fields: ["id"])
+  # attendees: [EventAttendee] @connection(keyName: "byEvent", fields: ["id"])
+  messages: [Message] @connection(name: "EventMessages")
+  eventPhones: [EventPhone] @connection(name: "EventEventPhones")
+  latestMessage: Message
+  owner: String
 }
+
+### EventAttendee joins events with contacts (many to many)
+### Auth rule: anyone who is an EventUser can read or modify the EventAttendee list.
 type EventAttendee
   @model(queries: null)
+  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
   @key(name: "byEvent", fields: ["eventId", "attendeeId"])
   @key(name: "byAttendee", fields: ["attendeeId", "eventId"]) {
   id: ID!
+  cognitoUserId: String!
+  createdAt: String
+  updatedAt: String
   eventId: ID!
   attendeeId: ID!
   event: Event! @connection(fields: ["eventId"])
   contact: Contact! @connection(fields: ["attendeeId"])
 }
-type Contact @model {
+type Contact
+  # @auth(rules: [{ allow: owner, operations: [read, update, delete] }])
+  @model {
   id: ID!
+  cognitoUserId: String!
   createdAt: String
   updatedAt: String
   type: ContactType ## enum, defined below
   phone: AWSPhone!
   firstName: String
   lastName: String
-  user: User @connection(name: "UserContacts")
-  events: [EventAttendee] @connection(keyName: "byAttendee", fields: ["id"])
+  user: User! @connection(name: "UserContacts")
+  # events: [EventAttendee] @connection(keyName: "byAttendee", fields: ["id"])
+}
+
+type EventPhone
+  @key(name: "byPhone", fields: ["phone"], queryField: "eventPhonesByPhone")
+  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
+  @model {
+  id: ID!
+  cognitoUserId: String!
+  createdAt: String
+  updatedAt: String
+  phone: String!
+  firstName: String
+  lastName: String
+  user: User! @connection(name: "UserEventPhones")
+  event: Event! @connection(name: "EventEventPhones")
+}
+type Message
+  # @auth(rules: [{ allow: owner, operations: [ update, delete] }])
+  @model {
+  # @key(name: "byEvent", fields: ["eventId"], queryField: "messagesByEvent")
+  id: ID!
+  cognitoUserId: String!
+  createdAt: String
+  updatedAt: String
+  text: String!
+  user: User! @connection(name: "UserMessages")
+  event: Event! @connection(name: "EventMessages")
+  editedAt: AWSTimestamp
+  deletedAt: AWSTimestamp
+}
+type Message
+  # @auth(rules: [{ allow: owner, operations: [ update, delete] }])
+  @model {
+  id: ID!
+  cognitoUserId: String!
+  createdAt: String
+  updatedAt: String
+  user: User! @connection(name: "UserMessages")
+  event: Event! @connection(name: "EventMessages")
+  editedAt: AWSTimestamp
+  deletedAt: AWSTimestamp
 }
 
 enum ContactType {

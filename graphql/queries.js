@@ -45,6 +45,7 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
           title
           attendees {
             items {
+              id
               contact {
               id
               type
@@ -150,12 +151,56 @@ export const getEvent = `query GetEvent($id: ID!) {
     attendees {
       items {
         id
-        contact: {
+        contact {
           id
           firstName
           lastName
           phone
-          user: {
+          user {
+            id
+            firstName
+            lastName
+            phone
+          }
+        }
+      }
+      nextToken
+    }
+  }
+}
+`;
+export const getEventWithMessages = `query GetEvent($id: ID!) {
+  getEvent(id: $id) {
+    id
+    createdAt
+    title
+    user {
+      id
+      firstName
+      lastName
+    }
+    messages {
+      items {
+        id
+        text
+        createdAt
+        user {
+          id
+          firstName
+          lastName
+        }
+      }
+      nextToken
+    }
+    attendees {
+      items {
+        id
+        contact {
+          id
+          firstName
+          lastName
+          phone
+          user {
             id
             firstName
             lastName

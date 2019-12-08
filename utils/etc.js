@@ -19,3 +19,7 @@ export const getFormattedNameFromContact = contact => {
     return `${firstName} ${lastName}`;
   }
 };
+
+export const getFormattedNameFromUser = user => {
+  return `${user.firstName} ${user.lastName}`;
+};

@@ -4,9 +4,9 @@
 export const createUser = `mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
-    cognitoUserId
     phone
     firstName
     lastName
@@ -14,6 +14,7 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     contacts {
       items {
         id
+        cognitoUserId
         createdAt
         updatedAt
         type
@@ -26,9 +27,23 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     events {
       items {
         id
+        cognitoUserId
         createdAt
         updatedAt
         title
+        owner
+      }
+      nextToken
+    }
+    messages {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        text
+        editedAt
+        deletedAt
       }
       nextToken
     }
@@ -39,9 +54,9 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
 export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
   updateUser(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
-    cognitoUserId
     phone
     firstName
     lastName
@@ -49,6 +64,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     contacts {
       items {
         id
+        cognitoUserId
         createdAt
         updatedAt
         type
@@ -61,9 +77,23 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     events {
       items {
         id
+        cognitoUserId
         createdAt
         updatedAt
         title
+        owner
+      }
+      nextToken
+    }
+    messages {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        text
+        editedAt
+        deletedAt
       }
       nextToken
     }
@@ -74,9 +104,9 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
 export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
   deleteUser(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
-    cognitoUserId
     phone
     firstName
     lastName
@@ -84,6 +114,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     contacts {
       items {
         id
+        cognitoUserId
         createdAt
         updatedAt
         type
@@ -96,9 +127,23 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     events {
       items {
         id
+        cognitoUserId
         createdAt
         updatedAt
         title
+        owner
+      }
+      nextToken
+    }
+    messages {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        text
+        editedAt
+        deletedAt
       }
       nextToken
     }
@@ -109,14 +154,15 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
 export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
   createEvent(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
     title
     user {
       id
+      cognitoUserId
       createdAt
       updatedAt
-      cognitoUserId
       phone
       firstName
       lastName
@@ -127,30 +173,48 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
       events {
         nextToken
       }
+      messages {
+        nextToken
+      }
       deletedAt
     }
     attendees {
       items {
         id
+        cognitoUserId
         eventId
         attendeeId
       }
       nextToken
     }
+    messages {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        text
+        editedAt
+        deletedAt
+      }
+      nextToken
+    }
+    owner
   }
 }
 `;
 export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
   updateEvent(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
     title
     user {
       id
+      cognitoUserId
       createdAt
       updatedAt
-      cognitoUserId
       phone
       firstName
       lastName
@@ -161,30 +225,48 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
       events {
         nextToken
       }
+      messages {
+        nextToken
+      }
       deletedAt
     }
     attendees {
       items {
         id
+        cognitoUserId
         eventId
         attendeeId
       }
       nextToken
     }
+    messages {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        text
+        editedAt
+        deletedAt
+      }
+      nextToken
+    }
+    owner
   }
 }
 `;
 export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
   deleteEvent(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
     title
     user {
       id
+      cognitoUserId
       createdAt
       updatedAt
-      cognitoUserId
       phone
       firstName
       lastName
@@ -195,34 +277,53 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
       events {
         nextToken
       }
+      messages {
+        nextToken
+      }
       deletedAt
     }
     attendees {
       items {
         id
+        cognitoUserId
         eventId
         attendeeId
       }
       nextToken
     }
+    messages {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        text
+        editedAt
+        deletedAt
+      }
+      nextToken
+    }
+    owner
   }
 }
 `;
 export const createEventAttendee = `mutation CreateEventAttendee($input: CreateEventAttendeeInput!) {
   createEventAttendee(input: $input) {
     id
+    cognitoUserId
     eventId
     attendeeId
     event {
       id
+      cognitoUserId
       createdAt
       updatedAt
       title
       user {
         id
+        cognitoUserId
         createdAt
         updatedAt
-        cognitoUserId
         phone
         firstName
         lastName
@@ -232,9 +333,14 @@ export const createEventAttendee = `mutation CreateEventAttendee($input: CreateE
       attendees {
         nextToken
       }
+      messages {
+        nextToken
+      }
+      owner
     }
     contact {
       id
+      cognitoUserId
       createdAt
       updatedAt
       type
@@ -243,9 +349,9 @@ export const createEventAttendee = `mutation CreateEventAttendee($input: CreateE
       lastName
       user {
         id
+        cognitoUserId
         createdAt
         updatedAt
-        cognitoUserId
         phone
         firstName
         lastName
@@ -262,18 +368,20 @@ export const createEventAttendee = `mutation CreateEventAttendee($input: CreateE
 export const updateEventAttendee = `mutation UpdateEventAttendee($input: UpdateEventAttendeeInput!) {
   updateEventAttendee(input: $input) {
     id
+    cognitoUserId
     eventId
     attendeeId
     event {
       id
+      cognitoUserId
       createdAt
       updatedAt
       title
       user {
         id
+        cognitoUserId
         createdAt
         updatedAt
-        cognitoUserId
         phone
         firstName
         lastName
@@ -283,9 +391,14 @@ export const updateEventAttendee = `mutation UpdateEventAttendee($input: UpdateE
       attendees {
         nextToken
       }
+      messages {
+        nextToken
+      }
+      owner
     }
     contact {
       id
+      cognitoUserId
       createdAt
       updatedAt
       type
@@ -294,9 +407,9 @@ export const updateEventAttendee = `mutation UpdateEventAttendee($input: UpdateE
       lastName
       user {
         id
+        cognitoUserId
         createdAt
         updatedAt
-        cognitoUserId
         phone
         firstName
         lastName
@@ -313,18 +426,20 @@ export const updateEventAttendee = `mutation UpdateEventAttendee($input: UpdateE
 export const deleteEventAttendee = `mutation DeleteEventAttendee($input: DeleteEventAttendeeInput!) {
   deleteEventAttendee(input: $input) {
     id
+    cognitoUserId
     eventId
     attendeeId
     event {
       id
+      cognitoUserId
       createdAt
       updatedAt
       title
       user {
         id
+        cognitoUserId
         createdAt
         updatedAt
-        cognitoUserId
         phone
         firstName
         lastName
@@ -334,9 +449,14 @@ export const deleteEventAttendee = `mutation DeleteEventAttendee($input: DeleteE
       attendees {
         nextToken
       }
+      messages {
+        nextToken
+      }
+      owner
     }
     contact {
       id
+      cognitoUserId
       createdAt
       updatedAt
       type
@@ -345,9 +465,9 @@ export const deleteEventAttendee = `mutation DeleteEventAttendee($input: DeleteE
       lastName
       user {
         id
+        cognitoUserId
         createdAt
         updatedAt
-        cognitoUserId
         phone
         firstName
         lastName
@@ -364,6 +484,7 @@ export const deleteEventAttendee = `mutation DeleteEventAttendee($input: DeleteE
 export const createContact = `mutation CreateContact($input: CreateContactInput!) {
   createContact(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
     type
@@ -372,9 +493,9 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
     lastName
     user {
       id
+      cognitoUserId
       createdAt
       updatedAt
-      cognitoUserId
       phone
       firstName
       lastName
@@ -385,11 +506,15 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
       events {
         nextToken
       }
+      messages {
+        nextToken
+      }
       deletedAt
     }
     events {
       items {
         id
+        cognitoUserId
         eventId
         attendeeId
       }
@@ -401,6 +526,7 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
 export const updateContact = `mutation UpdateContact($input: UpdateContactInput!) {
   updateContact(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
     type
@@ -409,9 +535,9 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
     lastName
     user {
       id
+      cognitoUserId
       createdAt
       updatedAt
-      cognitoUserId
       phone
       firstName
       lastName
@@ -422,11 +548,15 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
       events {
         nextToken
       }
+      messages {
+        nextToken
+      }
       deletedAt
     }
     events {
       items {
         id
+        cognitoUserId
         eventId
         attendeeId
       }
@@ -438,6 +568,7 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
 export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!) {
   deleteContact(input: $input) {
     id
+    cognitoUserId
     createdAt
     updatedAt
     type
@@ -446,9 +577,9 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
     lastName
     user {
       id
+      cognitoUserId
       createdAt
       updatedAt
-      cognitoUserId
       phone
       firstName
       lastName
@@ -459,16 +590,191 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
       events {
         nextToken
       }
+      messages {
+        nextToken
+      }
       deletedAt
     }
     events {
       items {
         id
+        cognitoUserId
         eventId
         attendeeId
       }
       nextToken
     }
+  }
+}
+`;
+export const createMessage = `mutation CreateMessage($input: CreateMessageInput!) {
+  createMessage(input: $input) {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    text
+    user {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      deletedAt
+    }
+    event {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      attendees {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      owner
+    }
+    editedAt
+    deletedAt
+  }
+}
+`;
+export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!) {
+  updateMessage(input: $input) {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    text
+    user {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      deletedAt
+    }
+    event {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      attendees {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      owner
+    }
+    editedAt
+    deletedAt
+  }
+}
+`;
+export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!) {
+  deleteMessage(input: $input) {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    text
+    user {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      deletedAt
+    }
+    event {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      attendees {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      owner
+    }
+    editedAt
+    deletedAt
   }
 }
 `;

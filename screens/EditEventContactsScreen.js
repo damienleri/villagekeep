@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, View, Alert, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Alert,
+  ScrollView,
+  FlatList,
+  TouchableOpacity
+} from "react-native";
 import {
   Icon,
   Layout,
@@ -27,7 +34,7 @@ import TopNavigation from "../components/TopNavigation";
 import {
   getCurrentUser,
   createEventWithContacts,
-  updateEvent,
+  updateEventAttendees,
   deleteEvent
 } from "../utils/api";
 import { gutterWidth, colors } from "../utils/style";
@@ -40,46 +47,74 @@ export default class EditEventContactsScreen extends React.Component {
   constructor(props) {
     super(props);
     const event = props.navigation.getParam("event");
+    const user = props.navigation.getParam("user");
+    console.log(`constructor() on EditEventContactsScreen`, event);
+    // const contacts = event
+    //   ? event.contacts.items.filter(c => c.id !== user.contact.id)
+    //   : []; // remove user's own conact for now
+    const contacts = event ? event.attendees.items.map(c => c.contact.id) : [];
+    const aryToHash = ary => {
+      let hash = {};
+      ary.forEach(el => {
+        hash[el] = true;
+      });
+      return hash;
+    };
     this.state = {
       isLoading: false,
-      contacts: event ? event.contacts.items : [],
-      contactIdIsSelected: {} // hash of {id1: true, id2: false} etc
+      event,
+      contacts,
+      contactIdIsSelected: aryToHash(contacts)
+      // hash of {id1: true, id2: false} etc
     };
   }
 
   handleSubmit = async () => {
-    const { contactIdIsSelected } = this.state;
-    const event = this.props.navigation.getParam("event");
+    const { event, contactIdIsSelected } = this.state;
     const user = this.props.navigation.getParam("user");
+    const returnToEvents = this.props.navigation.getParam("returnToEvents");
     const selectedContacts = user.contacts.items.filter(
       c => contactIdIsSelected[c.id]
     );
+    // const contacts = selectedContacts.concat(user.contact); // Add user's own contact
+    const contacts = selectedContacts;
     this.setState({ isSubmitting: true });
+
     if (event) {
       /* Update mode */
-      console.log("updating event id", event.id);
+
       const {
         event: updatedEvent,
-        error: updateEventError
-      } = await updateEvent({
-        id: event.id,
-        contacts: selectedContacts
+        error: updateError
+      } = await updateEventAttendees({
+        event,
+        contacts,
+        user
       });
-      if (updateEventError) {
+      if (updateError) {
         this.setState({
-          errorMessage: updateEventError,
+          errorMessage: updateError,
           isSubmitting: false
         });
         return;
       }
-      console.log("updated event", updatedEvent);
-      this.props.navigation.navigate("Events");
+      console.log(updatedEvent.attendees.items.length);
+      if (returnToEvents) {
+        this.props.navigation.navigate("Events");
+      } else {
+        this.props.navigation.navigate("Event", { user, event: updatedEvent });
+      }
     } else {
       /* Create mode */
+
+      // todo:
+      // Handle the user clicking Back button to this screen:
+      // check if event exists and then update contacts only
+
       const { event, error: createEventError } = await createEventWithContacts({
-        userId: user.id,
+        user,
         title: generateEventTitle(),
-        contacts: selectedContacts
+        contacts
       });
       if (createEventError) {
         this.setState({
@@ -89,8 +124,12 @@ export default class EditEventContactsScreen extends React.Component {
         return;
       }
       console.log("created event with contacts", { eventId: event.id });
-
-      this.props.navigation.navigate("Event", { user, event });
+      this.setState({ event, isSubmitting: false }); // in case use clicks back to to this page
+      this.props.navigation.navigate("Event", {
+        user,
+        event,
+        isNewEvent: true
+      });
     }
   };
 
@@ -124,29 +163,44 @@ export default class EditEventContactsScreen extends React.Component {
     if (isChecked) titleStyle.color = colors.brandColor;
     let descriptionStyle = Object.assign({}, descriptionStyle);
     if (isChecked) descriptionStyle.color = colors.brandColor;
-
+    // <ListItem
+    //   style={styles.listItem}
+    //   title={getFormattedNameFromContact(contact)}
+    //   titleStyle={titleStyle}
+    //   description={description}
+    //   descriptionStyle={descriptionStyle}
+    //   accessory={style =>
+    //     this.renderAccessory({ style, isChecked, contact })
+    //   }
+    // />
     // icon={this.renderAvatar}
 
     return (
-      <ListItem
-        style={styles.listItem}
-        title={getFormattedNameFromContact(contact)}
-        titleStyle={titleStyle}
-        description={description}
-        descriptionStyle={descriptionStyle}
-        onPress={() => this.handleSelectContact(contact)}
-        accessory={style => this.renderAccessory({ style, isChecked, contact })}
-      />
+      <TouchableOpacity onPress={() => this.handleSelectContact(contact)}>
+        <View style={styles.listItem}>
+          <View>
+            <Text style={titleStyle}>
+              {getFormattedNameFromContact(contact)}
+            </Text>
+            <Text style={descriptionStyle}>{description}</Text>
+          </View>
+          <View style={{ justifyContent: "center" }}>
+            {this.renderAccessory({ isChecked, contact })}
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   };
   renderList = () => {
     const user = this.props.navigation.getParam("user");
-
+    const { contactIdIsSelected } = this.state;
     return (
-      <List
+      <FlatList
         style={styles.list}
         data={user.contacts.items}
         renderItem={this.renderListItem}
+        keyExtractor={contact => contact.id}
+        extraData={contactIdIsSelected}
       />
     );
   };
@@ -158,7 +212,7 @@ export default class EditEventContactsScreen extends React.Component {
     return (
       <Layout style={styles.container}>
         <View style={styles.intro}>
-          <Text>Choose one or more people you expect at this event.</Text>
+          <Text>Choose who to include.</Text>
         </View>
         {this.renderList()}
 
@@ -189,10 +243,14 @@ const styles = StyleSheet.create({
   },
   intro: { marginHorizontal: gutterWidth, marginVertical: 20 },
   list: {
+    marginVertical: 20,
     marginHorizontal: gutterWidth
   },
-  listItem: {
-    paddingHorizontal: 0
+  listItem: { flexDirection: "row", justifyContent: "space-between" },
+  listItemSeparator: {
+    height: 1,
+    backgroundColor: colors.brandColor,
+    marginVertical: 10
   },
   titleStyle: {},
   descriptionStyle: {},

@@ -15,7 +15,7 @@ import {
 import { groupBy } from "lodash";
 import { Ionicons } from "@expo/vector-icons";
 
-import { primaryColor, successColor } from "../utils/style";
+import { colors } from "../utils/style";
 
 import AddEventActions from "./AddEventActions";
 
@@ -41,7 +41,7 @@ const Step = ({ name, description, isDone, onPress }) => {
           <Ionicons
             name={isDone ? "md-checkmark" : "md-square-outline"}
             size={28}
-            color={successColor}
+            color={colors.successColor}
             style={{ marginHorizontal: 10 }}
             onPress={onPress}
           />
