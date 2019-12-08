@@ -18,7 +18,7 @@ import SettingsScreen from "../screens/SettingsScreen";
 import EditContactScreen from "../screens/EditContactScreen";
 // import EditEventScreen from "../screens/EditEventScreen";
 import EventScreen from "../screens/EventScreen";
-import EditEventContactsScreen from "../screens/EditEventContactsScreen";
+import EditEventPhonesScreen from "../screens/EditEventPhonesScreen";
 import SettingsEditAccountScreen from "../screens/SettingsEditAccountScreen";
 import TopNavigation from "../components/TopNavigation";
 
@@ -54,7 +54,7 @@ const EventsStack = createStackNavigator(
   {
     Events: EventsScreen,
     Event: EventScreen,
-    EditEventContacts: EditEventContactsScreen
+    EditEventPhones: EditEventPhonesScreen
     // EditEvent: EditEventScreen
   },
   config

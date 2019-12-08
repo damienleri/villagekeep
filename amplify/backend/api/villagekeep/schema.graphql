@@ -33,7 +33,7 @@ type Event
   # attendees: [EventAttendee] @connection(keyName: "byEvent", fields: ["id"])
   messages: [Message] @connection(name: "EventMessages")
   eventPhones: [EventPhone] @connection(name: "EventEventPhones")
-  latestMessage: Message
+  latestMessage: Message @connection
   owner: String
 }
 
@@ -90,6 +90,7 @@ type Message
   cognitoUserId: String!
   createdAt: String
   updatedAt: String
+  localSentAt: AWSTimestamp!
   text: String!
   user: User! @connection(name: "UserMessages")
   event: Event! @connection(name: "EventMessages")

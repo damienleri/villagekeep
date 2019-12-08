@@ -30,12 +30,6 @@ export const getCurrentUser = async () => {
   }
 };
 
-export const getMessagesForEvent = async event => {
-  const messages = [{ text: "blah", id: "1" }, { text: "another te", id: "2" }];
-
-  return { messages };
-};
-
 export const createCurrentUser = async () => {
   const cognitoUser = await Auth.currentAuthenticatedUser();
   const { sub: cognitoUserId, phone_number: phone } = cognitoUser.attributes;
@@ -51,7 +45,7 @@ export const createCurrentUser = async () => {
     );
     return { cognitoUser, user: res.data.createUser };
   } catch (e) {
-    return { error: `Error creating account: ${e}` };
+    return { error: `Error creating account: ${get(e, "errors[0].message")}` };
   }
 };
 export const deleteCurrentUser = async () => {
@@ -75,7 +69,7 @@ export const deleteCurrentUser = async () => {
 
     return {};
   } catch (e) {
-    return { error: `Error deleting account: ${e}` };
+    return { error: `Error deleting account: ${get(e, "errors[0].message")}` };
   }
 };
 // export const deleteContact = async ({ contactId }) => {
@@ -88,15 +82,16 @@ export const deleteCurrentUser = async () => {
 //     console.log("deleteuser response", res);
 //     return {};
 //   } catch (e) {
-//     return { error: `Error deleting contact: ${e}` };
+//     return { error: `Error deleting contact: ${get(e, "errors[0].message")}` };
 //   }
 // };
 
-export const createMessage = async ({ text, event, user }) => {
+export const createMessage = async ({ localSentAt, text, event, user }) => {
   try {
     const res = await API.graphql(
       graphqlOperation(mutations.createMessage, {
         input: {
+          localSentAt,
           text,
           messageEventId: event.id,
           messageUserId: user.id,
@@ -104,10 +99,16 @@ export const createMessage = async ({ text, event, user }) => {
         }
       })
     );
-    return { message: res.data.createMessage };
+    const message = res.data.createMessage;
+    const { event: updatedEvent, error: updateEventError } = await updateEvent({
+      id: event.id,
+      eventLatestMessageId: message.id
+    });
+    if (updateEventError) return { error: updateEventError };
+    return { message, event: updatedEvent };
   } catch (e) {
     console.log(e);
-    return { error: `Error saving message: ${e}` };
+    return { error: `Error saving message: ${get(e, "errors[0].message")}` };
   }
 };
 export const createContact = async ({
@@ -132,7 +133,9 @@ export const createContact = async ({
     );
     return { contact: res.data.createContact };
   } catch (e) {
-    return { error: `Error saving contact record: ${e}` };
+    return {
+      error: `Error saving contact record: ${get(e, "errors[0].message")}`
+    };
   }
 };
 
@@ -144,7 +147,9 @@ export const updateContact = async contactInput => {
     return { contact: res.data.updateContact };
   } catch (e) {
     console.log(e);
-    return { error: `Error saving contact record: ${e}` };
+    return {
+      error: `Error saving contact record: ${get(e, "errors[0].message")}`
+    };
   }
 };
 export const deleteContact = async ({ contactId }) => {
@@ -158,7 +163,7 @@ export const deleteContact = async ({ contactId }) => {
     return {};
   } catch (e) {
     console.log(e);
-    return { error: `Error deleting contact: ${e}` };
+    return { error: `Error deleting contact: ${get(e, "errors[0].message")}` };
   }
 };
 
@@ -177,7 +182,9 @@ export const createEvent = async ({ title, user }) => {
     return { event: res.data.createEvent };
   } catch (e) {
     console.log(e);
-    return { error: `Error saving event record: ${e}` };
+    return {
+      error: `Error saving event record: ${get(e, "errors[0].message")}`
+    };
   }
 };
 
@@ -211,6 +218,8 @@ export const updateEventAttendees = async ({ event, contacts, user }) => {
   });
   if (deleteError) return { error: deleteError };
 
+  return { event }; // for performance just return the old event
+
   const { error: getError, event: updatedEvent } = await getEventById(event.id);
   if (getError) return { error: getError };
   return { event: updatedEvent };
@@ -236,38 +245,40 @@ export const addEventAttendees = async ({ event, contacts, user }) => {
     return {};
   } catch (e) {
     console.log(e);
-    return { error: `Error adding people to event: ${e}` };
-  }
-};
-export const deleteEventAttendees = async ({ event, contacts }) => {
-  try {
-    for (const contact of contacts) {
-      // console.log(contact.id, event.id);
-      if (!contact.id || !event.id) throw "Missing contact.id or event.id";
-      const attendee = event.attendees.items.find(
-        attendee => attendee.contact.id === contact.id
-      );
-      console.log(`deleting ${attendee.id}`);
-      if (!attendee) throw `Can't find attendee ID for contact ${contact.id}`;
-      const res = await API.graphql(
-        graphqlOperation(mutations.deleteEventAttendee, {
-          input: {
-            id: attendee.id
-          }
-        })
-      );
-      console.log(`deleted eventattendee for contact ${contact.id}`, res);
-    }
-
-    return {};
-  } catch (e) {
-    console.log(e);
     return {
-      error: `Error deleting people from event: ${get(e, "errors[0].message")}`
+      error: `Error adding people to event: ${get(e, "errors[0].message")}`
     };
   }
 };
-export const createEventWithContacts = async ({ title, user, contacts }) => {
+// export const deleteEventAttendees = async ({ event, contacts }) => {
+//   try {
+//     for (const contact of contacts) {
+//       // console.log(contact.id, event.id);
+//       if (!contact.id || !event.id) throw "Missing contact.id or event.id";
+//       const attendee = event.attendees.items.find(
+//         attendee => attendee.contact.id === contact.id
+//       );
+//       console.log(`deleting ${attendee.id}`);
+//       if (!attendee) throw `Can't find attendee ID for contact ${contact.id}`;
+//       const res = await API.graphql(
+//         graphqlOperation(mutations.deleteEventAttendee, {
+//           input: {
+//             id: attendee.id
+//           }
+//         })
+//       );
+//       console.log(`deleted eventattendee for contact ${contact.id}`, res);
+//     }
+//
+//     return {};
+//   } catch (e) {
+//     console.log(e);
+//     return {
+//       error: `Error deleting people from event: ${get(e, "errors[0].message")}`
+//     };
+//   }
+// };
+export const createEventWithPhones = async ({ title, user, eventPhones }) => {
   console.log(`creating event for user ${user.id}`);
   const { event, error: createEventError } = await createEvent({
     user,
@@ -275,28 +286,37 @@ export const createEventWithContacts = async ({ title, user, contacts }) => {
   });
   if (createEventError) return { error: createEventError };
   console.log(`created event`, event);
-  console.log("adding contacts", contacts);
+  console.log("adding eventPhones", eventPhones);
   // return { error: "testing" };
   try {
-    for (const contact of contacts) {
-      // console.log(contact.id, event.id);
-      if (!contact.id || !event.id) throw "Missing contact.id or event.id";
+    for (const eventPhone of eventPhones) {
+      // console.log(eventPhone.id, event.id);
+      if (!eventPhone.phone || !event.id)
+        throw "Missing eventPhone or event.id";
       const res = await API.graphql(
-        graphqlOperation(mutations.createEventAttendee, {
+        graphqlOperation(mutations.createEventPhone, {
           input: {
-            eventId: event.id,
-            attendeeId: contact.id,
+            eventPhoneEventId: event.id,
+            phone: eventPhone.phone,
+            firstName: eventPhone.firstName,
+            lastName: eventPhone.lastName,
+            eventPhoneUserId: user.id,
             cognitoUserId: user.cognitoUserId
           }
         })
       );
-      console.log(`created eventattendee for contact ${contact.id}`, res);
+      console.log(`created eventphone for eventPhone ${eventPhone.phone}`, res);
     }
 
     return { event };
   } catch (e) {
     console.log(e);
-    return { error: `Error adding people to newly created event: ${e}` };
+    return {
+      error: `Error adding phones to newly created event: ${get(
+        e,
+        "errors[0].message"
+      )}`
+    };
   }
 };
 
@@ -315,11 +335,24 @@ export const updateEvent = async eventInput => {
 };
 export const deleteEvent = async ({ eventId }) => {
   try {
-    const res = await API.graphql(
+    await API.graphql(
       graphqlOperation(mutations.deleteEvent, {
         input: { id: eventId }
       })
     );
+    //Also delete dependent objects
+    await API.graphql(
+      graphqlOperation(mutations.deleteEventPhone, {
+        input: { eventPhoneEventId: eventId }
+      })
+    );
+
+    await API.graphql(
+      graphqlOperation(mutations.deleteMessage, {
+        input: { messageEventId: eventId }
+      })
+    );
+
     return {};
   } catch (e) {
     console.log(e);
@@ -327,7 +360,7 @@ export const deleteEvent = async ({ eventId }) => {
   }
 };
 
-// let contacts = [];
+// let eventPhones = [];
 // contacts.push(contact.id);
 // console.log("saving contact ids:", contacts);
 // try {
@@ -340,7 +373,7 @@ export const deleteEvent = async ({ eventId }) => {
 //   return { contact };
 // } catch (e) {
 //   console.log("error saving contact record", e);
-//   return { error: `Error saving contact record: ${e}` };
+//   return { error: `Error saving contact record: ${get(e, "errors[0].message")}` };
 // }
 
 export const updateUser = async input => {
@@ -354,32 +387,28 @@ export const updateUser = async input => {
     return { user };
   } catch (e) {
     console.log(e);
-    return { error: `Error updating account: ${e}` };
+    return { error: `Error updating account: ${get(e, "errors[0].message")}` };
   }
 };
 export const getContacts = async () => {
   // not used
   try {
-    const res = await API.graphql(
-      graphqlOperation(queries.listContacts)
-      // graphqlOperation(queries.listContacts, { contactUserId: userId })
-    );
+    const res = await API.graphql(graphqlOperation(queries.listContacts));
     return res.data.listContacts.items;
   } catch (e) {
     console.log(e);
-    return { error: `Error listing contacts: ${e}` };
+    return { error: `Error listing contacts: ${get(e, "errors[0].message")}` };
   }
 };
 export const getEventById = async eventId => {
   try {
     const res = await API.graphql(
       graphqlOperation(queries.getEvent, { id: eventId })
-      // graphqlOperation(queries.listContacts, { contactUserId: userId })
     );
     return { event: res.data.getEvent };
   } catch (e) {
     console.log(e);
-    return { error: `Error getting event: ${e}` };
+    return { error: `Error getting event: ${get(e, "errors[0].message")}` };
   }
 };
 export const getEventByIdWithMessages = async eventId => {
@@ -387,11 +416,26 @@ export const getEventByIdWithMessages = async eventId => {
   try {
     const res = await API.graphql(
       graphqlOperation(queries.getEventWithMessages, { id: eventId })
-      // graphqlOperation(queries.listContacts, { contactUserId: userId })
     );
     return { event: res.data.getEvent };
   } catch (e) {
     console.log(e);
-    return { error: `Error getting event: ${e}` };
+    return {
+      error: `Error getting event with messages: ${get(e, "errors[0].message")}`
+    };
+  }
+};
+export const getEventPhonesByPhone = async phone => {
+  //  designed for EventsScreen
+  try {
+    const res = await API.graphql(
+      graphqlOperation(queries.eventPhonesByPhone, { phone })
+    );
+    return { eventPhones: res.data.eventPhonesByPhone.items };
+  } catch (e) {
+    console.log(e);
+    return {
+      error: `Error getting eventphones: ${get(e, "errors[0].message")}`
+    };
   }
 };

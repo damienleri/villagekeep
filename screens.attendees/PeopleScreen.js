@@ -20,7 +20,7 @@ import TopNavigation from "../components/TopNavigation";
 import { Linking } from "expo";
 import { getCurrentUser } from "../utils/api";
 import { formatPhone } from "../utils/etc";
-import { gutterWidth, colors } from "../utils/style";
+import { gutterWidth, textLinkColor } from "../utils/style";
 
 const AddContactButton = props => (
   <Button
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   },
   contactsHeader: {},
   contactName: { fontWeight: "bold" },
-  contactPhone: { color: colors.brandColor, marginVertical: 5 },
+  contactPhone: { color: textLinkColor, marginVertical: 5 },
   addContactActions: {
     marginVertical: 10,
     flexDirection: "row",

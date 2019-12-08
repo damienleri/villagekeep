@@ -21,7 +21,6 @@ import {
 } from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import moment from "moment";
-import { cloneDeep, sortBy } from "lodash";
 import Button from "../components/Button";
 import InlineForm from "../components/InlineForm";
 import Form from "../components/Form";
@@ -55,8 +54,10 @@ export default class EventScreen extends React.Component {
     this.messageInputRef = React.createRef();
     this.state = {
       title: event.title,
-      event,
-      messages: []
+      event
+      // isLoading: false,
+      // title: event.title,
+      // event
     };
     this.loadEventSubcription = this.props.navigation.addListener(
       "didFocus",
@@ -66,16 +67,17 @@ export default class EventScreen extends React.Component {
     );
   }
   async componentDidMount() {
-    if (this.props.navigation.getParam("isNewEvent")) {
-      this.messageInputRef.current.focus();
-    }
+    const isNewEvent = this.props.navigation.getParam("isNewEvent");
+    if (isNewEvent) this.messageInputRef.current.focus();
+    // await this.loadEventWithMessages();
   }
   componentWillUnmount() {
     this.loadEventSubcription.remove();
   }
   loadEventWithMessages = async () => {
     const eventParam = this.props.navigation.getParam("event");
-    if (this.props.navigation.getParam("isNewEvent")) return;
+    console.log("**loading event with all messages");
+
     const { event, error: eventError } = await getEventByIdWithMessages(
       eventParam.id
     );
@@ -83,17 +85,30 @@ export default class EventScreen extends React.Component {
       return this.setState({
         errorMessage: eventError
       });
-    const messages = sortBy(cloneDeep(event.messages.items), "createdAt");
-    console.log(messages.map(m => m.createdAt));
-    this.setState({ event, messages, messagesAreLoaded: true });
-  };
+    console.log("**loaded event");
 
+    // const events = user.events.items;
+    console.log("event", event);
+    this.setState({ event, messagesAreLoaded: true });
+  };
+  // loadMessages = async () => {
+  //   const { event } = this.state;
+  //   const { messages, error: messagesError } = await getMessagesForEvent(event);
+  //   if (messagesError)
+  //     return this.setState({
+  //       errorMessage: `Error: ${messagesError}`
+  //     });
+  //   console.log("messages", messages);
+  //   // const events = user.events.items;
+  //   // console.log("events", events);
+  //   this.setState({ messages, messagesAreLoaded: true });
+  // };
   handleSubmitTitle = async () => {
     const { title } = this.state;
     const event = this.props.navigation.getParam("event");
     this.setState({ isSubmittingTitle: true });
 
-    // console.log("updating title event id", event.id);
+    console.log("updating title event id", event.id);
     const { event: updatedEvent, error: updateEventError } = await updateEvent({
       id: event.id,
       title
@@ -106,7 +121,9 @@ export default class EventScreen extends React.Component {
       return;
     }
     this.setState({ isSubmittingTitle: false, isEditingTitle: false });
-    // console.log("updated event", updatedEvent);
+    console.log("updated event", updatedEvent);
+
+    // this.props.navigation.goBack();
   };
 
   handleDelete = async () => {
@@ -138,98 +155,60 @@ export default class EventScreen extends React.Component {
     );
   };
 
+  // handleSelectContact = selectedContactOption => {
+  //   this.setState({ selectedContactOption });
+  // };
+  // handleDateChange = date => {
+  //   this.setState({ date });
+  // };
+
   renderMessage = ({ item: message }) => {
-    const user = this.props.navigation.getParam("user");
-    const isByMe = !message.user || message.user.id === user.id;
     return (
       <View style={styles.message}>
         <Text style={styles.messageText}>{message.text}</Text>
-        {message.id ? (
-          <Text style={styles.messageTime}>
-            {moment(message.createdAt).fromNow()} by{" "}
-            <Text style={styles.messageAuthor}>
-              {message.user.id === user.id
-                ? "you"
-                : getFormattedNameFromUser(message.user)}
-            </Text>
+        <Text style={styles.messageTime}>
+          {moment(message.createdAt).fromNow()} by{" "}
+          <Text style={styles.messageAuthor}>
+            {getFormattedNameFromUser(message.user)}
           </Text>
-        ) : (
-          <Text style={styles.messageTime}>Sending...</Text>
-        )}
+        </Text>
       </View>
     );
   };
 
   renderMessageList = () => {
-    const { event, messages } = this.state;
-    // console.log(messages);
+    const { event } = this.state;
+    const messages = event.messages.items;
+    // const messages = [
+    //   { text: "blah", id: "1" },
+    //   { text: "another test!", id: "2" }
+    // ];
     return (
       <FlatList
         style={styles.messageList}
         renderItem={this.renderMessage}
         data={messages}
-        keyExtractor={message => message.localSentAt.toString()}
+        keyExtractor={message => message.id}
         ItemSeparatorComponent={() => <View style={styles.listItemSeparator} />}
       />
     );
-  };
-
-  addMessageToQueue = async localMessage => {
-    // console.log(this.state.messages);
-    await this.setState({ messages: this.state.messages.concat(localMessage) });
-  };
-  sendMessageInQueue = async localSentAt => {
-    this.setState({ isSubittingMessage: true });
-    const localMessage = this.state.messages.find(
-      m => m.localSentAt === localSentAt
-    );
-    if (!localMessage)
-      return console.log(
-        `can't find localSentAt ${localSentAt} in messages`,
-        this.state.messages
-      );
-    if (localMessage.id)
-      return console.log(`Message ${localSentAt} is already sent!`);
-
-    const { error, message } = await createMessage(localMessage);
-
-    this.updateMessageInQueue({ localSentAt, message, error });
-    this.setState({
-      isSubittingMessage: false
-    });
-  };
-  updateMessageInQueue = ({ localSentAt, message, error }) => {
-    // Either 'message' or 'error' should be sent. message is the returned object from server after creation.
-    const localMessage = this.state.messages.find(
-      m => m.localSentAt === localSentAt
-    );
-    if (!localMessage)
-      return console.log(
-        `can't find localSentAt ${localSentAt} in messages`,
-        this.state.messages
-      );
-    if (message) {
-      localMessage.wasDelivered = true;
-      localMessage.id = message.id;
-    } else {
-      localMessage.error = error;
-    }
   };
 
   handleMessageSubmit = async () => {
     const { inputText = "", event } = this.state;
     const user = this.props.navigation.getParam("user");
     if (!inputText.length) return;
-    // localSentAt is just a unique key that allows local messages to be identifed when they round trip from server
-    const localSentAt = new Date().getTime();
-    await this.addMessageToQueue({
-      localSentAt,
+    const { error: createMessageError, message } = await createMessage({
       text: inputText,
       event,
       user
     });
+    if (createMessageError) {
+      this.setState({ errorMessage: createMessageError });
+      return;
+    }
+    console.log("created message", message);
     this.setState({ inputText: "" });
-    await this.sendMessageInQueue(localSentAt);
   };
 
   renderMessageInputRow = () => {
@@ -267,7 +246,7 @@ export default class EventScreen extends React.Component {
     const { event } = this.state;
     this.setState({ showMoreActions: false });
     const user = this.props.navigation.getParam("user");
-    this.props.navigation.navigate("EditEventPhones", { event, user });
+    this.props.navigation.navigate("EditEventContacts", { event, user });
   };
   render() {
     const {

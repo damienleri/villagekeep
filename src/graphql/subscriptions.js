@@ -41,9 +41,22 @@ export const onCreateUser = `subscription OnCreateUser {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
+      }
+      nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
       }
       nextToken
     }
@@ -91,9 +104,22 @@ export const onUpdateUser = `subscription OnUpdateUser {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
+      }
+      nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
       }
       nextToken
     }
@@ -141,9 +167,22 @@ export const onDeleteUser = `subscription OnDeleteUser {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
+      }
+      nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
       }
       nextToken
     }
@@ -176,16 +215,10 @@ export const onCreateEvent = `subscription OnCreateEvent {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    attendees {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
     messages {
       items {
@@ -193,11 +226,53 @@ export const onCreateEvent = `subscription OnCreateEvent {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
       }
       nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+      }
+      nextToken
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        owner
+      }
+      editedAt
+      deletedAt
     }
     owner
   }
@@ -228,16 +303,10 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    attendees {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
     messages {
       items {
@@ -245,11 +314,53 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
       }
       nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+      }
+      nextToken
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        owner
+      }
+      editedAt
+      deletedAt
     }
     owner
   }
@@ -280,16 +391,10 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    attendees {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
     messages {
       items {
@@ -297,11 +402,53 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
       }
       nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+      }
+      nextToken
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        owner
+      }
+      editedAt
+      deletedAt
     }
     owner
   }
@@ -311,6 +458,8 @@ export const onCreateEventAttendee = `subscription OnCreateEventAttendee {
   onCreateEventAttendee {
     id
     cognitoUserId
+    createdAt
+    updatedAt
     eventId
     attendeeId
     event {
@@ -330,11 +479,21 @@ export const onCreateEventAttendee = `subscription OnCreateEventAttendee {
         isParent
         deletedAt
       }
-      attendees {
-        nextToken
-      }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }
@@ -357,9 +516,6 @@ export const onCreateEventAttendee = `subscription OnCreateEventAttendee {
         lastName
         isParent
         deletedAt
-      }
-      events {
-        nextToken
       }
     }
   }
@@ -369,6 +525,8 @@ export const onUpdateEventAttendee = `subscription OnUpdateEventAttendee {
   onUpdateEventAttendee {
     id
     cognitoUserId
+    createdAt
+    updatedAt
     eventId
     attendeeId
     event {
@@ -388,11 +546,21 @@ export const onUpdateEventAttendee = `subscription OnUpdateEventAttendee {
         isParent
         deletedAt
       }
-      attendees {
-        nextToken
-      }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }
@@ -415,9 +583,6 @@ export const onUpdateEventAttendee = `subscription OnUpdateEventAttendee {
         lastName
         isParent
         deletedAt
-      }
-      events {
-        nextToken
       }
     }
   }
@@ -427,6 +592,8 @@ export const onDeleteEventAttendee = `subscription OnDeleteEventAttendee {
   onDeleteEventAttendee {
     id
     cognitoUserId
+    createdAt
+    updatedAt
     eventId
     attendeeId
     event {
@@ -446,11 +613,21 @@ export const onDeleteEventAttendee = `subscription OnDeleteEventAttendee {
         isParent
         deletedAt
       }
-      attendees {
-        nextToken
-      }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }
@@ -473,9 +650,6 @@ export const onDeleteEventAttendee = `subscription OnDeleteEventAttendee {
         lastName
         isParent
         deletedAt
-      }
-      events {
-        nextToken
       }
     }
   }
@@ -509,16 +683,10 @@ export const onCreateContact = `subscription OnCreateContact {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    events {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
   }
 }
@@ -551,16 +719,10 @@ export const onUpdateContact = `subscription OnUpdateContact {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    events {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
   }
 }
@@ -593,27 +755,23 @@ export const onDeleteContact = `subscription OnDeleteContact {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    events {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
   }
 }
 `;
-export const onCreateMessage = `subscription OnCreateMessage {
-  onCreateMessage {
+export const onCreateEventPhone = `subscription OnCreateEventPhone {
+  onCreateEventPhone {
     id
     cognitoUserId
     createdAt
     updatedAt
-    text
+    phone
+    firstName
+    lastName
     user {
       id
       cognitoUserId
@@ -630,6 +788,9 @@ export const onCreateMessage = `subscription OnCreateMessage {
         nextToken
       }
       messages {
+        nextToken
+      }
+      eventPhones {
         nextToken
       }
       deletedAt
@@ -651,11 +812,230 @@ export const onCreateMessage = `subscription OnCreateMessage {
         isParent
         deletedAt
       }
-      attendees {
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
+      }
+      owner
+    }
+  }
+}
+`;
+export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
+  onUpdateEventPhone {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    phone
+    firstName
+    lastName
+    user {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
         nextToken
       }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      deletedAt
+    }
+    event {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
+      }
+      owner
+    }
+  }
+}
+`;
+export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
+  onDeleteEventPhone {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    phone
+    firstName
+    lastName
+    user {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      deletedAt
+    }
+    event {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
+      }
+      owner
+    }
+  }
+}
+`;
+export const onCreateMessage = `subscription OnCreateMessage {
+  onCreateMessage {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    localSentAt
+    text
+    user {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
+        nextToken
+      }
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      deletedAt
+    }
+    event {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }
@@ -670,6 +1050,7 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
     cognitoUserId
     createdAt
     updatedAt
+    localSentAt
     text
     user {
       id
@@ -687,6 +1068,9 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
         nextToken
       }
       messages {
+        nextToken
+      }
+      eventPhones {
         nextToken
       }
       deletedAt
@@ -708,11 +1092,21 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
         isParent
         deletedAt
       }
-      attendees {
-        nextToken
-      }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }
@@ -727,6 +1121,7 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
     cognitoUserId
     createdAt
     updatedAt
+    localSentAt
     text
     user {
       id
@@ -744,6 +1139,9 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
         nextToken
       }
       messages {
+        nextToken
+      }
+      eventPhones {
         nextToken
       }
       deletedAt
@@ -765,11 +1163,21 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
         isParent
         deletedAt
       }
-      attendees {
-        nextToken
-      }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }

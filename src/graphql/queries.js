@@ -41,9 +41,22 @@ export const getUser = `query GetUser($id: ID!) {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
+      }
+      nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
       }
       nextToken
     }
@@ -73,6 +86,9 @@ export const listUsers = `query ListUsers(
         nextToken
       }
       messages {
+        nextToken
+      }
+      eventPhones {
         nextToken
       }
       deletedAt
@@ -106,16 +122,10 @@ export const getEvent = `query GetEvent($id: ID!) {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    attendees {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
     messages {
       items {
@@ -123,11 +133,53 @@ export const getEvent = `query GetEvent($id: ID!) {
         cognitoUserId
         createdAt
         updatedAt
+        localSentAt
         text
         editedAt
         deletedAt
       }
       nextToken
+    }
+    eventPhones {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+      }
+      nextToken
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        owner
+      }
+      editedAt
+      deletedAt
     }
     owner
   }
@@ -156,11 +208,21 @@ export const listEvents = `query ListEvents(
         isParent
         deletedAt
       }
-      attendees {
-        nextToken
-      }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }
@@ -196,16 +258,10 @@ export const getContact = `query GetContact($id: ID!) {
       messages {
         nextToken
       }
-      deletedAt
-    }
-    events {
-      items {
-        id
-        cognitoUserId
-        eventId
-        attendeeId
+      eventPhones {
+        nextToken
       }
-      nextToken
+      deletedAt
     }
   }
 }
@@ -236,21 +292,20 @@ export const listContacts = `query ListContacts(
         isParent
         deletedAt
       }
-      events {
-        nextToken
-      }
     }
     nextToken
   }
 }
 `;
-export const getMessage = `query GetMessage($id: ID!) {
-  getMessage(id: $id) {
+export const getEventPhone = `query GetEventPhone($id: ID!) {
+  getEventPhone(id: $id) {
     id
     cognitoUserId
     createdAt
     updatedAt
-    text
+    phone
+    firstName
+    lastName
     user {
       id
       cognitoUserId
@@ -267,6 +322,9 @@ export const getMessage = `query GetMessage($id: ID!) {
         nextToken
       }
       messages {
+        nextToken
+      }
+      eventPhones {
         nextToken
       }
       deletedAt
@@ -288,11 +346,128 @@ export const getMessage = `query GetMessage($id: ID!) {
         isParent
         deletedAt
       }
-      attendees {
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
+      }
+      owner
+    }
+  }
+}
+`;
+export const listEventPhones = `query ListEventPhones(
+  $filter: ModelEventPhoneFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listEventPhones(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        owner
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const getMessage = `query GetMessage($id: ID!) {
+  getMessage(id: $id) {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    localSentAt
+    text
+    user {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      isParent
+      contacts {
+        nextToken
+      }
+      events {
         nextToken
       }
       messages {
         nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      deletedAt
+    }
+    event {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        editedAt
+        deletedAt
       }
       owner
     }
@@ -312,6 +487,7 @@ export const listMessages = `query ListMessages(
       cognitoUserId
       createdAt
       updatedAt
+      localSentAt
       text
       user {
         id
@@ -371,6 +547,9 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       messages {
         nextToken
       }
+      eventPhones {
+        nextToken
+      }
       deletedAt
     }
     nextToken
@@ -409,7 +588,56 @@ export const userByPhone = `query UserByPhone(
       messages {
         nextToken
       }
+      eventPhones {
+        nextToken
+      }
       deletedAt
+    }
+    nextToken
+  }
+}
+`;
+export const eventPhonesByPhone = `query EventPhonesByPhone(
+  $phone: String
+  $sortDirection: ModelSortDirection
+  $filter: ModelEventPhoneFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  eventPhonesByPhone(
+    phone: $phone
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+      }
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        owner
+      }
     }
     nextToken
   }

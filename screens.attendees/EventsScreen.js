@@ -27,10 +27,10 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import { Linking } from "expo";
 import Button from "../components/Button";
-import { getCurrentUser, getEventPhonesByPhone } from "../utils/api";
+import { getCurrentUser } from "../utils/api";
 import {
   formatPhone,
-  getFormattedNameFromEventPhone,
+  getFormattedNameFromContact,
   getFormattedNameFromUser
 } from "../utils/etc";
 import { gutterWidth, colors, textLinkColor } from "../utils/style";
@@ -53,60 +53,65 @@ export default class PeopleScreen extends React.Component {
   }
   loadUserData = async () => {
     const { user, error: currentUserError } = await getCurrentUser();
-    if (currentUserError) {
-      this.setState({
-        generalErrorMessage: currentUserError
+    if (currentUserError)
+      return this.setState({
+        generalErrorMessage: `Error: ${currentUserError}`
       });
-      return;
-    }
-    const {
-      eventPhones,
-      error: eventPhonesError
-    } = await getEventPhonesByPhone(user.phone);
-    if (eventPhonesError) {
-      this.setState({
-        generalErrorMessage: eventPhonesError
-      });
-      return;
-    }
-
-    const events = eventPhones.map(ep => ep.event);
+    // console.log("currentuser", user);
+    // const events = user.events.items;
     // console.log("events", events);
-    this.setState({ user, events, userLoaded: true });
+    this.setState({ user, userLoaded: true });
   };
   handleRefresh = async () => {
-    // pull to refresh
     this.setState({ isRefreshing: true });
     await this.loadUserData();
     this.setState({ isRefreshing: false });
   };
   handleAddEvent = ({}) => {
-    this.props.navigation.navigate("EditEventPhones", {
+    this.props.navigation.navigate("EditEventContacts", {
       user: this.state.user
     });
   };
-
-  // handlePhonePress = ({ phone }) => {
-  //   Linking.openURL(`tel:${phone}`);
+  // handleEditEvent = ({ event }) => {
+  //   this.props.navigation.navigate("EditEvent", {
+  //     event,
+  //     user: this.state.user
+  //   });
   // };
+  // handleEditEventContacts = ({ event }) => {};
 
-  // renderHeader = () => {
-  //   // https://github.com/vikrantnegi/react-native-searchable-flatlist/blob/master/src/SearchableList.js
-  //   return (
-  //     <SearchBar
-  //       placeholder="Type Here..."
-  //       lightTheme
-  //       round
-  //       onChangeText={text => this.searchFilterFunction(text)}
-  //       autoCorrect={false}
-  //       value={this.state.value}
-  //     />
-  //   );
-  // };
+  handlePhonePress = ({ phone }) => {
+    Linking.openURL(`tel:${phone}`);
+  };
+  renderContact = contact => {
+    // <Text key={contact.id}>{getFormattedNameFromContact(contact)}</Text>
+    return getFormattedNameFromContact(contact);
+  };
+  renderAccessory = () => {
+    <Ionicons
+      name={"md-star"}
+      size={28}
+      color={colors.brandColor}
+      style={{ marginHorizontal: 10 }}
+    />;
+  };
+
+  renderHeader = () => {
+    // https://github.com/vikrantnegi/react-native-searchable-flatlist/blob/master/src/SearchableList.js
+    return (
+      <SearchBar
+        placeholder="Type Here..."
+        lightTheme
+        round
+        onChangeText={text => this.searchFilterFunction(text)}
+        autoCorrect={false}
+        value={this.state.value}
+      />
+    );
+  };
 
   renderEvent = ({ item: event, index }) => {
-    let { title, createdAt, latestMessage } = event;
-    const { user } = this.state;
+    let { title, createdAt } = event;
 
     const description = `Created ${moment(createdAt).fromNow()}`;
     const onPress = () =>
@@ -114,15 +119,11 @@ export default class PeopleScreen extends React.Component {
         event,
         user: this.state.user
       });
-    // console.log(event);
-    const eventPhonesExceptMe = event.eventPhones.items.filter(
-      ep => ep.phone !== user.phone
-    );
-    const eventPhonesText =
-      eventPhonesExceptMe
-        .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
-        .join(", ") || "";
 
+    const contacts = event.attendees.items.map(a => a.contact);
+    const contactsText = contacts.map(this.renderContact).join(", ") || "";
+
+    const lastMessage = event.messages.items[event.messages.items - 1];
     // const creationTimeLabel = moment(createdAt).fromNow();
     // const lastMessageContactName = "you";
     // const lastMessageAt = moment().subtract(12, "hour");
@@ -133,21 +134,12 @@ export default class PeopleScreen extends React.Component {
         <View style={styles.listItem}>
           <View>
             <Text style={styles.title}>{title}</Text>
-            <Text style={styles.eventPhonesText}>{eventPhonesText}</Text>
-            {latestMessage && (
-              <View>
-                <Text style={styles.creationTimeLabel}>
-                  {moment(latestMessage.createdAt).fromNow()}
-                  {" by "}
-                  {latestMessage.user.phone === user.phone
-                    ? "you"
-                    : getFormattedNameFromUser(latestMessage.user)}
-                  {": "}
-                </Text>
-                <Text style={styles.latestMessageText}>
-                  {latestMessage.text}
-                </Text>
-              </View>
+            <Text style={styles.contactsText}>{contactsText}</Text>
+            {lastMessage && (
+              <Text style={styles.creationTimeLabel}>
+                {getFormattedNameFromUser(lastMessage.user)} posted{" "}
+                {moment(lastMessage.createdAt).fromNow()}.
+              </Text>
             )}
           </View>
           <View style={{ justifyContent: "center" }}>
@@ -163,8 +155,9 @@ export default class PeopleScreen extends React.Component {
     );
   };
   renderEventsList = () => {
-    const { user, events } = this.state;
+    const { user } = this.state;
     const { isParent } = user;
+    const events = []; //todo
 
     if (!events.length) return null;
 
@@ -264,20 +257,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between"
   },
-  title: {
-    fontWeight: "normal",
-    fontSize: 16,
-    color: colors.brandColor,
-    fontWeight: "bold"
-  },
+  title: { fontWeight: "normal", fontSize: 16, color: colors.brandColor },
   // creationTimeContainer: { justifyContent: "flex-end" },
-  eventPhonesText: {
-    fontSize: 16,
-    color: colors.brandColor,
-    marginVertical: 5
-  },
+  contactsText: { fontSize: 16, marginVertical: 5 },
   creationTimeLabel: { color: "#aaa" },
-  latestMessageText: { fontStyle: "italic", marginVertical: 5 },
   eventsHeader: {},
   eventName: { fontWeight: "bold" },
   eventPhone: { color: textLinkColor, marginVertical: 5 }

@@ -23,3 +23,21 @@ export const getFormattedNameFromContact = contact => {
 export const getFormattedNameFromUser = user => {
   return `${user.firstName} ${user.lastName}`;
 };
+export const getFormattedNameFromEventPhone = eventPhone => {
+  return `${eventPhone.firstName} ${eventPhone.lastName} (${eventPhone.phone})`;
+};
+
+export const getEventPhoneFromUser = user => {
+  return {
+    phone: user.phone,
+    firstName: user.firstName,
+    lastName: user.lastName
+  };
+};
+export const getEventPhoneFromContact = contact => {
+  return {
+    phone: contact.phone,
+    firstName: contact.firstName,
+    lastName: contact.lastName
+  };
+};
