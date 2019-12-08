@@ -188,96 +188,84 @@ export const createEvent = async ({ title, user }) => {
   }
 };
 
-export const updateEventAttendees = async ({ event, contacts, user }) => {
-  const fromContacts = event.attendees.items.map(a => a.contact);
+export const updateEventPhones = async ({ event, eventPhones, user }) => {
+  const oldEventPhones = event.eventPhones.items;
 
-  const attendeesToAdd = differenceBy(
-    contacts,
-    fromContacts,
-    contact => contact.id
-  );
-  const attendeesToDelete = differenceBy(
-    fromContacts,
-    contacts,
-    contact => contact.id
-  );
-  console.log(
-    "updateEventAttendees",
-    attendeesToAdd.length,
-    attendeesToDelete.length
-  );
-  const { error: addError } = await addEventAttendees({
+  const toAdd = differenceBy(eventPhones, oldEventPhones, "phone");
+  const toDelete = differenceBy(oldEventPhones, eventPhones, "phone");
+  console.log("updateEventPhones", toAdd.length, toDelete.length);
+  const { error: addError } = await addEventPhones({
     event,
-    contacts: attendeesToAdd,
+    eventPhones: toAdd,
     user
   });
   if (addError) return { error: addError };
-  const { error: deleteError } = await deleteEventAttendees({
+  const { error: deleteError } = await deleteEventPhones({
     event,
-    contacts: attendeesToDelete
+    eventPhones: toDelete
   });
   if (deleteError) return { error: deleteError };
 
   return { event }; // for performance just return the old event
 
-  const { error: getError, event: updatedEvent } = await getEventById(event.id);
-  if (getError) return { error: getError };
-  return { event: updatedEvent };
+  // const { error: getError, event: updatedEvent } = await getEventById(event.id);
+  // if (getError) return { error: getError };
+  // return { event: updatedEvent };
 };
 
-export const addEventAttendees = async ({ event, contacts, user }) => {
+export const addEventPhones = async ({ event, eventPhones, user }) => {
   try {
-    for (const contact of contacts) {
-      // console.log(contact.id, event.id);
-      if (!contact.id || !event.id) throw "Missing contact.id or event.id";
+    for (const eventPhone of eventPhones) {
+      // console.log(eventPhone.id, event.id);
+      if (!eventPhone.phone || !event.id)
+        throw "Missing eventPhone.phone or event.id";
       const res = await API.graphql(
-        graphqlOperation(mutations.createEventAttendee, {
+        graphqlOperation(mutations.createEventPhone, {
           input: {
-            eventId: event.id,
-            attendeeId: contact.id,
-            cognitoUserId: user.cognitoUserId
+            phone: eventPhone.phone,
+            firstName: eventPhone.firstName,
+            lastName: eventPhone.lastName,
+            eventPhoneEventId: event.id,
+            cognitoUserId: user.cognitoUserId,
+            eventPhoneUserId: user.id
           }
         })
       );
-      console.log(`added eventattendee for contact ${contact.id}`, res);
+      console.log(`added eventPhone ${eventPhone.id}`, res);
     }
 
     return {};
   } catch (e) {
     console.log(e);
     return {
-      error: `Error adding people to event: ${get(e, "errors[0].message")}`
+      error: `Error adding phones to event: ${get(e, "errors[0].message")}`
     };
   }
 };
-// export const deleteEventAttendees = async ({ event, contacts }) => {
-//   try {
-//     for (const contact of contacts) {
-//       // console.log(contact.id, event.id);
-//       if (!contact.id || !event.id) throw "Missing contact.id or event.id";
-//       const attendee = event.attendees.items.find(
-//         attendee => attendee.contact.id === contact.id
-//       );
-//       console.log(`deleting ${attendee.id}`);
-//       if (!attendee) throw `Can't find attendee ID for contact ${contact.id}`;
-//       const res = await API.graphql(
-//         graphqlOperation(mutations.deleteEventAttendee, {
-//           input: {
-//             id: attendee.id
-//           }
-//         })
-//       );
-//       console.log(`deleted eventattendee for contact ${contact.id}`, res);
-//     }
-//
-//     return {};
-//   } catch (e) {
-//     console.log(e);
-//     return {
-//       error: `Error deleting people from event: ${get(e, "errors[0].message")}`
-//     };
-//   }
-// };
+export const deleteEventPhones = async ({ event, eventPhones }) => {
+  try {
+    for (const eventPhone of eventPhones) {
+      if (!eventPhone.id || !event.id)
+        throw "Missing eventPhone.id or event.id";
+
+      const res = await API.graphql(
+        graphqlOperation(mutations.deleteEventPhone, {
+          input: {
+            id: eventPhone.id
+          }
+        })
+      );
+      console.log(`deleted eventPhone ${eventPhone.id}`, res);
+    }
+
+    return {};
+  } catch (e) {
+    console.log(e);
+    return {
+      error: `Error deleting people from event: ${get(e, "errors[0].message")}`
+    };
+  }
+};
 export const createEventWithPhones = async ({ title, user, eventPhones }) => {
   console.log(`creating event for user ${user.id}`);
   const { event, error: createEventError } = await createEvent({
@@ -288,36 +276,34 @@ export const createEventWithPhones = async ({ title, user, eventPhones }) => {
   console.log(`created event`, event);
   console.log("adding eventPhones", eventPhones);
   // return { error: "testing" };
-  try {
-    for (const eventPhone of eventPhones) {
-      // console.log(eventPhone.id, event.id);
-      if (!eventPhone.phone || !event.id)
-        throw "Missing eventPhone or event.id";
-      const res = await API.graphql(
-        graphqlOperation(mutations.createEventPhone, {
-          input: {
-            eventPhoneEventId: event.id,
-            phone: eventPhone.phone,
-            firstName: eventPhone.firstName,
-            lastName: eventPhone.lastName,
-            eventPhoneUserId: user.id,
-            cognitoUserId: user.cognitoUserId
-          }
-        })
-      );
-      console.log(`created eventphone for eventPhone ${eventPhone.phone}`, res);
-    }
+  const { error: eventPhoneError } = await addEventPhones({
+    event,
+    user,
+    eventPhones
+  });
+  // try {
+  //   for (const eventPhone of eventPhones) {
+  //     // console.log(eventPhone.id, event.id);
+  //     if (!eventPhone.phone || !event.id)
+  //       throw "Missing eventPhone or event.id";
+  //     const res = await API.graphql(
+  //       graphqlOperation(mutations.createEventPhone, {
+  //         input: {
+  //           eventPhoneEventId: event.id,
+  //           phone: eventPhone.phone,
+  //           firstName: eventPhone.firstName,
+  //           lastName: eventPhone.lastName,
+  //           eventPhoneUserId: user.id,
+  //           cognitoUserId: user.cognitoUserId
+  //         }
+  //       })
+  //     );
+  //     console.log(`created eventphone for eventPhone ${eventPhone.phone}`, res);
+  //   }
 
-    return { event };
-  } catch (e) {
-    console.log(e);
-    return {
-      error: `Error adding phones to newly created event: ${get(
-        e,
-        "errors[0].message"
-      )}`
-    };
-  }
+  if (eventPhoneError) return { error: eventPhoneError };
+
+  return { event };
 };
 
 export const updateEvent = async eventInput => {
