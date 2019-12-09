@@ -61,6 +61,10 @@ export const onCreateUser = `subscription OnCreateUser {
       nextToken
     }
     deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
   }
 }
 `;
@@ -124,6 +128,10 @@ export const onUpdateUser = `subscription OnUpdateUser {
       nextToken
     }
     deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
   }
 }
 `;
@@ -187,6 +195,10 @@ export const onDeleteUser = `subscription OnDeleteUser {
       nextToken
     }
     deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
   }
 }
 `;
@@ -219,6 +231,10 @@ export const onCreateEvent = `subscription OnCreateEvent {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     messages {
       items {
@@ -262,6 +278,10 @@ export const onCreateEvent = `subscription OnCreateEvent {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -307,6 +327,10 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     messages {
       items {
@@ -350,6 +374,10 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -395,6 +423,10 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     messages {
       items {
@@ -438,6 +470,10 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -486,6 +522,10 @@ export const onCreateContact = `subscription OnCreateContact {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
   }
 }
@@ -522,6 +562,10 @@ export const onUpdateContact = `subscription OnUpdateContact {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
   }
 }
@@ -558,6 +602,10 @@ export const onDeleteContact = `subscription OnDeleteContact {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
   }
 }
@@ -593,6 +641,10 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -610,6 +662,10 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -663,6 +719,10 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -680,6 +740,10 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -733,6 +797,10 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -750,6 +818,10 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -802,6 +874,10 @@ export const onCreateMessage = `subscription OnCreateMessage {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -819,6 +895,10 @@ export const onCreateMessage = `subscription OnCreateMessage {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -873,6 +953,10 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -890,6 +974,10 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -944,6 +1032,10 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -961,6 +1053,10 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken

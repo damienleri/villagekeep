@@ -61,6 +61,10 @@ export const getUser = `query GetUser($id: ID!) {
       nextToken
     }
     deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
   }
 }
 `;
@@ -92,6 +96,10 @@ export const listUsers = `query ListUsers(
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     nextToken
   }
@@ -126,6 +134,10 @@ export const getEvent = `query GetEvent($id: ID!) {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     messages {
       items {
@@ -169,6 +181,10 @@ export const getEvent = `query GetEvent($id: ID!) {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -207,6 +223,10 @@ export const listEvents = `query ListEvents(
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -262,6 +282,10 @@ export const getContact = `query GetContact($id: ID!) {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
   }
 }
@@ -291,6 +315,10 @@ export const listContacts = `query ListContacts(
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
     }
     nextToken
@@ -328,6 +356,10 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -345,6 +377,10 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -391,6 +427,10 @@ export const listEventPhones = `query ListEventPhones(
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -435,6 +475,10 @@ export const getMessage = `query GetMessage($id: ID!) {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -452,6 +496,10 @@ export const getMessage = `query GetMessage($id: ID!) {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -499,6 +547,10 @@ export const listMessages = `query ListMessages(
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -551,6 +603,10 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     nextToken
   }
@@ -592,6 +648,10 @@ export const userByPhone = `query UserByPhone(
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     nextToken
   }
@@ -629,6 +689,10 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id

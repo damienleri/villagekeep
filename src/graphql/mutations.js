@@ -61,6 +61,10 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
       nextToken
     }
     deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
   }
 }
 `;
@@ -124,6 +128,10 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
       nextToken
     }
     deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
   }
 }
 `;
@@ -187,6 +195,10 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       nextToken
     }
     deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
   }
 }
 `;
@@ -219,6 +231,10 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     messages {
       items {
@@ -262,6 +278,10 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -307,6 +327,10 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     messages {
       items {
@@ -350,6 +374,10 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -395,6 +423,10 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     messages {
       items {
@@ -438,6 +470,10 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       event {
         id
@@ -486,6 +522,10 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
   }
 }
@@ -522,6 +562,10 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
   }
 }
@@ -558,6 +602,10 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
   }
 }
@@ -593,6 +641,10 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -610,6 +662,10 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -663,6 +719,10 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -680,6 +740,10 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -733,6 +797,10 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -750,6 +818,10 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -802,6 +874,10 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -819,6 +895,10 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -873,6 +953,10 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -890,6 +974,10 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken
@@ -944,6 +1032,10 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
         nextToken
       }
       deletedAt
+      pushToken
+      pushEnabled
+      pushEnabledForEvents
+      pushEnabledForMessages
     }
     event {
       id
@@ -961,6 +1053,10 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
         lastName
         isParent
         deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       messages {
         nextToken

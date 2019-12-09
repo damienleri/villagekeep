@@ -20,6 +20,10 @@ type User
   messages: [Message] @connection(name: "UserMessages")
   eventPhones: [EventPhone] @connection(name: "UserEventPhones")
   deletedAt: AWSTimestamp
+  pushToken: String
+  pushEnabled: Boolean
+  pushEnabledForEvents: Boolean
+  pushEnabledForMessages: Boolean
 }
 type Event
   # @auth(rules: [{ allow: owner, operations: [update, delete] }])
