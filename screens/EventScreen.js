@@ -22,6 +22,7 @@ import {
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import moment from "moment";
 import { cloneDeep, sortBy } from "lodash";
+import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import Button from "../components/Button";
 import InlineForm from "../components/InlineForm";
 import Form from "../components/Form";
@@ -35,13 +36,15 @@ import {
   getEventByIdWithMessages,
   updateEvent,
   deleteEvent,
-  createMessage
+  createMessage,
+  subscribeToEventUpdate
 } from "../utils/api";
 import { gutterWidth, colors, topNavigationHeight } from "../utils/style";
 import {
   formatPhone,
   getFormattedNameFromContact,
-  getFormattedNameFromUser
+  getFormattedNameFromUser,
+  getFormattedMessageTime
 } from "../utils/etc";
 
 export default class EventScreen extends React.Component {
@@ -58,24 +61,68 @@ export default class EventScreen extends React.Component {
       event,
       messages: []
     };
+  }
+  handleServerUpdatedEvent = async event => {
+    // console.log("handleServerUpdatedEvent", event);
+    await this.loadEventWithMessages();
+  };
+
+  setupEventSubscription = async () => {
+    const event = this.props.navigation.getParam("event");
+    const { subscription, error } = await subscribeToEventUpdate({
+      eventId: event.id,
+      callback: this.handleServerUpdatedEvent
+    });
+    if (error) {
+      this.setState({ errorMessage: error });
+    } else {
+      this.eventUpdateSubscription = subscription;
+    }
+  };
+
+  componentDidMount = async () => {
+    console.log("componentdidmount");
     this.loadEventSubcription = this.props.navigation.addListener(
       "didFocus",
-      async () => {
-        await this.loadEventWithMessages();
-      }
+      this.loadEventWithMessages
     );
-  }
-  async componentDidMount() {
-    if (this.props.navigation.getParam("isNewEvent")) {
+    //   async () => {
+    //     await this.loadEventWithMessages();
+    //   }
+    // );
+
+    if (this.props.navigation.getParam("isNewEvent"))
       this.messageInputRef.current.focus();
+
+    this.unsubscribeToNetworkChanges = NetInfo.addEventListener(
+      this.handleNetworkChanges
+    );
+    const networkState = await NetInfo.fetch();
+
+    if (networkState.isConnected) {
+      this.setupEventSubscription();
     }
-  }
-  componentWillUnmount() {
+  };
+  componentWillUnmount = async () => {
     this.loadEventSubcription.remove();
-  }
+    if (this.unsubscribeToNetworkChanges) this.unsubscribeToNetworkChanges();
+    if (this.eventUpdateSubscription)
+      await this.eventUpdateSubscription.unsubscribe();
+  };
+  handleNetworkChanges = state => {
+    this.setState({ networkIsOffline: !state.isConnected });
+    if (state.isConnected) {
+      this.loadEventWithMessages();
+      this.setupEventSubscription();
+    }
+  };
   loadEventWithMessages = async () => {
+    const { networkIsOffline } = this.state;
+    console.log("networkIsOffline", networkIsOffline);
+    if (networkIsOffline) return;
     const eventParam = this.props.navigation.getParam("event");
-    if (this.props.navigation.getParam("isNewEvent")) return;
+    if (this.props.navigation.getParam("isNewEvent"))
+      return this.setState({ messagesAreLoaded: true });
     const { event, error: eventError } = await getEventByIdWithMessages(
       eventParam.id
     );
@@ -83,8 +130,10 @@ export default class EventScreen extends React.Component {
       return this.setState({
         errorMessage: eventError
       });
-    const messages = sortBy(cloneDeep(event.messages.items), "createdAt");
-    console.log(messages.map(m => m.createdAt));
+    const messages = sortBy(
+      cloneDeep(event.messages.items),
+      "createdAt"
+    ).reverse(); // the flalist is inverted
     this.setState({ event, messages, messagesAreLoaded: true });
   };
 
@@ -146,7 +195,8 @@ export default class EventScreen extends React.Component {
         <Text style={styles.messageText}>{message.text}</Text>
         {message.id ? (
           <Text style={styles.messageTime}>
-            {moment(message.createdAt).fromNow()} by{" "}
+            {getFormattedMessageTime(message.createdAt || message.localSentAt)}{" "}
+            by{" "}
             <Text style={styles.messageAuthor}>
               {message.user.id === user.id
                 ? "you"
@@ -165,6 +215,7 @@ export default class EventScreen extends React.Component {
     // console.log(messages);
     return (
       <FlatList
+        inverted
         style={styles.messageList}
         renderItem={this.renderMessage}
         data={messages}
@@ -176,7 +227,9 @@ export default class EventScreen extends React.Component {
 
   addMessageToQueue = async localMessage => {
     // console.log(this.state.messages);
-    await this.setState({ messages: this.state.messages.concat(localMessage) });
+    await this.setState({
+      messages: [localMessage].concat(this.state.messages) // at the beginning because list is inverted
+    });
   };
   sendMessageInQueue = async localSentAt => {
     this.setState({ isSubittingMessage: true });
@@ -219,6 +272,7 @@ export default class EventScreen extends React.Component {
   handleMessageSubmit = async () => {
     const { inputText = "", event } = this.state;
     const user = this.props.navigation.getParam("user");
+    // this.messageInputRef.current.focus();
     if (!inputText.length) return;
     // localSentAt is just a unique key that allows local messages to be identifed when they round trip from server
     const localSentAt = new Date().getTime();
@@ -233,18 +287,34 @@ export default class EventScreen extends React.Component {
   };
 
   renderMessageInputRow = () => {
-    const { inputText } = this.state;
+    const { inputText, networkIsOffline } = this.state;
+
     return (
-      <View style={styles.messageInputRow}>
+      <View
+        style={[
+          styles.messageInputRow,
+          networkIsOffline ? styles.messageInputRowOffline : {}
+        ]}
+      >
         <TextInput
-          style={styles.messageInput}
+          blurOnSubmit={false}
+          // multiline={true}
+          style={[
+            styles.messageInput,
+            networkIsOffline ? styles.messageInputOffline : {}
+          ]}
           value={inputText}
           onChangeText={inputText => this.setState({ inputText })}
           onSubmitEditing={this.handleMessageSubmit}
           ref={this.messageInputRef}
           returnKeyType="send"
-          placeholder="Type message"
-          placeholderTextColor={colors.brandColor}
+          placeholder={
+            networkIsOffline ? "You are offline. Waiting..." : "Type a thing"
+          }
+          placeholderTextColor={
+            networkIsOffline ? colors.dangerColor : colors.brandColor
+          }
+          editable={!networkIsOffline}
         />
         <TouchableOpacity
           onPress={this.handleMessageSubmit}
@@ -411,6 +481,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1
     // backgroundColor: "white"
   },
+  messageInputRowOffline: { borderTopColor: colors.dangerColor },
   messageInput: {
     borderWidth: 0,
     flex: 2,

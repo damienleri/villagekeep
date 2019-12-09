@@ -3,6 +3,7 @@ import { StyleSheet, SafeAreaView, View } from "react-native";
 import { Icon, Layout, Text, Button } from "@ui-kitten/components";
 import AuthHomeScreen from "./AuthHomeScreen";
 import { gutterWidth } from "../utils/style";
+import BuildInfo from "../components/BuildInfo";
 
 export default class WelcomeScreen extends React.Component {
   state = {};
@@ -38,6 +39,8 @@ export default class WelcomeScreen extends React.Component {
             Log in
           </Button>
         </SafeAreaView>
+
+        <BuildInfo />
       </Layout>
     );
   }

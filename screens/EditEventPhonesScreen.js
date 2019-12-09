@@ -35,7 +35,6 @@ import TopNavigation from "../components/TopNavigation";
 import {
   getCurrentUser,
   createEventWithPhones,
-  // updateEventAttendees,
   updateEventPhones,
   deleteEvent
 } from "../utils/api";

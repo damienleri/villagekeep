@@ -1,4 +1,5 @@
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import moment from "moment";
 
 export const formatPhone = phone => {
   const phoneParsed = parsePhoneNumberFromString(phone, "US");
@@ -40,4 +41,10 @@ export const getEventPhoneFromContact = contact => {
     firstName: contact.firstName,
     lastName: contact.lastName
   };
+};
+export const getFormattedMessageTime = timeString => {
+  if (!timeString) return timeString;
+  const time = moment(timeString);
+  if (time > moment().subtract(5, "second")) return "now";
+  return time.fromNow();
 };

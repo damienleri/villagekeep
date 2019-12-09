@@ -10,7 +10,6 @@ import {
   Layout
 } from "@ui-kitten/components";
 
-import TabBarIcon from "../components/TabBarIcon";
 import EventsScreen from "../screens/EventsScreen";
 import TestApiScreen from "../screens/TestApiScreen";
 import PeopleScreen from "../screens/PeopleScreen";

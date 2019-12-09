@@ -39,20 +39,20 @@ type Event
 
 ### EventAttendee joins events with contacts (many to many)
 ### Auth rule: anyone who is an EventUser can read or modify the EventAttendee list.
-type EventAttendee
-  @model(queries: null)
-  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
-  @key(name: "byEvent", fields: ["eventId", "attendeeId"])
-  @key(name: "byAttendee", fields: ["attendeeId", "eventId"]) {
-  id: ID!
-  cognitoUserId: String!
-  createdAt: String
-  updatedAt: String
-  eventId: ID!
-  attendeeId: ID!
-  event: Event! @connection(fields: ["eventId"])
-  contact: Contact! @connection(fields: ["attendeeId"])
-}
+# type EventAttendee
+#   @model(queries: null)
+#   # @auth(rules: [{ allow: owner, operations: [update, delete] }])
+#   @key(name: "byEvent", fields: ["eventId", "attendeeId"])
+#   @key(name: "byAttendee", fields: ["attendeeId", "eventId"]) {
+#   id: ID!
+#   cognitoUserId: String!
+#   createdAt: String
+#   updatedAt: String
+#   eventId: ID!
+#   attendeeId: ID!
+#   event: Event! @connection(fields: ["eventId"])
+#   contact: Contact! @connection(fields: ["attendeeId"])
+# }
 type Contact
   # @auth(rules: [{ allow: owner, operations: [read, update, delete] }])
   @model {
@@ -80,7 +80,7 @@ type EventPhone
   firstName: String
   lastName: String
   user: User! @connection(name: "UserEventPhones")
-  event: Event! @connection(name: "EventEventPhones")
+  event: Event @connection(name: "EventEventPhones") ## left this optional in case event gets deleted
 }
 type Message
   # @auth(rules: [{ allow: owner, operations: [ update, delete] }])
@@ -93,19 +93,7 @@ type Message
   localSentAt: AWSTimestamp!
   text: String!
   user: User! @connection(name: "UserMessages")
-  event: Event! @connection(name: "EventMessages")
-  editedAt: AWSTimestamp
-  deletedAt: AWSTimestamp
-}
-type Message
-  # @auth(rules: [{ allow: owner, operations: [ update, delete] }])
-  @model {
-  id: ID!
-  cognitoUserId: String!
-  createdAt: String
-  updatedAt: String
-  user: User! @connection(name: "UserMessages")
-  event: Event! @connection(name: "EventMessages")
+  event: Event @connection(name: "EventMessages") ## left this optional in case event gets deleted
   editedAt: AWSTimestamp
   deletedAt: AWSTimestamp
 }

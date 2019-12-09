@@ -31,7 +31,8 @@ import { getCurrentUser, getEventPhonesByPhone } from "../utils/api";
 import {
   formatPhone,
   getFormattedNameFromEventPhone,
-  getFormattedNameFromUser
+  getFormattedNameFromUser,
+  getFormattedMessageTime
 } from "../utils/etc";
 import { gutterWidth, colors, textLinkColor } from "../utils/style";
 import EventsEmptyState from "../components/EventsEmptyState";
@@ -70,7 +71,7 @@ export default class PeopleScreen extends React.Component {
       return;
     }
 
-    const events = eventPhones.map(ep => ep.event);
+    const events = eventPhones.map(ep => ep.event).filter(event => !!event);
     // console.log("events", events);
     this.setState({ user, events, userLoaded: true });
   };
@@ -108,7 +109,6 @@ export default class PeopleScreen extends React.Component {
     let { title, createdAt, latestMessage } = event;
     const { user } = this.state;
 
-    const description = `Created ${moment(createdAt).fromNow()}`;
     const onPress = () =>
       this.props.navigation.navigate("Event", {
         event,
@@ -123,11 +123,6 @@ export default class PeopleScreen extends React.Component {
         .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
         .join(", ") || "";
 
-    // const creationTimeLabel = moment(createdAt).fromNow();
-    // const lastMessageContactName = "you";
-    // const lastMessageAt = moment().subtract(12, "hour");
-    // const lastMessageTimeLabel = moment(lastMessageAt).fromNow();
-
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={styles.listItem}>
@@ -137,7 +132,7 @@ export default class PeopleScreen extends React.Component {
             {latestMessage && (
               <View>
                 <Text style={styles.creationTimeLabel}>
-                  {moment(latestMessage.createdAt).fromNow()}
+                  {getFormattedMessageTime(latestMessage.createdAt)}
                   {" by "}
                   {latestMessage.user.phone === user.phone
                     ? "you"

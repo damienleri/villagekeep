@@ -125,6 +125,7 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
   createMessage(input: $input) {
     id
     createdAt
+    localSentAt
     text
     user {
       id

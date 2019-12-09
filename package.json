@@ -6,7 +6,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "publish-expo": "node tasks/publishExpo.js"
   },
   "jest": {
     "preset": "jest-expo"
@@ -15,6 +16,7 @@
     "@eva-design/eva": "^1.2.0",
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
+    "@react-native-community/netinfo": "^5.0.0",
     "@react-navigation/web": "^1.0.0-alpha.9",
     "@ui-kitten/components": "^4.3.1",
     "@ui-kitten/eva-icons": "^4.2.0",
@@ -45,7 +47,10 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^7.0.0",
-    "jest-expo": "^35.0.0"
+    "fs": "^0.0.1-security",
+    "jest-expo": "^35.0.0",
+    "jsonfile": "^5.0.0",
+    "shelljs": "^0.8.3"
   },
   "private": true
 }

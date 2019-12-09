@@ -3,6 +3,39 @@ import API, { graphqlOperation } from "@aws-amplify/api";
 import { differenceBy, get } from "lodash";
 import * as mutations from "../graphql/mutations";
 import * as queries from "../graphql/queries";
+import * as subscriptions from "../graphql/subscriptions";
+
+// export const subscribeToMessages = async onReceiveMessage => {
+//   const subscription = API.graphql(
+//     graphqlOperation(subscriptions.onCreateMessage)
+//   ).subscribe({
+//     next: messageData => {
+//       console.log(messageData);
+//       onReceiveMessage({ message: messageData });
+//     }
+//   });
+//   return {subscription}
+// };
+//
+// export const unsubscribeToMessages = subscription => {
+//   subscription.unsubscribe();
+// };
+export const subscribeToEventUpdate = async ({ callback, eventId }) => {
+  try {
+    const subscription = API.graphql(
+      graphqlOperation(subscriptions.onUpdateEvent, { id: eventId })
+    ).subscribe({
+      next: data => {
+        // console.log(eventData);
+        callback(data.value.data.onUpdateEvent);
+      }
+    });
+    return { subscription };
+  } catch (e) {
+    console.log(e);
+    return { error: `Error subscibing to event update: ${e}` };
+  }
+};
 
 export const getCurrentUser = async () => {
   const cognitoUser = await Auth.currentAuthenticatedUser();
@@ -327,17 +360,19 @@ export const deleteEvent = async ({ eventId }) => {
       })
     );
     //Also delete dependent objects
-    await API.graphql(
-      graphqlOperation(mutations.deleteEventPhone, {
-        input: { eventPhoneEventId: eventId }
-      })
-    );
+    ////on second thought there is no updateMany mutations so we would need to loop through the following individually:
 
-    await API.graphql(
-      graphqlOperation(mutations.deleteMessage, {
-        input: { messageEventId: eventId }
-      })
-    );
+    // await API.graphql(
+    //   graphqlOperation(mutations.deleteEventPhone, {
+    //     input: { eventPhoneEventId: eventId }
+    //   })
+    // );
+    //
+    // await API.graphql(
+    //   graphqlOperation(mutations.deleteMessage, {
+    //     input: { messageEventId: eventId }
+    //   })
+    // );
 
     return {};
   } catch (e) {
