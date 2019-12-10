@@ -74,7 +74,9 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
         <Step
           name="1. Add your teens"
           description="They are invited via text message."
-          onPress={() => navigation.navigate("EditContact", { type: "kid" })}
+          onPress={() =>
+            navigation.navigate("EditContact", { type: "kid", user })
+          }
           isDone={contactsByType.kid}
         />
       )}

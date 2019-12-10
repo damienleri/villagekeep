@@ -21,6 +21,7 @@ export const getUser = `query GetUser($id: ID!) {
         phone
         firstName
         lastName
+        userId
       }
       nextToken
     }
@@ -31,6 +32,7 @@ export const getUser = `query GetUser($id: ID!) {
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       nextToken
@@ -43,6 +45,8 @@ export const getUser = `query GetUser($id: ID!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -57,6 +61,8 @@ export const getUser = `query GetUser($id: ID!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -112,6 +118,7 @@ export const getEvent = `query GetEvent($id: ID!) {
     createdAt
     updatedAt
     title
+    userId
     user {
       id
       cognitoUserId
@@ -147,6 +154,8 @@ export const getEvent = `query GetEvent($id: ID!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -161,6 +170,8 @@ export const getEvent = `query GetEvent($id: ID!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -171,6 +182,7 @@ export const getEvent = `query GetEvent($id: ID!) {
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -186,12 +198,14 @@ export const getEvent = `query GetEvent($id: ID!) {
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -213,6 +227,7 @@ export const listEvents = `query ListEvents(
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -241,6 +256,8 @@ export const listEvents = `query ListEvents(
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -260,6 +277,7 @@ export const getContact = `query GetContact($id: ID!) {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -305,6 +323,7 @@ export const listContacts = `query ListContacts(
       phone
       firstName
       lastName
+      userId
       user {
         id
         cognitoUserId
@@ -334,6 +353,7 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -361,12 +381,14 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -395,6 +417,8 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -417,6 +441,7 @@ export const listEventPhones = `query ListEventPhones(
       phone
       firstName
       lastName
+      userId
       user {
         id
         cognitoUserId
@@ -432,12 +457,14 @@ export const listEventPhones = `query ListEventPhones(
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
     }
@@ -453,6 +480,7 @@ export const getMessage = `query GetMessage($id: ID!) {
     updatedAt
     localSentAt
     text
+    userId
     user {
       id
       cognitoUserId
@@ -480,12 +508,14 @@ export const getMessage = `query GetMessage($id: ID!) {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -514,6 +544,8 @@ export const getMessage = `query GetMessage($id: ID!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -537,6 +569,7 @@ export const listMessages = `query ListMessages(
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -552,12 +585,14 @@ export const listMessages = `query ListMessages(
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -657,6 +692,114 @@ export const userByPhone = `query UserByPhone(
   }
 }
 `;
+export const eventsByUser = `query EventsByUser(
+  $userId: ID
+  $createdAt: ModelStringKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelEventFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  eventsByUser(
+    userId: $userId
+    createdAt: $createdAt
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      title
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      messages {
+        nextToken
+      }
+      eventPhones {
+        nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
+      owner
+    }
+    nextToken
+  }
+}
+`;
+export const contactsByUser = `query ContactsByUser(
+  $userId: ID
+  $createdAt: ModelStringKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelContactFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  contactsByUser(
+    userId: $userId
+    createdAt: $createdAt
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      type
+      phone
+      firstName
+      lastName
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+    }
+    nextToken
+  }
+}
+`;
 export const eventPhonesByPhone = `query EventPhonesByPhone(
   $phone: String
   $sortDirection: ModelSortDirection
@@ -679,6 +822,7 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
       phone
       firstName
       lastName
+      userId
       user {
         id
         cognitoUserId
@@ -694,14 +838,238 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
+    }
+    nextToken
+  }
+}
+`;
+export const eventPhonesByEvent = `query EventPhonesByEvent(
+  $eventId: ID
+  $createdAt: ModelStringKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelEventPhoneFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  eventPhonesByEvent(
+    eventId: $eventId
+    createdAt: $createdAt
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const eventPhonesByUser = `query EventPhonesByUser(
+  $userId: ID
+  $createdAt: ModelStringKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelEventPhoneFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  eventPhonesByUser(
+    userId: $userId
+    createdAt: $createdAt
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      phone
+      firstName
+      lastName
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const messagesByEvent = `query MessagesByEvent(
+  $eventId: ID
+  $createdAt: ModelStringKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelMessageFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  messagesByEvent(
+    eventId: $eventId
+    createdAt: $createdAt
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
+    nextToken
+  }
+}
+`;
+export const messagesByUser = `query MessagesByUser(
+  $userId: ID
+  $createdAt: ModelStringKeyConditionInput
+  $sortDirection: ModelSortDirection
+  $filter: ModelMessageFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  messagesByUser(
+    userId: $userId
+    createdAt: $createdAt
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
     }
     nextToken
   }

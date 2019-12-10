@@ -21,6 +21,7 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         phone
         firstName
         lastName
+        userId
       }
       nextToken
     }
@@ -31,6 +32,7 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       nextToken
@@ -43,6 +45,8 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -57,6 +61,8 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -88,6 +94,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         phone
         firstName
         lastName
+        userId
       }
       nextToken
     }
@@ -98,6 +105,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       nextToken
@@ -110,6 +118,8 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -124,6 +134,8 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -155,6 +167,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         phone
         firstName
         lastName
+        userId
       }
       nextToken
     }
@@ -165,6 +178,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       nextToken
@@ -177,6 +191,8 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -191,6 +207,8 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -209,6 +227,7 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
     createdAt
     updatedAt
     title
+    userId
     user {
       id
       cognitoUserId
@@ -244,6 +263,8 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -258,6 +279,8 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -268,6 +291,7 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -283,12 +307,14 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -305,6 +331,7 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
     createdAt
     updatedAt
     title
+    userId
     user {
       id
       cognitoUserId
@@ -340,6 +367,8 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -354,6 +383,8 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -364,6 +395,7 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -379,12 +411,14 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -401,6 +435,7 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
     createdAt
     updatedAt
     title
+    userId
     user {
       id
       cognitoUserId
@@ -436,6 +471,8 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -450,6 +487,8 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -460,6 +499,7 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -475,12 +515,14 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -500,6 +542,7 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -540,6 +583,7 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -580,6 +624,7 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -619,6 +664,7 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -646,12 +692,14 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -680,6 +728,8 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -697,6 +747,7 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -724,12 +775,14 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -758,6 +811,8 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -775,6 +830,7 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -802,12 +858,14 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -836,6 +894,8 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -852,6 +912,7 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
     updatedAt
     localSentAt
     text
+    userId
     user {
       id
       cognitoUserId
@@ -879,12 +940,14 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -913,6 +976,8 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -931,6 +996,7 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
     updatedAt
     localSentAt
     text
+    userId
     user {
       id
       cognitoUserId
@@ -958,12 +1024,14 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -992,6 +1060,8 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -1010,6 +1080,7 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
     updatedAt
     localSentAt
     text
+    userId
     user {
       id
       cognitoUserId
@@ -1037,12 +1108,14 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -1071,6 +1144,8 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }

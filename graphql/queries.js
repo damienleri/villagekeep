@@ -160,7 +160,7 @@ export const getEventWithMessages = `query GetEvent($id: ID!) {
       firstName
       lastName
     }
-    messages {
+    messages(sortDirection: DESC) {
       items {
         id
         localSentAt

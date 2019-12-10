@@ -21,6 +21,7 @@ export const onCreateUser = `subscription OnCreateUser {
         phone
         firstName
         lastName
+        userId
       }
       nextToken
     }
@@ -31,6 +32,7 @@ export const onCreateUser = `subscription OnCreateUser {
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       nextToken
@@ -43,6 +45,8 @@ export const onCreateUser = `subscription OnCreateUser {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -57,6 +61,8 @@ export const onCreateUser = `subscription OnCreateUser {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -88,6 +94,7 @@ export const onUpdateUser = `subscription OnUpdateUser {
         phone
         firstName
         lastName
+        userId
       }
       nextToken
     }
@@ -98,6 +105,7 @@ export const onUpdateUser = `subscription OnUpdateUser {
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       nextToken
@@ -110,6 +118,8 @@ export const onUpdateUser = `subscription OnUpdateUser {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -124,6 +134,8 @@ export const onUpdateUser = `subscription OnUpdateUser {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -155,6 +167,7 @@ export const onDeleteUser = `subscription OnDeleteUser {
         phone
         firstName
         lastName
+        userId
       }
       nextToken
     }
@@ -165,6 +178,7 @@ export const onDeleteUser = `subscription OnDeleteUser {
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       nextToken
@@ -177,6 +191,8 @@ export const onDeleteUser = `subscription OnDeleteUser {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -191,6 +207,8 @@ export const onDeleteUser = `subscription OnDeleteUser {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -209,6 +227,7 @@ export const onCreateEvent = `subscription OnCreateEvent {
     createdAt
     updatedAt
     title
+    userId
     user {
       id
       cognitoUserId
@@ -244,6 +263,8 @@ export const onCreateEvent = `subscription OnCreateEvent {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -258,6 +279,8 @@ export const onCreateEvent = `subscription OnCreateEvent {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -268,6 +291,7 @@ export const onCreateEvent = `subscription OnCreateEvent {
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -283,12 +307,14 @@ export const onCreateEvent = `subscription OnCreateEvent {
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -305,6 +331,7 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
     createdAt
     updatedAt
     title
+    userId
     user {
       id
       cognitoUserId
@@ -340,6 +367,8 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -354,6 +383,8 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -364,6 +395,7 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -379,12 +411,14 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -401,6 +435,7 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
     createdAt
     updatedAt
     title
+    userId
     user {
       id
       cognitoUserId
@@ -436,6 +471,8 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -450,6 +487,8 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
         phone
         firstName
         lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -460,6 +499,7 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
       updatedAt
       localSentAt
       text
+      userId
       user {
         id
         cognitoUserId
@@ -475,12 +515,14 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      eventId
       event {
         id
         cognitoUserId
         createdAt
         updatedAt
         title
+        userId
         owner
       }
       editedAt
@@ -500,6 +542,7 @@ export const onCreateContact = `subscription OnCreateContact {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -540,6 +583,7 @@ export const onUpdateContact = `subscription OnUpdateContact {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -580,6 +624,7 @@ export const onDeleteContact = `subscription OnDeleteContact {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -619,6 +664,7 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -646,12 +692,14 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -680,6 +728,8 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -697,6 +747,7 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -724,12 +775,14 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -758,6 +811,8 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -775,6 +830,7 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
     phone
     firstName
     lastName
+    userId
     user {
       id
       cognitoUserId
@@ -802,12 +858,14 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -836,6 +894,8 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -852,6 +912,7 @@ export const onCreateMessage = `subscription OnCreateMessage {
     updatedAt
     localSentAt
     text
+    userId
     user {
       id
       cognitoUserId
@@ -879,12 +940,14 @@ export const onCreateMessage = `subscription OnCreateMessage {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -913,6 +976,8 @@ export const onCreateMessage = `subscription OnCreateMessage {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -931,6 +996,7 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
     updatedAt
     localSentAt
     text
+    userId
     user {
       id
       cognitoUserId
@@ -958,12 +1024,14 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -992,6 +1060,8 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }
@@ -1010,6 +1080,7 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
     updatedAt
     localSentAt
     text
+    userId
     user {
       id
       cognitoUserId
@@ -1037,12 +1108,14 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    eventId
     event {
       id
       cognitoUserId
       createdAt
       updatedAt
       title
+      userId
       user {
         id
         cognitoUserId
@@ -1071,6 +1144,8 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
         updatedAt
         localSentAt
         text
+        userId
+        eventId
         editedAt
         deletedAt
       }

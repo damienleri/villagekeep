@@ -33,6 +33,8 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import InlineFormCancelButton from "../components/InlineFormCancelButton";
 import InlineFormSubmitButton from "../components/InlineFormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
+import MessageComposer from "../components/MessageComposer";
+
 import {
   getEventByIdWithMessages,
   updateEvent,
@@ -63,23 +65,6 @@ export default class EventScreen extends React.Component {
       messages: []
     };
   }
-  handleServerUpdatedEvent = async event => {
-    // console.log("handleServerUpdatedEvent", event);
-    await this.loadEventWithMessages();
-  };
-
-  setupEventSubscription = async () => {
-    const event = this.props.navigation.getParam("event");
-    const { subscription, error } = await subscribeToEventUpdate({
-      eventId: event.id,
-      callback: this.handleServerUpdatedEvent
-    });
-    if (error) {
-      this.setState({ errorMessage: error });
-    } else {
-      this.eventUpdateSubscription = subscription;
-    }
-  };
 
   componentDidMount = async () => {
     console.log("componentdidmount");
@@ -111,16 +96,38 @@ export default class EventScreen extends React.Component {
       await this.eventUpdateSubscription.unsubscribe();
   };
   handleNetworkChanges = state => {
+    if (state.isConnected === !this.state.networkIsOffline) return; // no change
     this.setState({ networkIsOffline: !state.isConnected });
+    console.log("network change detected");
     if (state.isConnected) {
       this.loadEventWithMessages();
-      this.setupEventSubscription();
+      if (!this.eventUpdateSubscription) this.setupEventSubscription();
     }
+  };
+  setupEventSubscription = async () => {
+    const event = this.props.navigation.getParam("event");
+    const { subscription, error } = await subscribeToEventUpdate({
+      eventId: event.id,
+      callback: this.handleServerUpdatedEvent
+    });
+    if (error) {
+      this.setState({ errorMessage: error });
+    } else {
+      this.eventUpdateSubscription = subscription;
+    }
+  };
+
+  handleServerUpdatedEvent = async event => {
+    console.log(
+      "handleServerUpdatedEvent called while we have had this many ",
+      this.state.messages.length
+    );
+    await this.loadEventWithMessages();
   };
   loadEventWithMessages = async () => {
     const { networkIsOffline } = this.state;
-    console.log("networkIsOffline", networkIsOffline);
     if (networkIsOffline) return;
+    console.log("loading event data");
     const eventParam = this.props.navigation.getParam("event");
     if (this.props.navigation.getParam("isNewEvent"))
       return this.setState({ messagesAreLoaded: true });
@@ -131,10 +138,12 @@ export default class EventScreen extends React.Component {
       return this.setState({
         errorMessage: eventError
       });
-    const messages = sortBy(
-      cloneDeep(event.messages.items),
-      "createdAt"
-    ).reverse(); // the flalist is inverted
+    const messages = cloneDeep(event.messages.items);
+    // const messages = sortBy(
+    //   cloneDeep(event.messages.items),
+    //   "createdAt"
+    // ).reverse(); // the flalist is inverted
+    console.log("got new messages", messages[0]);
     this.setState({ event, messages, messagesAreLoaded: true });
   };
 
@@ -287,58 +296,15 @@ export default class EventScreen extends React.Component {
     await this.sendMessageInQueue(localSentAt);
   };
 
-  renderMessageInputRow = () => {
-    const { inputText, networkIsOffline } = this.state;
-
-    return (
-      <View
-        style={[
-          styles.messageInputRow,
-          networkIsOffline ? styles.messageInputRowOffline : {}
-        ]}
-      >
-        <TextInput
-          blurOnSubmit={false}
-          // multiline={true}
-          style={[
-            styles.messageInput,
-            networkIsOffline ? styles.messageInputOffline : {}
-          ]}
-          value={inputText}
-          onChangeText={inputText => this.setState({ inputText })}
-          onSubmitEditing={this.handleMessageSubmit}
-          ref={this.messageInputRef}
-          returnKeyType="send"
-          placeholder={
-            networkIsOffline ? "You are offline. Waiting..." : "Type a thing"
-          }
-          placeholderTextColor={
-            networkIsOffline ? colors.dangerColor : colors.brandColor
-          }
-          editable={!networkIsOffline}
-        />
-        <TouchableOpacity
-          onPress={this.handleMessageSubmit}
-          style={styles.messageSubmitContainer}
-        >
-          <View style={styles.messageSubmitButton}>
-            <Icon
-              name="arrow-upward"
-              fill={colors.brandColor}
-              height={40}
-              width={40}
-            />
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   handleAddPerson = () => {
     const { event } = this.state;
     this.setState({ showMoreActions: false });
     const user = this.props.navigation.getParam("user");
     this.props.navigation.navigate("EditEventPhones", { event, user });
+  };
+
+  handleChangeInputText = inputText => {
+    this.setState({ inputText });
   };
   render() {
     const {
@@ -349,7 +315,9 @@ export default class EventScreen extends React.Component {
       isEditingTitle,
       isSubmittingTitle,
       messagesAreLoaded,
-      showMoreActions
+      showMoreActions,
+      inputText,
+      networkIsOffline
     } = this.state;
 
     const moreActionsData = [
@@ -443,7 +411,15 @@ export default class EventScreen extends React.Component {
           <View style={styles.messageListContainer}>
             {!messagesAreLoaded ? <Spinner /> : this.renderMessageList()}
           </View>
-          {this.renderMessageInputRow()}
+
+          <MessageComposer
+            networkIsOffline={networkIsOffline}
+            inputText={inputText}
+            navigation={this.props.navigation}
+            handleMessageSubmit={this.handleMessageSubmit}
+            handleChangeInputText={this.handleChangeInputText}
+            ref={this.messageInputRef}
+          />
         </Form>
       </Layout>
     );
@@ -475,30 +451,6 @@ const styles = StyleSheet.create({
   messageText: {},
   messageAuthor: { color: "#aaa", fontSize: 13, fontWeight: "bold" },
   messageTime: { color: "#aaa", fontSize: 13 },
-  messageInputRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderTopColor: colors.brandColor,
-    borderTopWidth: 1
-    // backgroundColor: "white"
-  },
-  messageInputRowOffline: { borderTopColor: colors.dangerColor },
-  messageInput: {
-    borderWidth: 0,
-    flex: 2,
-    height: 50,
-    // backgroundColor: "white",
-    paddingHorizontal: 12,
-    paddingVertical: 2,
-    color: "white", // todo: detect theme
-    fontSize: 16
-  },
-  messageSubmitContainer: { paddingHorizontal: 10 }, //TouchableOpacity
-  messageSubmitButton: {
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  messageSubmitButtonIcon: {},
   deleteButton: { marginTop: 20 },
   errorMessage: {
     marginHorizontal: gutterWidth,

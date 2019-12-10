@@ -126,8 +126,8 @@ export const createMessage = async ({ localSentAt, text, event, user }) => {
         input: {
           localSentAt,
           text,
-          eventId: event.id,
-          userId: user.id,
+          messageEventId: event.id,
+          messageUserId: user.id,
           cognitoUserId: user.cognitoUserId
         }
       })
@@ -159,7 +159,7 @@ export const createContact = async ({
           phone,
           firstName,
           lastName,
-          userId: user.id,
+          contactUserId: user.id,
           cognitoUserId: user.cognitoUserId
         }
       })
@@ -207,7 +207,7 @@ export const createEvent = async ({ title, user }) => {
       graphqlOperation(mutations.createEvent, {
         input: {
           title,
-          userId: user.id,
+          eventUserId: user.id,
           cognitoUserId: user.cognitoUserId
         }
       })
@@ -258,9 +258,9 @@ export const addEventPhones = async ({ event, eventPhones, user }) => {
             phone: eventPhone.phone,
             firstName: eventPhone.firstName,
             lastName: eventPhone.lastName,
-            eventId: event.id,
+            eventPhoneEventId: event.id,
             cognitoUserId: user.cognitoUserId,
-            userId: user.id
+            eventPhoneUserId: user.id
           }
         })
       );
