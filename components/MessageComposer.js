@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -17,15 +18,15 @@ import {
   Text,
   Spinner,
   Input,
-  OverflowMenu,
-  withStyles
+  OverflowMenu
 } from "@ui-kitten/components";
 import { useColorScheme } from "react-native-appearance";
 
 import { gutterWidth, colors, topNavigationHeight } from "../utils/style";
 
-export default MessageComposer = React.forwardRef((props, ref) => {
-  const theme = useColorScheme();
+const MessageComposer = React.forwardRef((props, ref) => {
+  const { settings = {} } = props;
+  const { theme } = settings;
   return (
     <View
       style={[
@@ -73,13 +74,15 @@ export default MessageComposer = React.forwardRef((props, ref) => {
   );
 });
 
-// export default ThemedMessageComposer = withStyles(MessageComposer, theme => {
-//   console.log(theme);
-//   return { hello: "wold" };
-// });
-// export default ThemedMessageComposer = withStyles(MessageComposer, theme => ({
-//   backgroundColor: theme["color-primary-default"]
-// }));
+const mapStateToProps = ({ settings }) => {
+  return { settings };
+};
+export default connect(
+  mapStateToProps,
+  null,
+  null,
+  { forwardRef: true }
+)(MessageComposer);
 
 const styles = StyleSheet.create({
   messageInputRow: {

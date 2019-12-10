@@ -1,3 +1,21 @@
+export const getUserSettings = `query GetUser($id: ID!) {
+  getUser(id: $id) {
+    id
+    cognitoUserId
+    createdAt
+    updatedAt
+    phone
+    firstName
+    lastName
+    isParent
+    deletedAt
+    pushToken
+    pushEnabled
+    pushEnabledForEvents
+    pushEnabledForMessages
+  }
+}
+`;
 export const userByCognitoUserId = `query UserByCognitoUserId(
   $cognitoUserId: String
   $sortDirection: ModelSortDirection

@@ -5,7 +5,11 @@ import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
-import { getCurrentUser, updateUser } from "../utils/api";
+import { getUserSettings, updateUser } from "../utils/api";
+
+/// This component is used on multiple screens:
+/// - new user flow
+/// - settings tab
 
 export default class AccountForm extends React.Component {
   state = { firstName: "", lastName: "", isParent: null };
@@ -16,7 +20,7 @@ export default class AccountForm extends React.Component {
   async componentDidMount() {
     if (this.props.isNewUser) this.firstNameInputRef.current.focus();
     this.setState({ isLoading: true });
-    const { user, error: getCurrentUserError } = await getCurrentUser();
+    const { user, error: getCurrentUserError } = await getUserSettings();
     if (getCurrentUserError)
       return this.setState({
         errorMessage: getCurrentUserError,

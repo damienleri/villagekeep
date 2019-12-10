@@ -37,6 +37,21 @@ export const subscribeToEventUpdate = async ({ callback, eventId }) => {
   }
 };
 
+export const getUserSettings = async userId => {
+  try {
+    const res = await API.graphql(
+      graphqlOperation(queries.getUserSettings, { id: $userId })
+    );
+    const user = res.data.GetUser;
+    console.log("user", user);
+    return { user };
+  } catch (e) {
+    console.log(e);
+    return {
+      error: `Error loading your account: ${get(e, "errors[0].message")}`
+    };
+  }
+};
 export const getCurrentUser = async () => {
   const cognitoUser = await Auth.currentAuthenticatedUser();
   if (!cognitoUser) return { error: "You are not logged in." };

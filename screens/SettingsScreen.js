@@ -1,14 +1,25 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Platform, SafeAreaView, StyleSheet, View } from "react-native";
 import {} from "react-navigation";
-import { Layout, List, ListItem, Card, Text } from "@ui-kitten/components";
+import {
+  Layout,
+  List,
+  ListItem,
+  Card,
+  Text,
+  Toggle
+} from "@ui-kitten/components";
 import * as Device from "expo-device";
 import { Auth } from "aws-amplify";
 import { gutterWidth } from "../utils/style";
 import Button from "../components/Button";
 import BuildInfo from "../components/BuildInfo";
+import { setSettings } from "../redux/actions";
+import { getSetting } from "../redux/selectors";
+import { getUserSettings } from "../utils.api";
 
-export default class SettingsScreen extends React.Component {
+class SettingsScreen extends React.Component {
   handleLogout = async () => {
     try {
       await Auth.signOut();
@@ -18,10 +29,23 @@ export default class SettingsScreen extends React.Component {
     }
   };
   render() {
+    const { settings, setSettings } = this.props;
+    const { theme } = settings;
     const isDeveloper = !Device.isDevice; // in simulator
     return (
       <Layout style={styles.container}>
         <Text category="h4">Settings</Text>
+
+        <View style={styles.row}>
+          <Toggle
+            text="Dark mode"
+            checked={theme === "dark"}
+            onChange={isChecked => {
+              console.log(theme, isChecked);
+              setSettings({ theme: isChecked ? "dark" : "light" });
+            }}
+          />
+        </View>
         <View style={styles.row}>
           <Button
             appearance="outline"
@@ -56,6 +80,14 @@ export default class SettingsScreen extends React.Component {
     );
   }
 }
+const mapStateToProps = ({ settings }) => {
+  return { settings };
+};
+
+export default connect(
+  mapStateToProps,
+  { setSettings }
+)(SettingsScreen);
 
 const styles = StyleSheet.create({
   container: {

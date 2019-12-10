@@ -19,8 +19,6 @@ import {
 } from "@ui-kitten/components";
 import { groupBy } from "lodash";
 import moment from "moment";
-// import { Appearance } from "react-native-appearance";
-// const colorScheme = Appearance.getColorScheme();
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";

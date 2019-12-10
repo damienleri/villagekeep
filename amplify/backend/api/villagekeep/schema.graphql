@@ -25,6 +25,7 @@ type User
   pushEnabledForEvents: Boolean
   pushEnabledForMessages: Boolean
 }
+
 type Event
   # @auth(rules: [{ allow: owner, operations: [update, delete] }])
   @key(

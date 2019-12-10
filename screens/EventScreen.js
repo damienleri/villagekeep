@@ -59,6 +59,7 @@ export default class EventScreen extends React.Component {
     const event = props.navigation.getParam("event");
     console.log(`constructor() on EventScreen`);
     this.messageInputRef = React.createRef();
+    this.titleInputRef = React.createRef();
     this.state = {
       title: event.title,
       event,
@@ -72,10 +73,6 @@ export default class EventScreen extends React.Component {
       "didFocus",
       this.loadEventWithMessages
     );
-    //   async () => {
-    //     await this.loadEventWithMessages();
-    //   }
-    // );
 
     if (this.props.navigation.getParam("isNewEvent"))
       this.messageInputRef.current.focus();
@@ -139,11 +136,6 @@ export default class EventScreen extends React.Component {
         errorMessage: eventError
       });
     const messages = cloneDeep(event.messages.items);
-    // const messages = sortBy(
-    //   cloneDeep(event.messages.items),
-    //   "createdAt"
-    // ).reverse(); // the flalist is inverted
-    console.log("got new messages", messages[0]);
     this.setState({ event, messages, messagesAreLoaded: true });
   };
 
@@ -151,8 +143,6 @@ export default class EventScreen extends React.Component {
     const { title } = this.state;
     const event = this.props.navigation.getParam("event");
     this.setState({ isSubmittingTitle: true });
-
-    // console.log("updating title event id", event.id);
     const { event: updatedEvent, error: updateEventError } = await updateEvent({
       id: event.id,
       title
@@ -282,7 +272,7 @@ export default class EventScreen extends React.Component {
   handleMessageSubmit = async () => {
     const { inputText = "", event } = this.state;
     const user = this.props.navigation.getParam("user");
-    // this.messageInputRef.current.focus();
+
     if (!inputText.length) return;
     // localSentAt is just a unique key that allows local messages to be identifed when they round trip from server
     const localSentAt = new Date().getTime();
@@ -306,6 +296,13 @@ export default class EventScreen extends React.Component {
   handleChangeInputText = inputText => {
     this.setState({ inputText });
   };
+
+  handlePressTitle = async () => {
+    const event = this.props.navigation.getParam("event");
+    await this.setState({ isEditingTitle: true, title: event.title });
+    this.titleInputRef.current.focus();
+  };
+
   render() {
     const {
       errorMessage,
@@ -348,6 +345,9 @@ export default class EventScreen extends React.Component {
               value={title}
               maxLength={50}
               returnKeyType="done"
+              selectTextOnFocus={true}
+              onSubmitEditing={this.handleSubmitTitle}
+              ref={this.titleInputRef}
             />
             <View
               style={{
@@ -371,9 +371,7 @@ export default class EventScreen extends React.Component {
           <View style={styles.topRow}>
             <TouchableOpacity
               style={styles.titleContainer}
-              onPress={() =>
-                this.setState({ isEditingTitle: true, title: event.title })
-              }
+              onPress={this.handlePressTitle}
             >
               <Text style={styles.title}>{title}</Text>
               <Icon
