@@ -1,26 +1,31 @@
 import React from "react";
+import { connect } from "react-redux";
 import { StyleSheet } from "react-native";
 import { Icon, Layout, Text, Radio, Spinner } from "@ui-kitten/components";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
-import { getUserSettings, updateUser } from "../utils/api";
-
+import { getUserShallow, updateUser } from "../utils/api";
+import { setSettings } from "../redux/actions";
 /// This component is used on multiple screens:
 /// - new user flow
 /// - settings tab
 
-export default class AccountForm extends React.Component {
+class AccountForm extends React.Component {
   state = { firstName: "", lastName: "", isParent: null };
   constructor(props) {
     super(props);
     this.firstNameInputRef = React.createRef();
   }
   async componentDidMount() {
+    const { settings = {} } = this.props;
+    const { homeScreenUser } = settings;
     if (this.props.isNewUser) this.firstNameInputRef.current.focus();
     this.setState({ isLoading: true });
-    const { user, error: getCurrentUserError } = await getUserSettings();
+    const { user, error: getCurrentUserError } = await getUserShallow(
+      homeScreenUser.id
+    );
     if (getCurrentUserError)
       return this.setState({
         errorMessage: getCurrentUserError,
@@ -51,6 +56,8 @@ export default class AccountForm extends React.Component {
       console.log("error updating user", error);
       return this.setState({ errorMessage: error, isSubmitting: false });
     }
+
+    // setSettings(
     await onSave();
   };
 
@@ -147,6 +154,7 @@ export default class AccountForm extends React.Component {
   }
 }
 
+export default connect(({ settings }) => ({ settings }))(AccountForm);
 const styles = StyleSheet.create({
   radioRow: {
     flexDirection: "row",

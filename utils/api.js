@@ -37,13 +37,12 @@ export const subscribeToEventUpdate = async ({ callback, eventId }) => {
   }
 };
 
-export const getUserSettings = async userId => {
+export const getUserShallow = async userId => {
   try {
     const res = await API.graphql(
-      graphqlOperation(queries.getUserSettings, { id: $userId })
+      graphqlOperation(queries.getUserShallow, { id: userId })
     );
-    const user = res.data.GetUser;
-    console.log("user", user);
+    const user = res.data.getUser;
     return { user };
   } catch (e) {
     console.log(e);
@@ -52,16 +51,18 @@ export const getUserSettings = async userId => {
     };
   }
 };
-export const getCurrentUser = async () => {
+// let cache = {}
+export async function getCurrentUser() {
   const cognitoUser = await Auth.currentAuthenticatedUser();
   if (!cognitoUser) return { error: "You are not logged in." };
   const cognitoUserId = cognitoUser.attributes.sub;
+
   try {
-    // console.log("getting user for ", cognitoUserId);
+    console.log("getting API user for cognito ID", cognitoUserId);
+
     const res = await API.graphql(
       graphqlOperation(queries.userByCognitoUserId, { cognitoUserId })
     );
-    // console.log("userByCognitoUserId result", res);
     const user = res.data.userByCognitoUserId.items[0];
     if (!user) {
       console.log("No account found.");
@@ -71,12 +72,45 @@ export const getCurrentUser = async () => {
           "Your user account was not created. Please report this to tech support."
       };
     }
+    // console.log(user);
     return { cognitoUser, user };
   } catch (e) {
     console.log("error from auth", e);
     return { error: `Error getting your account: ${e.errors.join(". ")}` };
   }
-};
+}
+// export const getCurrentUser = getCurrentUserFn;
+// export const getCurrentUser2 = connect(
+//   () => {},
+//   { setSettings }
+// )(getCurrentUserFn);
+// export const connect(null, {setSettings})(getCurrentUser)
+// export const getCurrentUser = async () => {
+//   const cognitoUser = await Auth.currentAuthenticatedUser();
+//   if (!cognitoUser) return { error: "You are not logged in." };
+//   const cognitoUserId = cognitoUser.attributes.sub;
+//   try {
+//     console.log("getting API user for cognito ID", cognitoUserId);
+//
+//     const res = await API.graphql(
+//       graphqlOperation(queries.userByCognitoUserId, { cognitoUserId })
+//     );
+//     // console.log("userByCognitoUserId result", res);
+//     const user = res.data.userByCognitoUserId.items[0];
+//     if (!user) {
+//       console.log("No account found.");
+//       return {
+//         cognitoUser,
+//         error:
+//           "Your user account was not created. Please report this to tech support."
+//       };
+//     }
+//     return { cognitoUser, user };
+//   } catch (e) {
+//     console.log("error from auth", e);
+//     return { error: `Error getting your account: ${e.errors.join(". ")}` };
+//   }
+// };
 
 export const createCurrentUser = async () => {
   const cognitoUser = await Auth.currentAuthenticatedUser();
@@ -462,7 +496,7 @@ export const getEventByIdWithMessages = async eventId => {
   }
 };
 export const getEventPhonesByPhone = async phone => {
-  //  designed for EventsScreen
+  //  designed for HomeScreen
   try {
     const res = await API.graphql(
       graphqlOperation(queries.eventPhonesByPhone, { phone })

@@ -1,4 +1,4 @@
-export const getUserSettings = `query GetUser($id: ID!) {
+export const getUserShallow = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
     cognitoUserId

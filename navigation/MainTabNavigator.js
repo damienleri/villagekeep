@@ -10,7 +10,7 @@ import {
   Layout
 } from "@ui-kitten/components";
 
-import EventsScreen from "../screens/EventsScreen";
+import HomeScreen from "../screens/HomeScreen";
 import TestApiScreen from "../screens/TestApiScreen";
 import PeopleScreen from "../screens/PeopleScreen";
 import SettingsScreen from "../screens/SettingsScreen";
@@ -51,7 +51,7 @@ const TabBarComponent = ({ navigation }) => {
 
 const EventsStack = createStackNavigator(
   {
-    Events: EventsScreen,
+    Events: HomeScreen,
     Event: EventScreen,
     EditEventPhones: EditEventPhonesScreen
     // EditEvent: EditEventScreen

@@ -447,7 +447,7 @@ export const getEventByIdWithMessages = async eventId => {
   }
 };
 export const getEventPhonesByPhone = async phone => {
-  //  designed for EventsScreen
+  //  designed for HomeScreen
   try {
     const res = await API.graphql(
       graphqlOperation(queries.eventPhonesByPhone, { phone })

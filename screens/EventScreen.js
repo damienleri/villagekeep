@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -34,7 +35,8 @@ import InlineFormCancelButton from "../components/InlineFormCancelButton";
 import InlineFormSubmitButton from "../components/InlineFormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import MessageComposer from "../components/MessageComposer";
-
+import { NetworkContext } from "../components/NetworkProvider";
+import { setSettings } from "../redux/actions";
 import {
   getEventByIdWithMessages,
   updateEvent,
@@ -49,31 +51,31 @@ import {
   getFormattedNameFromUser,
   getFormattedMessageTime
 } from "../utils/etc";
+import { cachedRefresh } from "../utils/caching";
 
-export default class EventScreen extends React.Component {
+class EventScreen extends React.Component {
+  static contextType = NetworkContext;
   // static navigationOptions = props => ({
   //   header: <TopNavigation {...props} style={{ height: topNavHeight }} />
   // });
   constructor(props) {
     super(props);
     const event = props.navigation.getParam("event");
-    console.log(`constructor() on EventScreen`);
     this.messageInputRef = React.createRef();
     this.titleInputRef = React.createRef();
     this.state = {
       title: event.title,
-      event,
-      messages: []
+      messagesKey: `eventScreenMessages-${event.id}`
+      // event,
+      // messages: []
     };
   }
 
   componentDidMount = async () => {
-    console.log("componentdidmount");
     this.loadEventSubcription = this.props.navigation.addListener(
-      "didFocus",
+      "willFocus",
       this.loadEventWithMessages
     );
-
     if (this.props.navigation.getParam("isNewEvent"))
       this.messageInputRef.current.focus();
 
@@ -83,7 +85,7 @@ export default class EventScreen extends React.Component {
     const networkState = await NetInfo.fetch();
 
     if (networkState.isConnected) {
-      this.setupEventSubscription();
+      this.setupServerSubscription();
     }
   };
   componentWillUnmount = async () => {
@@ -93,63 +95,86 @@ export default class EventScreen extends React.Component {
       await this.eventUpdateSubscription.unsubscribe();
   };
   handleNetworkChanges = state => {
-    if (state.isConnected === !this.state.networkIsOffline) return; // no change
-    this.setState({ networkIsOffline: !state.isConnected });
+    if (state.isConnected === this.context.isConnected) return; // no change
+    // this.setState({ networkIsOffline: !state.isConnected });
     console.log("network change detected");
     if (state.isConnected) {
       this.loadEventWithMessages();
-      if (!this.eventUpdateSubscription) this.setupEventSubscription();
+      if (!this.eventUpdateSubscription) this.setupServerSubscription();
     }
   };
-  setupEventSubscription = async () => {
+  setupServerSubscription = async () => {
     const event = this.props.navigation.getParam("event");
     const { subscription, error } = await subscribeToEventUpdate({
       eventId: event.id,
       callback: this.handleServerUpdatedEvent
     });
     if (error) {
-      this.setState({ errorMessage: error });
+      this.setState({ error });
     } else {
       this.eventUpdateSubscription = subscription;
     }
   };
 
   handleServerUpdatedEvent = async event => {
-    console.log(
-      "handleServerUpdatedEvent called while we have had this many ",
-      this.state.messages.length
-    );
     await this.loadEventWithMessages();
   };
-  loadEventWithMessages = async () => {
-    const { networkIsOffline } = this.state;
-    if (networkIsOffline) return;
-    console.log("loading event data");
-    const eventParam = this.props.navigation.getParam("event");
-    if (this.props.navigation.getParam("isNewEvent"))
-      return this.setState({ messagesAreLoaded: true });
-    const { event, error: eventError } = await getEventByIdWithMessages(
-      eventParam.id
-    );
-    if (eventError)
-      return this.setState({
-        errorMessage: eventError
-      });
+
+  fetchMessagesForEventId = async eventId => {
+    const { event, error } = await getEventByIdWithMessages(eventId);
+    if (error) return { error };
     const messages = cloneDeep(event.messages.items);
-    this.setState({ event, messages, messagesAreLoaded: true });
+    return { event, messages };
+  };
+
+  loadEventWithMessages = async () => {
+    const { settings = {}, setSettings } = this.props;
+    const { messagesKey } = this.state;
+    const event = this.props.navigation.getParam("event");
+
+    if (this.context.isConnected) {
+      const { messages, error } = await this.fetchMessagesForEventId(event.id);
+      if (messages) setSettings({ [messagesKey]: messages });
+      if (error) this.setState({ error });
+    }
+
+    // if (this.props.navigation.getParam("isNewEvent"))
+    //   return this.setState({ messagesAreLoaded: true });
+    //
+    // const messagesKey = `eventScreenMessages-${eventParam.id}`;
+    // const { error } = await cachedRefresh({
+    //   cachedData: settings[messagesKey] && {
+    //     messages: settings[messagesKey]
+    //   },
+    //   getData: async () => {
+    //     const { messages, error } = await this.fetchMessagesForEventId(
+    //       eventParam.id
+    //     );
+    //     return { data: { messages }, error };
+    //   },
+    //   onHaveData: ({ messages }) => {
+    //     this.setState({ messages, messagesAreLoaded: true });
+    //   },
+    //   updateCache: ({ messages }) => setSettings({ [messagesKey]: messages }),
+    //   networkIsOffline: !this.context.isConnected
+    // });
+    // if (error)
+    //   return this.setState({
+    //     error
+    //   });
   };
 
   handleSubmitTitle = async () => {
     const { title } = this.state;
     const event = this.props.navigation.getParam("event");
     this.setState({ isSubmittingTitle: true });
-    const { event: updatedEvent, error: updateEventError } = await updateEvent({
+    const { event: updatedEvent, error } = await updateEvent({
       id: event.id,
       title
     });
-    if (updateEventError) {
+    if (error) {
       this.setState({
-        errorMessage: updateEventError,
+        error,
         isSubmittingTitle: false
       });
       return;
@@ -162,9 +187,9 @@ export default class EventScreen extends React.Component {
     const event = this.props.navigation.getParam("event");
     this.setState({ isLoading: true });
 
-    const { error: errorMessage } = await deleteEvent({ eventId: event.id });
-    if (errorMessage) {
-      this.setState({ errorMessage });
+    const { error } = await deleteEvent({ eventId: event.id });
+    if (error) {
+      this.setState({ error });
       return;
     }
     this.props.navigation.goBack();
@@ -211,8 +236,10 @@ export default class EventScreen extends React.Component {
   };
 
   renderMessageList = () => {
-    const { event, messages } = this.state;
+    const { event, messagesKey } = this.state;
+    const { [messagesKey]: messages } = this.props.settings;
     // console.log(messages);
+    if (!messages) return <Spinner />;
     return (
       <FlatList
         inverted
@@ -226,20 +253,22 @@ export default class EventScreen extends React.Component {
   };
 
   addMessageToQueue = async localMessage => {
-    // console.log(this.state.messages);
-    await this.setState({
-      messages: [localMessage].concat(this.state.messages) // at the beginning because list is inverted
-    });
+    const { messagesKey } = this.state;
+    const { [messagesKey]: messages } = this.props.settings;
+    const { setSettings } = this.props;
+    await setSettings({ [messagesKey]: [localMessage].concat(messages) });
+    // await this.setState({
+    //   messages: [localMessage].concat(this.state.messages) // at the beginning because list is inverted
+    // });
   };
   sendMessageInQueue = async localSentAt => {
+    const { messagesKey } = this.state;
+    const { [messagesKey]: messages } = this.props.settings;
     this.setState({ isSubittingMessage: true });
-    const localMessage = this.state.messages.find(
-      m => m.localSentAt === localSentAt
-    );
+    const localMessage = messages.find(m => m.localSentAt === localSentAt);
     if (!localMessage)
       return console.log(
-        `can't find localSentAt ${localSentAt} in messages`,
-        this.state.messages
+        `sendMessageInQueue: can't find localSentAt ${localSentAt} in messages`
       );
     if (localMessage.id)
       return console.log(`Message ${localSentAt} is already sent!`);
@@ -252,14 +281,13 @@ export default class EventScreen extends React.Component {
     });
   };
   updateMessageInQueue = ({ localSentAt, message, error }) => {
+    const { messagesKey } = this.state;
+    const { [messagesKey]: messages } = this.props.settings;
     // Either 'message' or 'error' should be sent. message is the returned object from server after creation.
-    const localMessage = this.state.messages.find(
-      m => m.localSentAt === localSentAt
-    );
+    const localMessage = messages.find(m => m.localSentAt === localSentAt);
     if (!localMessage)
       return console.log(
-        `can't find localSentAt ${localSentAt} in messages`,
-        this.state.messages
+        `updateMessageInQueue: can't find localSentAt ${localSentAt} in messages`
       );
     if (message) {
       localMessage.wasDelivered = true;
@@ -270,7 +298,8 @@ export default class EventScreen extends React.Component {
   };
 
   handleMessageSubmit = async () => {
-    const { inputText = "", event } = this.state;
+    const { inputText = "" } = this.state;
+    const event = this.props.navigation.getParam("event");
     const user = this.props.navigation.getParam("user");
 
     if (!inputText.length) return;
@@ -287,9 +316,9 @@ export default class EventScreen extends React.Component {
   };
 
   handleAddPerson = () => {
-    const { event } = this.state;
-    this.setState({ showMoreActions: false });
+    const event = this.props.navigation.getParam("event");
     const user = this.props.navigation.getParam("user");
+    // this.setState({ showMoreActions: false });
     this.props.navigation.navigate("EditEventPhones", { event, user });
   };
 
@@ -305,7 +334,7 @@ export default class EventScreen extends React.Component {
 
   render() {
     const {
-      errorMessage,
+      error,
       title,
       isRefreshing,
       isLoading,
@@ -313,8 +342,7 @@ export default class EventScreen extends React.Component {
       isSubmittingTitle,
       messagesAreLoaded,
       showMoreActions,
-      inputText,
-      networkIsOffline
+      inputText
     } = this.state;
 
     const moreActionsData = [
@@ -339,9 +367,7 @@ export default class EventScreen extends React.Component {
             <InlineFormInput
               label=""
               placeholder="A name for the event"
-              onChangeText={title =>
-                this.setState({ title, errorMessage: false })
-              }
+              onChangeText={title => this.setState({ title, error: false })}
               value={title}
               maxLength={50}
               returnKeyType="done"
@@ -399,19 +425,19 @@ export default class EventScreen extends React.Component {
           </View>
         )}
 
-        {errorMessage && (
-          <Text style={styles.errorMessage} status="danger">
-            {errorMessage}
+        {error && (
+          <Text style={styles.error} status="danger">
+            {error}
           </Text>
         )}
 
         <Form style={styles.messageForm}>
           <View style={styles.messageListContainer}>
-            {!messagesAreLoaded ? <Spinner /> : this.renderMessageList()}
+            {this.renderMessageList()}
           </View>
 
           <MessageComposer
-            networkIsOffline={networkIsOffline}
+            networkIsOffline={!this.context.isConnected}
             inputText={inputText}
             navigation={this.props.navigation}
             handleMessageSubmit={this.handleMessageSubmit}
@@ -423,6 +449,11 @@ export default class EventScreen extends React.Component {
     );
   }
 }
+
+export default connect(
+  ({ settings }) => ({ settings }),
+  { setSettings }
+)(EventScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -450,7 +481,7 @@ const styles = StyleSheet.create({
   messageAuthor: { color: "#aaa", fontSize: 13, fontWeight: "bold" },
   messageTime: { color: "#aaa", fontSize: 13 },
   deleteButton: { marginTop: 20 },
-  errorMessage: {
+  error: {
     marginHorizontal: gutterWidth,
     marginVertical: gutterWidth,
     textAlign: "center"

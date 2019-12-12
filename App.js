@@ -19,6 +19,7 @@ import { PersistGate } from "redux-persist/integration/react";
 
 import awsConfig from "./aws-exports";
 import { setSettings } from "./redux/actions";
+import { NetworkProvider } from "./components/NetworkProvider";
 
 import { store, persistor } from "./redux/store";
 console.log(!!store, !!persistor);
@@ -32,15 +33,17 @@ function AppContents(props) {
   return (
     <AppearanceProvider>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider
-        mapping={mapping}
-        theme={theme === "dark" ? darkTheme : lightTheme}
-      >
-        <View style={styles.container}>
-          {Platform.OS === "ios" && <StatusBar barStyle="default" />}
-          <AppNavigator />
-        </View>
-      </ApplicationProvider>
+      <NetworkProvider>
+        <ApplicationProvider
+          mapping={mapping}
+          theme={theme === "dark" ? darkTheme : lightTheme}
+        >
+          <View style={styles.container}>
+            {Platform.OS === "ios" && <StatusBar barStyle="default" />}
+            <AppNavigator />
+          </View>
+        </ApplicationProvider>
+      </NetworkProvider>
     </AppearanceProvider>
   );
 }

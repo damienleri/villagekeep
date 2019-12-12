@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -32,53 +33,72 @@ import {
   getFormattedNameFromUser,
   getFormattedMessageTime
 } from "../utils/etc";
+import { cachedRefresh } from "../utils/caching";
 import { gutterWidth, colors, textLinkColor } from "../utils/style";
 import EventsEmptyState from "../components/EventsEmptyState";
 import AddEventActions from "../components/AddEventActions";
+import { setSettings } from "../redux/actions";
+import { NetworkContext } from "../components/NetworkProvider";
 
-export default class PeopleScreen extends React.Component {
+class HomeScreen extends React.Component {
+  static contextType = NetworkContext;
   state = {};
   componentDidMount = async () => {
     /* call loadUserData() whenever this screen is displayed, in case data has changed */
     this.loadUserDataSubcription = this.props.navigation.addListener(
-      "didFocus",
-      async () => {
-        await this.loadUserData();
-      }
+      "willFocus",
+      this.loadUserData
     );
   };
   componentWillUnmount() {
     this.loadUserDataSubcription.remove();
   }
-  loadUserData = async () => {
+
+  fetchUserData = async () => {
     const { user, error: currentUserError } = await getCurrentUser();
-    if (currentUserError) {
-      this.setState({
-        generalErrorMessage: currentUserError
-      });
-      return;
-    }
+    if (currentUserError) return { error: currentUserError };
     const {
       eventPhones,
       error: eventPhonesError
     } = await getEventPhonesByPhone(user.phone);
-    if (eventPhonesError) {
-      this.setState({
-        generalErrorMessage: eventPhonesError
-      });
-      return;
-    }
-
+    if (eventPhonesError) return { error: eventPhoneError };
     const events = eventPhones.map(ep => ep.event).filter(event => !!event);
-    // console.log("events", events);
-    this.setState({ user, events, userLoaded: true });
+    return { user, events };
   };
+
+  loadUserData = async () => {
+    const { settings = {}, setSettings } = this.props;
+    const { error } = await cachedRefresh({
+      cachedData: settings.homeScreenUser &&
+        settings.homeScreenEvents && {
+          user: settings.homeScreenUser,
+          events: settings.homeScreenEvents
+        },
+      getData: async () => {
+        const { user, events, error } = await this.fetchUserData();
+        return { data: { user, events }, error };
+      },
+      onHaveData: ({ user, events }) => {
+        this.setState({ user, events, userLoaded: true });
+      },
+      updateCache: ({ user, events }) =>
+        setSettings({ homeScreenUser: user, homeScreenEvents: events }),
+      networkIsOffline: !this.context.isConnected
+    });
+
+    if (error)
+      return this.setState({
+        generalErrorMessage: error
+      });
+  };
+
   handleRefresh = async () => {
     // pull to refresh
     this.setState({ isRefreshing: true });
     await this.loadUserData();
     this.setState({ isRefreshing: false });
   };
+
   handleAddEvent = ({}) => {
     this.props.navigation.navigate("EditEventPhones", {
       user: this.state.user
@@ -224,6 +244,10 @@ export default class PeopleScreen extends React.Component {
     );
   }
 }
+export default connect(
+  ({ settings }) => ({ settings }),
+  { setSettings }
+)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {

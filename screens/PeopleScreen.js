@@ -81,7 +81,7 @@ export default class PeopleScreen extends React.Component {
     /* call loadUserData() whenever this screen is displayed, in case data has changed */
 
     this.loadUserDataSubcription = this.props.navigation.addListener(
-      "didFocus",
+      "willFocus",
       async () => {
         await this.loadUserData();
       }

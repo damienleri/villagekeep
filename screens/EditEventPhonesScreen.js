@@ -113,7 +113,7 @@ export default class EditEventPhonesScreen extends React.Component {
       }
 
       if (returnToEvents) {
-        this.props.navigation.navigate("Events");
+        this.props.navigation.navigate("Home");
       } else {
         this.props.navigation.navigate("Event", { user });
       }
