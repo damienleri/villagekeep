@@ -447,6 +447,7 @@ export const deleteEvent = async ({ eventId }) => {
 // }
 
 export const updateUser = async input => {
+  console.log("updating user", input);
   try {
     const res = await API.graphql(
       graphqlOperation(mutations.updateUser, {

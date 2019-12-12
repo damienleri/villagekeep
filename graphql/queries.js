@@ -1,21 +1,21 @@
-export const getUserShallow = `query GetUser($id: ID!) {
-  getUser(id: $id) {
-    id
-    cognitoUserId
-    createdAt
-    updatedAt
-    phone
-    firstName
-    lastName
-    isParent
-    deletedAt
-    pushToken
-    pushEnabled
-    pushEnabledForEvents
-    pushEnabledForMessages
-  }
-}
-`;
+// export const getUserShallow = `query GetUser($id: ID!) {
+//   getUser(id: $id) {
+//     id
+//     cognitoUserId
+//     createdAt
+//     updatedAt
+//     phone
+//     firstName
+//     lastName
+//     isParent
+//     deletedAt
+//     pushToken
+//     pushEnabled
+//     pushEnabledForEvents
+//     pushEnabledForMessages
+//   }
+// }
+// `;
 export const userByCognitoUserId = `query UserByCognitoUserId(
   $cognitoUserId: String
   $sortDirection: ModelSortDirection
@@ -39,6 +39,7 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       firstName
       lastName
       isParent
+      pushEnabled
       events {
         items {
           latestMessage {
