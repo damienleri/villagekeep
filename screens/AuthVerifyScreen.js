@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { StyleSheet, View } from "react-native";
 import { Icon, Layout, Text, Button } from "@ui-kitten/components";
 import Form from "../components/Form";
@@ -7,10 +8,11 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import { Auth } from "aws-amplify";
 import { createCurrentUser } from "../utils/api";
 import { gutterWidth } from "../utils/style";
+import { setSettings as setSettingsType } from "../redux/actions";
 
 const codeLength = 6;
 
-export default class AuthVerifyScreen extends React.Component {
+class AuthVerifyScreen extends React.Component {
   state = { code: "" };
 
   constructor() {
@@ -67,6 +69,8 @@ export default class AuthVerifyScreen extends React.Component {
       return;
     }
     console.log("created api user", user);
+
+    setSettings({ user });
     this.props.navigation.navigate("AuthEditAccount");
     return;
   };
@@ -141,6 +145,10 @@ export default class AuthVerifyScreen extends React.Component {
     );
   }
 }
+export default connect(
+  ({ settings }) => ({ settings }),
+  { setSettings: setSettingsType }
+)(AuthVerifyScreen);
 
 const styles = StyleSheet.create({
   container: {

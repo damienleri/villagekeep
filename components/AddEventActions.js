@@ -14,7 +14,7 @@ import {
 import Button from "./Button";
 import { colors } from "../utils/style";
 
-const AddIcon = style => <Icon {...style} name="star" />;
+// const AddIcon = style => <Icon {...style} name="star" />;
 
 const AddEventActions = ({ user, appearance, handleAddEvent }) => {
   return (

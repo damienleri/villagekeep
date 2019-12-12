@@ -26,8 +26,27 @@ import SettingNotificationsForm from "../components/SettingNotificationsForm";
 
 class SettingNotificationsScreen extends React.Component {
   render() {
-    return <SettingNotificationsForm />;
+    return (
+      <Layout style={styles.container}>
+        <View style={styles.intro}>
+          <Text category="h5" style={styles.introHeader}>
+            Push Notifications
+          </Text>
+        </View>
+
+        <SettingNotificationsForm />
+      </Layout>
+    );
   }
 }
 
 export default SettingNotificationsScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: gutterWidth
+  },
+  // intro: { marginHorizontal: gutterWidth },
+  introHeader: {},
+  introText: { marginVertical: 10 }
+});

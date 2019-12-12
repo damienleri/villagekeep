@@ -49,6 +49,8 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^7.0.0",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-native": "^3.8.1",
     "fs": "^0.0.1-security",
     "jest-expo": "^35.0.0",
     "jsonfile": "^5.0.0",

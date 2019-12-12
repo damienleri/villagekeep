@@ -170,14 +170,13 @@ class HomeScreen extends React.Component {
               </View>
             )}
           </View>
-          <View style={{ justifyContent: "center" }}>
-            <Icon
-              name="chevron-right"
-              width={32}
-              height={32}
-              fill={colors.brandColor}
-            />
-          </View>
+
+          <Icon
+            name="chevron-right"
+            width={32}
+            height={32}
+            fill={colors.brandColor}
+          />
         </View>
       </TouchableOpacity>
     );
@@ -194,7 +193,7 @@ class HomeScreen extends React.Component {
         <AddEventActions
           user={user}
           handleAddEvent={this.handleAddEvent}
-          appearance="ghost"
+          appearance="outline"
         />
 
         <FlatList
@@ -231,9 +230,7 @@ class HomeScreen extends React.Component {
             </Text>
           )}
 
-          <Text category="h2" style={styles.header}>
-            Village Keep
-          </Text>
+          <Text style={styles.header}>Village Keep</Text>
 
           <View style={styles.eventsContainer}>
             {!user ? (
@@ -260,31 +257,32 @@ export default connect(
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 0,
     paddingHorizontal: gutterWidth
   },
   header: {
-    marginBottom: 10,
+    paddingVertical: 18,
+    fontSize: 28,
     fontWeight: "normal",
     textTransform: "uppercase",
     textAlign: "center",
     color: colors.brandColor
   },
   error: {
-    marginVertical: 20
+    marginVertical: 24
   },
   eventsContainer: { paddingVertical: 0 },
-  eventsSection: {
-    marginVertical: 10
-  },
   list: {
-    marginVertical: 20
+    marginVertical: 16
   },
-  listItem: { flexDirection: "row", justifyContent: "space-between" },
+  listItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
   listItemSeparator: {
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     backgroundColor: colors.brandColor,
-    marginVertical: 10
+    marginVertical: 8
   },
   eventTopRow: {
     flexDirection: "row",

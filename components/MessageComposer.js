@@ -35,8 +35,8 @@ const MessageComposer = React.forwardRef((props, ref) => {
       ]}
     >
       <TextInput
-        blurOnSubmit={false}
-        // multiline={true}
+        multiline={true}
+        blurOnSubmit={true}
         style={[
           styles.messageInput,
           themeStyles[theme].messageInput,
@@ -93,12 +93,29 @@ const styles = StyleSheet.create({
     // backgroundColor: "white"
   },
   messageInputRowOffline: { borderTopColor: colors.dangerColor },
+  // inputContainer: {
+  //   // marginTop: 100,
+  //   flexDirection: "row",
+  //   alignSelf: "center",
+  //   width: "96%",
+  //   marginLeft: 2,
+  //   marginRight: 2,
+  //   marginBottom: 10,
+  //   minHeight: 50, //... For dynamic height
+  //   // borderRadius: 50,
+  //   backgroundColor: "transparent",
+  //   borderWidth: 1,
+  //   borderColor: "gray",
+  //   paddingLeft: 10, //... With respect to the min height, so that it doesn't cut
+  //   paddingTop: 10, //... With respect to the min height, so that it doesn't cut
+  //   paddingBottom: 10 //... With respect to the min height, so that it doesn't cut
+  // },
   messageInput: {
     borderWidth: 0,
     flex: 2,
-    height: 50,
+    minHeight: 70,
     paddingHorizontal: 12,
-    paddingVertical: 2,
+    paddingVertical: 5,
     fontSize: 16
   },
   // themedMessageInput: { dark: { color: "white" }, light: { color: "black" } },

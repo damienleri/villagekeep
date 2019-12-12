@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, View, ScrollView, RefreshControl } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  RefreshControl,
+  FlatList,
+  TouchableOpacity
+} from "react-native";
 import {
   Icon,
   Layout,
@@ -119,28 +126,49 @@ export default class PeopleScreen extends React.Component {
   handlePhonePress = ({ phone }) => {
     Linking.openURL(`tel:${phone}`);
   };
-  renderContact = (contact, index) => {
+
+  renderItem = ({ item: contact, index }) => {
     let { firstName, lastName, phone, isParent } = contact;
+    const description = "";
+    //            <Text style={styles.listItemDescription}>{description}</Text>
+
     return (
-      <View key={index} style={styles.contact}>
-        <Text style={styles.contactName}>
-          {firstName} {lastName}
-        </Text>
-        <Text
-          style={styles.contactPhone}
-          onPress={() => this.handlePhonePress({ phone })}
-        >
-          {formatPhone(phone)}
-        </Text>
-        <Button
-          appearance="ghost"
-          onPress={() => this.handleEditContact({ contact })}
-        >
-          Edit
-        </Button>
+      <View>
+        <View style={styles.listItem}>
+          <View>
+            <Text style={styles.contactName}>
+              {firstName} {lastName}
+            </Text>
+            <Button
+              appearance="ghost"
+              inline={true}
+              style={styles.contactPhone}
+              onPress={() => this.handlePhonePress({ phone })}
+            >
+              {formatPhone(phone)}
+            </Button>
+          </View>
+          <Button
+            appearance="ghost"
+            onPress={() => this.handleEditContact({ contact })}
+          >
+            Edit
+          </Button>
+        </View>
       </View>
     );
   };
+
+  renderListForContacts = contacts => (
+    <FlatList
+      style={styles.list}
+      renderItem={this.renderItem}
+      data={contacts}
+      keyExtractor={item => item.id}
+      ItemSeparatorComponent={() => <View style={styles.listItemSeparator} />}
+    />
+  );
+
   renderContactsList = () => {
     // <Card>
     //   <CardHeader>Dale Cooper</CardHeader>
@@ -159,42 +187,34 @@ export default class PeopleScreen extends React.Component {
         <AddContactActions
           isParent={isParent}
           handleAddContact={this.handleAddContact}
-          appearance="ghost"
+          appearance="outline"
         />
         {isParent ? (
           <View style={styles.contactsSection}>
-            <Text style={styles.contactsHeader} appearance="hint" category="h6">
+            <Text style={styles.contactsSectionHeader}>
               Your {contactsByType.kid.length > 1 ? " kids" : " kid"}
             </Text>
-            {contactsByType.kid.map(this.renderContact)}
+            {this.renderListForContacts(contactsByType.kid)}
           </View>
         ) : (
           <React.Fragment>
             {contactsByType.parent && (
               <View style={styles.contactsSection}>
-                <Text
-                  style={styles.contactsHeader}
-                  appearance="hint"
-                  category="h6"
-                >
+                <Text style={styles.contactsSectionHeader}>
                   Your{" "}
                   {contactsByType.parent.length > 1
                     ? " loving guardians"
                     : " loving guardian"}
                 </Text>
-                {contactsByType.parent.map(this.renderContact)}
+                {this.renderListForContacts(contactsByType.parent)}
               </View>
             )}
             {contactsByType.friend && (
               <View style={styles.contactsSection}>
-                <Text
-                  style={styles.contactsHeader}
-                  appearance="hint"
-                  category="h6"
-                >
-                  Your {contactsByType.parent.length > 1 ? "friends" : "friend"}
+                <Text style={styles.contactsSectionHeader}>
+                  Your {contactsByType.friend.length > 1 ? "friends" : "friend"}
                 </Text>
-                {contactsByType.friend.map(this.renderContact)}
+                {this.renderListForContacts(contactsByType.friend)}
               </View>
             )}
           </React.Fragment>
@@ -221,9 +241,7 @@ export default class PeopleScreen extends React.Component {
               {generalErrorMessage}
             </Text>
           )}
-          <Text category="h4" style={styles.header}>
-            This is your village
-          </Text>
+          <Text style={styles.header}>This is your village</Text>
           <View style={styles.contactsContainer}>
             {!userLoaded ? (
               <Spinner />
@@ -244,30 +262,60 @@ export default class PeopleScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 20,
     paddingHorizontal: gutterWidth
   },
   header: {
-    marginBottom: 10,
-    fontWeight: "normal"
+    paddingVertical: 16,
+    fontSize: 28,
+    fontWeight: "normal",
+    textTransform: "uppercase",
+    textAlign: "center",
+    color: colors.brandColor
   },
+  // header: {
+  //   marginBottom: 10,
+  //   fontWeight: "normal"
+  // },
   generalErrorMessage: {
-    marginVertical: 20
+    marginVertical: 24
   },
   contactsContainer: { paddingVertical: 0 },
   contactsSection: {
-    marginVertical: 10
+    marginBottom: 16
   },
-  contact: {
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: "#aaa",
-    marginVertical: 10
+  contactsSectionHeader: {
+    color: "#aaa",
+    fontSize: 15,
+    textTransform: "uppercase",
+    marginTop: 16,
+    marginBottom: 8
   },
-  contactsHeader: {},
-  contactName: { fontWeight: "bold" },
-  contactPhone: { color: colors.brandColor, marginVertical: 5 },
+  list: {
+    // marginVertical: 20
+  },
+  listItem: {
+    // marginVertical: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  listItemSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.brandColor,
+    marginVertical: 8
+  },
+  // listItemTitle: { color: colors.brandColor },
+  // listItemDescription: {},
+  // contact: {
+  //   paddingVertical: 10,
+  //   paddingHorizontal: 10,
+  //   borderWidth: 1,
+  //   borderColor: "#aaa",
+  //   marginVertical: 10
+  // },
+  // contactsHeader: {},
+  contactName: { fontWeight: "bold", fontSize: 16 },
+  // contactPhone: { marginVertical: 2 },
   addContactActions: {
     marginVertical: 10,
     flexDirection: "row",

@@ -18,7 +18,8 @@ import EditContactScreen from "../screens/EditContactScreen";
 // import EditEventScreen from "../screens/EditEventScreen";
 import EventScreen from "../screens/EventScreen";
 import EditEventPhonesScreen from "../screens/EditEventPhonesScreen";
-import SettingsEditAccountScreen from "../screens/SettingsEditAccountScreen";
+import SettingAccountScreen from "../screens/SettingAccountScreen";
+import SettingNotificationsScreen from "../screens/SettingNotificationsScreen";
 import TopNavigation from "../components/TopNavigation";
 
 const config = {
@@ -98,8 +99,9 @@ const PeopleStack = createStackNavigator(
 const SettingsStack = createStackNavigator(
   {
     Settings: SettingsScreen,
-    SettingsEditAccont: SettingsEditAccountScreen,
-    TestApi: TestApiScreen
+    SettingAccount: SettingAccountScreen,
+    SettingNotifications: SettingNotificationsScreen
+    // TestApi: TestApiScreen
   },
   config
 );

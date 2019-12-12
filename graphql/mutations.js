@@ -4,35 +4,6 @@
 export const createUser = `mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
     id
-    createdAt
-    updatedAt
-    cognitoUserId
-    phone
-    firstName
-    lastName
-    isParent
-    contacts {
-      items {
-        id
-        createdAt
-        updatedAt
-        type
-        phone
-        firstName
-        lastName
-      }
-      nextToken
-    }
-    events {
-      items {
-        id
-        createdAt
-        updatedAt
-        title
-      }
-      nextToken
-    }
-    deletedAt
   }
 }
 `;
@@ -104,14 +75,6 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
     phone
     firstName
     lastName
-    events {
-      items {
-        id
-        eventId
-        createdAt
-      }
-      nextToken
-    }
   }
 }
 `;

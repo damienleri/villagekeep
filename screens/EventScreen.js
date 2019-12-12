@@ -304,6 +304,7 @@ class EventScreen extends React.Component {
 
     if (!inputText.length) return;
     // localSentAt is just a unique key that allows local messages to be identifed when they round trip from server
+
     const localSentAt = new Date().getTime();
     await this.addMessageToQueue({
       localSentAt,
@@ -323,6 +324,7 @@ class EventScreen extends React.Component {
   };
 
   handleChangeInputText = inputText => {
+    // if (this.state.inputText ==="")
     this.setState({ inputText });
   };
 
@@ -345,6 +347,7 @@ class EventScreen extends React.Component {
       inputText
     } = this.state;
 
+    // console.log(inputText);
     const moreActionsData = [
       {
         title: "Add person",

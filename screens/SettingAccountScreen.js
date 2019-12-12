@@ -5,7 +5,7 @@ import Form from "../components/Form";
 import AccountForm from "./AccountForm";
 import { gutterWidth } from "../utils/style";
 
-export default class SettingsEditAccontScreen extends React.Component {
+export default class SettingAccountScreen extends React.Component {
   handleSave = async () => {
     this.props.navigation.goBack();
   };

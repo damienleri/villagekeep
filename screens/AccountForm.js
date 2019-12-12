@@ -6,8 +6,9 @@ import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
-import { getUserShallow, updateUser } from "../utils/api";
-import { setSettings } from "../redux/actions";
+import { getCurrentUser, updateUser } from "../utils/api";
+import { setSettings as setSettingsType } from "../redux/actions";
+
 /// This component is used on multiple screens:
 /// - new user flow
 /// - settings tab
@@ -20,25 +21,27 @@ class AccountForm extends React.Component {
   }
   async componentDidMount() {
     const { settings = {} } = this.props;
-    const { homeScreenUser } = settings;
-    if (this.props.isNewUser) this.firstNameInputRef.current.focus();
-    this.setState({ isLoading: true });
-    const { user, error: getCurrentUserError } = await getUserShallow(
-      homeScreenUser.id
-    );
-    if (getCurrentUserError)
-      return this.setState({
-        errorMessage: getCurrentUserError,
-        isLoading: false
-      });
+    const { user } = settings;
+    // this.setState({ isLoading: true });
+
+    //
+    // const { user, error: getCurrentUserError } = await getUserShallow(
+    //   homeScreenUser.id
+    // );
+    // if (getCurrentUserError)
+    //   return this.setState({
+    //     errorMessage: getCurrentUserError,
+    //     isLoading: false
+    //   });
 
     this.setState({
-      isLoading: false,
+      // isLoading: false,
       user,
       firstName: user.firstName || "",
       lastName: user.lastName || "",
       isParent: user.isParent
     });
+    if (this.props.isNewUser) this.firstNameInputRef.current.focus();
   }
 
   handleSubmit = async () => {
@@ -54,13 +57,28 @@ class AccountForm extends React.Component {
 
     if (error) {
       console.log("error updating user", error);
-      return this.setState({ errorMessage: error, isSubmitting: false });
+      this.setState({ errorMessage: error, isSubmitting: false });
+      return;
+    }
+
+    const { error: cacheError } = await this.updateUserCache();
+    if (cacheError) {
+      this.setState({ error: cacheError, isSubmitting: false });
+      return;
     }
 
     // setSettings(
     await onSave();
   };
 
+  updateUserCache = async () => {
+    const { settings, setSettings } = this.props;
+    const { user, error } = await getCurrentUser();
+    if (error) return { error };
+    await setSettings({ user });
+
+    return { user };
+  };
   render() {
     const {
       errorMessage,
@@ -68,12 +86,11 @@ class AccountForm extends React.Component {
       lastName,
       isParent,
       isParentMessage,
-
       isLoading,
       isSubmitting
     } = this.state;
     const { isNewUser } = this.props;
-    if (isLoading) return <Spinner size="giant" />;
+    // if (isLoading) return <Spinner size="giant" />;
     return (
       <Form>
         <FormInput
@@ -154,7 +171,11 @@ class AccountForm extends React.Component {
   }
 }
 
-export default connect(({ settings }) => ({ settings }))(AccountForm);
+export default connect(
+  ({ settings }) => ({ settings }),
+  { setSettings: setSettingsType }
+)(AccountForm);
+
 const styles = StyleSheet.create({
   radioRow: {
     flexDirection: "row",
