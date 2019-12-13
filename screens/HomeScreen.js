@@ -68,7 +68,7 @@ class HomeScreen extends React.Component {
 
   loadUserData = async () => {
     const { settings = {}, setSettings } = this.props;
-
+    this.setState({ error: null });
     if (this.context.isConnected) {
       const { user, events, error } = await this.fetchUserData();
       if (user) setSettings({ user, events });
@@ -112,24 +112,6 @@ class HomeScreen extends React.Component {
     });
   };
 
-  // handlePhonePress = ({ phone }) => {
-  //   Linking.openURL(`tel:${phone}`);
-  // };
-
-  // renderHeader = () => {
-  //   // https://github.com/vikrantnegi/react-native-searchable-flatlist/blob/master/src/SearchableList.js
-  //   return (
-  //     <SearchBar
-  //       placeholder="Type Here..."
-  //       lightTheme
-  //       round
-  //       onChangeText={text => this.searchFilterFunction(text)}
-  //       autoCorrect={false}
-  //       value={this.state.value}
-  //     />
-  //   );
-  // };
-
   renderEvent = ({ item: event, index }) => {
     let { title, createdAt, latestMessage } = event;
     const { user } = this.props.settings;
@@ -153,12 +135,24 @@ class HomeScreen extends React.Component {
         <View style={styles.listItem}>
           <View>
             <Text style={styles.title}>{title}</Text>
-            <Text style={styles.eventPhonesText}>{eventPhonesText}</Text>
+            <Text style={styles.eventInnerRow}>
+              <Text style={styles.creationTimeLabel}>Includes </Text>
+              <Text style={{}}>{eventPhonesText}</Text>
+            </Text>
+            <Text style={styles.eventInnerRow}>
+              <Text style={styles.creationTimeLabel}>Started by </Text>
+              {event.user.id === user.id
+                ? "you"
+                : getFormattedNameFromUser(event.user)}
+            </Text>
             {latestMessage && (
               <View>
-                <Text style={styles.creationTimeLabel}>
-                  {getFormattedMessageTime(latestMessage.createdAt)}
-                  {" by "}
+                <Text style={styles.eventInnerRow}>
+                  <Text style={styles.creationTimeLabel}>
+                    {"Last mesg "}
+                    {getFormattedMessageTime(latestMessage.createdAt)}
+                    {" by "}{" "}
+                  </Text>
                   {latestMessage.user.phone === user.phone
                     ? "you"
                     : getFormattedNameFromUser(latestMessage.user)}
@@ -282,7 +276,7 @@ const styles = StyleSheet.create({
   listItemSeparator: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: colors.brandColor,
-    marginVertical: 8
+    marginVertical: 12
   },
   eventTopRow: {
     flexDirection: "row",
@@ -295,6 +289,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   // creationTimeContainer: { justifyContent: "flex-end" },
+  eventInnerRow: {
+    marginVertical: 2
+  },
   eventPhonesText: {
     fontSize: 16,
     color: colors.brandColor,

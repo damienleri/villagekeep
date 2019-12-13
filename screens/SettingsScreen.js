@@ -89,7 +89,7 @@ class SettingsScreen extends React.Component {
     const { settings, setSettings } = this.props;
     const { theme, user = {} } = settings;
     const { error } = this.state;
-    const isDeveloper = false; //!Device.isDevice; // in simulator
+    const isDeveloper = !Constants.isDevice; // in simulator
 
     const items = [
       {

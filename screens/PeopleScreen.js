@@ -89,19 +89,18 @@ export default class PeopleScreen extends React.Component {
 
     this.loadUserDataSubcription = this.props.navigation.addListener(
       "willFocus",
-      async () => {
-        await this.loadUserData();
-      }
+      this.loadUserData
     );
   };
   componentWillUnmount() {
     this.loadUserDataSubcription.remove();
   }
   loadUserData = async () => {
+    this.setState({ error: null });
     const { user, error: currentUserError } = await getCurrentUser();
     if (currentUserError)
       return this.setState({
-        generalErrorMessage: `Error: ${currentUserError}`
+        error: `Error: ${currentUserError}`
       });
     this.setState({ user, userLoaded: true });
   };
@@ -223,7 +222,7 @@ export default class PeopleScreen extends React.Component {
     );
   };
   render() {
-    const { generalErrorMessage, user, userLoaded, isRefreshing } = this.state;
+    const { error, user, userLoaded, isRefreshing } = this.state;
 
     return (
       <Layout style={{ flex: 1 }}>
@@ -236,9 +235,9 @@ export default class PeopleScreen extends React.Component {
             />
           }
         >
-          {generalErrorMessage && (
-            <Text status="danger" style={styles.generalErrorMessage}>
-              {generalErrorMessage}
+          {error && (
+            <Text status="danger" style={styles.error}>
+              {error}
             </Text>
           )}
           <Text style={styles.header}>This is your village</Text>
@@ -276,7 +275,7 @@ const styles = StyleSheet.create({
   //   marginBottom: 10,
   //   fontWeight: "normal"
   // },
-  generalErrorMessage: {
+  error: {
     marginVertical: 24
   },
   contactsContainer: { paddingVertical: 0 },

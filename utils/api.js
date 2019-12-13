@@ -510,3 +510,18 @@ export const getEventPhonesByPhone = async phone => {
     };
   }
 };
+// export const getContactsByPhone = async phone => {
+//   //  designed for HomeScreen
+//   // authorization rules will be odd with this one. can make a resolver that takes userid
+//   try {
+//     const res = await API.graphql(
+//       graphqlOperation(queries.contactsByPhone, { phone })
+//     );
+//     return { contacts: res.data.contactsByPhone.items };
+//   } catch (e) {
+//     console.log(e);
+//     return {
+//       error: `Error getting eventphones: ${get(e, "errors[0].message")}`
+//     };
+//   }
+// };

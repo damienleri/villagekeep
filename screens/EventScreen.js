@@ -65,7 +65,8 @@ class EventScreen extends React.Component {
     this.titleInputRef = React.createRef();
     this.state = {
       title: event.title,
-      messagesKey: `eventScreenMessages-${event.id}`
+      messagesKey: `eventScreenMessages-${event.id}`,
+      error: null
       // event,
       // messages: []
     };

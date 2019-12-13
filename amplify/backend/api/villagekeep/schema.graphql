@@ -19,6 +19,8 @@ type User
   events: [Event] @connection(keyName: "byUser", fields: ["id"])
   messages: [Message] @connection(keyName: "byUser", fields: ["id"])
   eventPhones: [EventPhone] @connection(keyName: "byUser", fields: ["id"])
+  contactsByPhone: [Contact] @connection(keyName: "byPhone", fields: ["phone"])
+
   deletedAt: AWSTimestamp
   pushToken: String
   pushEnabled: Boolean
@@ -54,6 +56,7 @@ type Contact
     fields: ["userId", "createdAt"]
     queryField: "contactsByUser"
   )
+  @key(name: "byPhone", fields: ["phone"], queryField: "contactsByPhone")
   @model {
   id: ID!
   cognitoUserId: String!

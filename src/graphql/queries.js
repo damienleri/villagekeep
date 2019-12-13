@@ -800,6 +800,50 @@ export const contactsByUser = `query ContactsByUser(
   }
 }
 `;
+export const contactsByPhone = `query ContactsByPhone(
+  $phone: AWSPhone
+  $sortDirection: ModelSortDirection
+  $filter: ModelContactFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  contactsByPhone(
+    phone: $phone
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      type
+      phone
+      firstName
+      lastName
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+    }
+    nextToken
+  }
+}
+`;
 export const eventPhonesByPhone = `query EventPhonesByPhone(
   $phone: String
   $sortDirection: ModelSortDirection

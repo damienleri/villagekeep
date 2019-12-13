@@ -100,8 +100,8 @@ const SettingsStack = createStackNavigator(
   {
     Settings: SettingsScreen,
     SettingAccount: SettingAccountScreen,
-    SettingNotifications: SettingNotificationsScreen
-    // TestApi: TestApiScreen
+    SettingNotifications: SettingNotificationsScreen,
+    TestApi: TestApiScreen
   },
   config
 );

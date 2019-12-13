@@ -70,6 +70,18 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
         }
         nextToken
       }
+      contactsByPhone {
+        items {
+          id
+          user {
+            id
+            firstName
+            lastName
+            phone
+          }
+        }
+        nextToken
+      }
     }
     nextToken
   }
@@ -95,6 +107,11 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
         id
         createdAt
         title
+        user {
+          id
+          firstName
+          lastName
+        }
         eventPhones {
           items {
             firstName

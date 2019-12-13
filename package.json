@@ -20,7 +20,7 @@
     "@react-navigation/web": "^1.0.0-alpha.9",
     "@ui-kitten/components": "^4.3.1",
     "@ui-kitten/eva-icons": "^4.2.0",
-    "aws-amplify": "^1.2.4",
+    "aws-amplify": "^2.2.0",
     "aws-amplify-react": "^2.3.9-beta.0",
     "aws-amplify-react-native": "^2.2.3",
     "expo": "^35.0.0",
