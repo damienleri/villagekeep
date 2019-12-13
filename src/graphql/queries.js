@@ -66,6 +66,20 @@ export const getUser = `query GetUser($id: ID!) {
       }
       nextToken
     }
+    contactsByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        type
+        phone
+        firstName
+        lastName
+        userId
+      }
+      nextToken
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -99,6 +113,9 @@ export const listUsers = `query ListUsers(
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -138,6 +155,9 @@ export const getEvent = `query GetEvent($id: ID!) {
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -299,6 +319,9 @@ export const getContact = `query GetContact($id: ID!) {
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -373,6 +396,9 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -500,6 +526,9 @@ export const getMessage = `query GetMessage($id: ID!) {
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -637,6 +666,9 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -680,6 +712,9 @@ export const userByPhone = `query UserByPhone(
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt

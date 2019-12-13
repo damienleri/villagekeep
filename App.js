@@ -22,10 +22,10 @@ import { setSettings } from "./redux/actions";
 import { NetworkProvider } from "./components/NetworkProvider";
 
 import { store, persistor } from "./redux/store";
-console.log(!!store, !!persistor);
 import AppNavigator from "./navigation/AppNavigator";
 
 Amplify.configure(awsConfig);
+// Amplify.Logger.LOG_LEVEL = "DEBUG";
 
 function AppContents(props) {
   const { settings = {} } = props;

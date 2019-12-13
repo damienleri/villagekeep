@@ -66,6 +66,20 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
       }
       nextToken
     }
+    contactsByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        type
+        phone
+        firstName
+        lastName
+        userId
+      }
+      nextToken
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -136,6 +150,20 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         lastName
         userId
         eventId
+      }
+      nextToken
+    }
+    contactsByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        type
+        phone
+        firstName
+        lastName
+        userId
       }
       nextToken
     }
@@ -212,6 +240,20 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       }
       nextToken
     }
+    contactsByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        type
+        phone
+        firstName
+        lastName
+        userId
+      }
+      nextToken
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -247,6 +289,9 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -353,6 +398,9 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -455,6 +503,9 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -564,6 +615,9 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -603,6 +657,9 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -646,6 +703,9 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -684,6 +744,9 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -769,6 +832,9 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -852,6 +918,9 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -932,6 +1001,9 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt
@@ -1018,6 +1090,9 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
       eventPhones {
         nextToken
       }
+      contactsByPhone {
+        nextToken
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -1100,6 +1175,9 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
         nextToken
       }
       eventPhones {
+        nextToken
+      }
+      contactsByPhone {
         nextToken
       }
       deletedAt

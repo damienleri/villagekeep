@@ -13,10 +13,11 @@ export default class AuthLoadingScreen extends React.Component {
     console.log("\n******Auth loading*******\n");
 
     try {
-      // if (!Device.isDevice) {
-      if (0 && !Device.isDevice) {
+      if (!Device.isDevice) {
+        // if (0 && !Device.isDevice) {
         // in simulator
         // for testing
+        // await Auth.signIn("+16109104174", "testtest1");
         await Auth.signIn("+12678086023", "testtest1");
         console.log("Debugging: signed in");
         // return this.props.navigation.navigate("EditEvent");
@@ -27,6 +28,8 @@ export default class AuthLoadingScreen extends React.Component {
       const user = await Auth.currentAuthenticatedUser({
         bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
+
+      return this.props.navigation.navigate("People");
 
       this.props.navigation.navigate("Main");
     } catch (e) {

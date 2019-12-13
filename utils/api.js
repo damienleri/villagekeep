@@ -1,6 +1,10 @@
 import { Auth } from "aws-amplify";
 import API, { graphqlOperation } from "@aws-amplify/api";
 import { differenceBy, get } from "lodash";
+
+import { Buffer } from "buffer";
+global.Buffer = global.Buffer || Buffer;
+
 import * as mutations from "../graphql/mutations";
 import * as queries from "../graphql/queries";
 import * as subscriptions from "../graphql/subscriptions";
@@ -20,21 +24,26 @@ import * as subscriptions from "../graphql/subscriptions";
 // export const unsubscribeToMessages = subscription => {
 //   subscription.unsubscribe();
 // };
-export const subscribeToEventUpdate = async ({ callback, eventId }) => {
-  try {
-    const subscription = API.graphql(
-      graphqlOperation(subscriptions.onUpdateEvent, { id: eventId })
-    ).subscribe({
-      next: data => {
-        // console.log(eventData);
-        callback(data.value.data.onUpdateEvent);
-      }
-    });
-    return { subscription };
-  } catch (e) {
-    console.log(e);
-    return { error: `Error subscibing to event update: ${e}` };
-  }
+export const subscribeToServerUpdate = ({ callback, type, id }) => {
+  API.graphql(
+    graphqlOperation(subscriptions[`onUpdate${type}`], { id })
+  ).subscribe({
+    next: data => {
+      callback({ data: data.value.data[`onUpdate${type}`] });
+    },
+    // complete: data => {
+    //   console.log("subscribeToEventUpdate/complete: ", data);
+    // },
+    error: e => {
+      console.log(e);
+      callback({
+        error: `Error subscribing to server updates: ${get(
+          e,
+          "error.errors[0].message"
+        )}`
+      });
+    }
+  });
 };
 
 export const getUserShallow = async userId => {
@@ -58,7 +67,7 @@ export async function getCurrentUser() {
   const cognitoUserId = cognitoUser.attributes.sub;
 
   try {
-    console.log("getting API user for cognito ID", cognitoUserId);
+    // console.log("getting API user for cognito ID", cognitoUserId);
 
     const res = await API.graphql(
       graphqlOperation(queries.userByCognitoUserId, { cognitoUserId })
@@ -168,6 +177,20 @@ export const deleteCurrentUser = async () => {
 //   }
 // };
 
+const updateLatestMessageForUsers = async ({ users, message }) => {
+  try {
+    for (const user of users) {
+      const res = await API.graphql(
+        graphqlOperation(mutations.updateUser, {
+          input: { id: user.id, userLatestMessageId: message.id }
+        })
+      );
+    }
+  } catch (e) {
+    console.log(e);
+    return { error: `Error updating user: ${get(e, "errors[0].message")}` };
+  }
+};
 export const createMessage = async ({ localSentAt, text, event, user }) => {
   try {
     const res = await API.graphql(
@@ -187,6 +210,14 @@ export const createMessage = async ({ localSentAt, text, event, user }) => {
       eventLatestMessageId: message.id
     });
     if (updateEventError) return { error: updateEventError };
+
+    const users = event.eventPhones.items.map(ep => ep.user);
+    const { error: updatedUserError } = await updateLatestMessageForUsers({
+      users,
+      message
+    });
+    if (updatedUserError) return { error: updatedUserError };
+
     return { message, event: updatedEvent };
   } catch (e) {
     console.log(e);
@@ -510,18 +541,18 @@ export const getEventPhonesByPhone = async phone => {
     };
   }
 };
-// export const getContactsByPhone = async phone => {
-//   //  designed for HomeScreen
-//   // authorization rules will be odd with this one. can make a resolver that takes userid
-//   try {
-//     const res = await API.graphql(
-//       graphqlOperation(queries.contactsByPhone, { phone })
-//     );
-//     return { contacts: res.data.contactsByPhone.items };
-//   } catch (e) {
-//     console.log(e);
-//     return {
-//       error: `Error getting eventphones: ${get(e, "errors[0].message")}`
-//     };
-//   }
-// };
+export const getContactsByPhone = async phone => {
+  //  designed for HomeScreen
+  // authorization rules will be odd with this one. can make a resolver that takes userid
+  try {
+    const res = await API.graphql(
+      graphqlOperation(queries.contactsByPhone, { phone })
+    );
+    return { contacts: res.data.contactsByPhone.items };
+  } catch (e) {
+    console.log(e);
+    return {
+      error: `Error getting eventphones: ${get(e, "errors[0].message")}`
+    };
+  }
+};

@@ -62,7 +62,6 @@ export default class EditEventPhonesScreen extends React.Component {
     super(props);
     const event = props.navigation.getParam("event");
     const user = props.navigation.getParam("user");
-    console.log(`constructor() on EditEventPhonesScreen`, event);
     const preselectedEventPhones = event
       ? event.eventPhones.items.filter(ep => ep.phone !== user.phone)
       : [];
@@ -70,9 +69,6 @@ export default class EditEventPhonesScreen extends React.Component {
     let possibleEventPhones = uniqBy(
       preselectedEventPhones.concat(myContacts.map(getEventPhoneFromContact)),
       eventPhone => eventPhone.phone
-    );
-    console.log(
-      `${myContacts.length} of my own contacts. ${preselectedEventPhones.length} already in the event. ${possibleEventPhones.length} unique total.`
     );
     this.state = {
       isLoading: false,

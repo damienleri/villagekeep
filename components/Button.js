@@ -21,8 +21,10 @@ const Button = props => {
   let buttonStyles = [];
   let textStyles = [];
 
-  buttonStyles.push(styles[`${appearance}Button`]);
-  textStyles.push(styles[`${appearance}ButtonText`]);
+  if (!props.status || props.status === "primary") {
+    buttonStyles.push(styles[`${appearance}Button`]);
+    textStyles.push(styles[`${appearance}ButtonText`]);
+  }
 
   if (props.inline) {
     buttonStyles.push({
@@ -37,24 +39,8 @@ const Button = props => {
       marginVertical: 0,
       paddingVertical: 0
     });
-    // buttonStyle.marginTop = 0;
-    // buttonStyle.paddingTop = 0;
-    // buttonStyle.marginBottom = 0;
-    // buttonStyle.paddingBottom = 0;
-    // buttonStyle.marginRight = 0;
-    // buttonStyle.paddingRight = 0;
-    // buttonStyle.marginLeft = 0;
-    // buttonStyle.paddingLeft = 0;
-    // textStyle.marginTop = 0;
-    // textStyle.paddingTop = 0;
-    // textStyle.marginBottom = 0;
-    // textStyle.paddingBottom = 0;
-    // textStyle.marginRight = 0;
-    // textStyle.paddingRight = 0;
-    // textStyle.marginLeft = 0;
-    // textStyle.paddingLeft = 0;
   }
-  // console.log(props.inline, buttonStyle);
+
   buttonStyles.push(props.style);
   textStyles.push(props.textStyle);
   return (

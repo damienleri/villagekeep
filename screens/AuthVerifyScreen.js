@@ -42,6 +42,7 @@ class AuthVerifyScreen extends React.Component {
     const phone = this.props.navigation.getParam("phone");
     const password = this.props.navigation.getParam("password");
     const { code } = this.state;
+    const { settings, setSettings } = this.props;
     this.setState({ isLoading: true, isResent: false });
     try {
       await Auth.confirmSignUp(phone, code);

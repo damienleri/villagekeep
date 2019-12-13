@@ -36,13 +36,13 @@ import InlineFormSubmitButton from "../components/InlineFormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import MessageComposer from "../components/MessageComposer";
 import { NetworkContext } from "../components/NetworkProvider";
-import { setSettings } from "../redux/actions";
+import { setSettings as setSettingsType } from "../redux/actions";
 import {
   getEventByIdWithMessages,
   updateEvent,
   deleteEvent,
   createMessage,
-  subscribeToEventUpdate
+  subscribeToServerUpdate
 } from "../utils/api";
 import { gutterWidth, colors, topNavigationHeight } from "../utils/style";
 import {
@@ -67,58 +67,41 @@ class EventScreen extends React.Component {
       title: event.title,
       messagesKey: `eventScreenMessages-${event.id}`,
       error: null
-      // event,
-      // messages: []
     };
   }
 
   componentDidMount = async () => {
-    this.loadEventSubcription = this.props.navigation.addListener(
+    this.screenFocusSubscription = this.props.navigation.addListener(
       "willFocus",
       this.loadEventWithMessages
     );
     if (this.props.navigation.getParam("isNewEvent"))
       this.messageInputRef.current.focus();
 
-    this.unsubscribeToNetworkChanges = NetInfo.addEventListener(
-      this.handleNetworkChanges
-    );
-    const networkState = await NetInfo.fetch();
-
-    if (networkState.isConnected) {
-      this.setupServerSubscription();
-    }
+    this.subscribeToServer();
   };
   componentWillUnmount = async () => {
-    this.loadEventSubcription.remove();
-    if (this.unsubscribeToNetworkChanges) this.unsubscribeToNetworkChanges();
-    if (this.eventUpdateSubscription)
-      await this.eventUpdateSubscription.unsubscribe();
+    this.screenFocusSubscription.remove();
+    if (this.eventSubscription) this.eventSubscription.unsubscribe();
   };
-  handleNetworkChanges = state => {
-    if (state.isConnected === this.context.isConnected) return; // no change
-    // this.setState({ networkIsOffline: !state.isConnected });
-    console.log("network change detected");
-    if (state.isConnected) {
-      this.loadEventWithMessages();
-      if (!this.eventUpdateSubscription) this.setupServerSubscription();
-    }
-  };
-  setupServerSubscription = async () => {
+  // handleNetworkChanges = state => {
+  //   if (state.isConnected === this.context.isConnected) return; // no change
+  //   if (state.isConnected) {
+  //     this.loadEventWithMessages();
+  //     if (!this.eventSubscription) this.subscribeToServer();
+  //   }
+  // };
+  subscribeToServer = () => {
+    if (!this.context.isConnected) return;
     const event = this.props.navigation.getParam("event");
-    const { subscription, error } = await subscribeToEventUpdate({
-      eventId: event.id,
-      callback: this.handleServerUpdatedEvent
+    this.eventSubscription = subscribeToServerUpdate({
+      type: "Event",
+      id: event.id,
+      callback: ({ event, error }) => {
+        if (error) this.setState({ error });
+        this.loadEventWithMessages();
+      }
     });
-    if (error) {
-      this.setState({ error });
-    } else {
-      this.eventUpdateSubscription = subscription;
-    }
-  };
-
-  handleServerUpdatedEvent = async event => {
-    await this.loadEventWithMessages();
   };
 
   fetchMessagesForEventId = async eventId => {
@@ -138,31 +121,6 @@ class EventScreen extends React.Component {
       if (messages) setSettings({ [messagesKey]: messages });
       if (error) this.setState({ error });
     }
-
-    // if (this.props.navigation.getParam("isNewEvent"))
-    //   return this.setState({ messagesAreLoaded: true });
-    //
-    // const messagesKey = `eventScreenMessages-${eventParam.id}`;
-    // const { error } = await cachedRefresh({
-    //   cachedData: settings[messagesKey] && {
-    //     messages: settings[messagesKey]
-    //   },
-    //   getData: async () => {
-    //     const { messages, error } = await this.fetchMessagesForEventId(
-    //       eventParam.id
-    //     );
-    //     return { data: { messages }, error };
-    //   },
-    //   onHaveData: ({ messages }) => {
-    //     this.setState({ messages, messagesAreLoaded: true });
-    //   },
-    //   updateCache: ({ messages }) => setSettings({ [messagesKey]: messages }),
-    //   networkIsOffline: !this.context.isConnected
-    // });
-    // if (error)
-    //   return this.setState({
-    //     error
-    //   });
   };
 
   handleSubmitTitle = async () => {
@@ -348,7 +306,6 @@ class EventScreen extends React.Component {
       inputText
     } = this.state;
 
-    // console.log(inputText);
     const moreActionsData = [
       {
         title: "Add person",
@@ -456,7 +413,7 @@ class EventScreen extends React.Component {
 
 export default connect(
   ({ settings }) => ({ settings }),
-  { setSettings }
+  { setSettings: setSettingsType }
 )(EventScreen);
 
 const styles = StyleSheet.create({

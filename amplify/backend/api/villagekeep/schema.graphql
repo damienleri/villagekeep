@@ -20,7 +20,7 @@ type User
   messages: [Message] @connection(keyName: "byUser", fields: ["id"])
   eventPhones: [EventPhone] @connection(keyName: "byUser", fields: ["id"])
   contactsByPhone: [Contact] @connection(keyName: "byPhone", fields: ["phone"])
-
+  latestMessage: Message @connection
   deletedAt: AWSTimestamp
   pushToken: String
   pushEnabled: Boolean
@@ -118,7 +118,7 @@ type Message
   userId: ID!
   user: User! @connection(fields: ["userId"])
   eventId: ID!
-  event: Event! @connection(fields: ["eventId"]) ## left this optional in case event gets deleted
+  event: Event! @connection(fields: ["eventId"])
   editedAt: AWSTimestamp
   deletedAt: AWSTimestamp
 }

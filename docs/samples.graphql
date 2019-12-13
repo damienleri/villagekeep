@@ -1,31 +1,62 @@
+mutation DeleteEvent {
+  deleteEvent(input: { id: "" }) {
+    id
+  }
+}
+mutation DeleteEventPhone {
+  deleteEventPhone(input: { id: "" }) {
+    id
+  }
+}
+mutation DeleteContact {
+  deleteContact(input: { id: "" }) {
+    id
+  }
+}
+
 query ListEvents {
   listEvents {
     items {
       id
       title
-      owner
-    }
-  }
-}
-query ListContacts {
-  listContacts {
-    items {
-      id
-      firstName
-      owner
+      eventPhones {
+        items {
+          id
+          phone
+        }
+      }
     }
   }
 }
 
-mutation CreateEvent {
-  createEvent(
-    input: { owner: "+12678086023", title: "t1", eventUserId: "999" }
-  ) {
-    id
-    title
-    owner
+query ListEventPhones {
+  listEventPhones {
+    items {
+      id
+      phone
+    }
   }
 }
+
+query ListContacts {
+  listContacts {
+    items {
+      id
+      phone
+      firstName
+    }
+  }
+}
+
+# mutation CreateEvent {
+#   createEvent(
+#     input: { owner: "+12678086023", title: "t1", eventUserId: "999" }
+#   ) {
+#     id
+#     title
+#     owner
+#   }
+# }
 
 #  Prettify Query:  Ctrl+Shift+P (also removes comments)
 #       Run Query:  Ctrl+Enter   (or press the play button above)

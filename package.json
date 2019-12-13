@@ -23,6 +23,7 @@
     "aws-amplify": "^2.2.0",
     "aws-amplify-react": "^2.3.9-beta.0",
     "aws-amplify-react-native": "^2.2.3",
+    "buffer": "^5.4.3",
     "expo": "^35.0.0",
     "expo-asset": "^7.0.0",
     "expo-constants": "^7.0.0",

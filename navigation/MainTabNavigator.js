@@ -7,7 +7,8 @@ import {
 import {
   BottomNavigation,
   BottomNavigationTab,
-  Layout
+  Layout,
+  Icon
 } from "@ui-kitten/components";
 
 import HomeScreen from "../screens/HomeScreen";
@@ -41,9 +42,18 @@ const TabBarComponent = ({ navigation }) => {
           selectedIndex={navigation.state.index}
           onSelect={onSelect}
         >
-          <BottomNavigationTab title="EVENTS" />
-          <BottomNavigationTab title="PEOPLE" />
-          <BottomNavigationTab title="SETTINGS" />
+          <BottomNavigationTab
+            title="EVENTS"
+            icon={style => <Icon {...style} name="message-square-outline" />}
+          />
+          <BottomNavigationTab
+            title="PEOPLE"
+            icon={style => <Icon {...style} name="people-outline" />}
+          />
+          <BottomNavigationTab
+            title="SETTINGS"
+            icon={style => <Icon {...style} name="settings-outline" />}
+          />
         </BottomNavigation>
       </SafeAreaView>
     </Layout>

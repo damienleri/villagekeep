@@ -55,6 +55,7 @@ class SettingsScreen extends React.Component {
   }
 
   loadUserData = async () => {
+    this.setState({ error: null });
     const { settings = {}, setSettings } = this.props;
 
     if (this.context.isConnected) {

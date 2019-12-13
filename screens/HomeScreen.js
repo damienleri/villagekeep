@@ -26,7 +26,11 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import { Linking } from "expo";
 import Button from "../components/Button";
-import { getCurrentUser, getEventPhonesByPhone } from "../utils/api";
+import {
+  getCurrentUser,
+  getEventPhonesByPhone,
+  subscribeToServerUpdate
+} from "../utils/api";
 import {
   formatPhone,
   getFormattedNameFromEventPhone,
@@ -37,22 +41,39 @@ import { cachedRefresh } from "../utils/caching";
 import { gutterWidth, colors, textLinkColor } from "../utils/style";
 import EventsEmptyState from "../components/EventsEmptyState";
 import AddEventActions from "../components/AddEventActions";
-import { setSettings } from "../redux/actions";
+import { setSettings as setSettingsType } from "../redux/actions";
 import { NetworkContext } from "../components/NetworkProvider";
 
 class HomeScreen extends React.Component {
   static contextType = NetworkContext;
   state = {};
   componentDidMount = async () => {
-    /* call loadUserData() whenever this screen is displayed, in case data has changed */
-    this.loadUserDataSubcription = this.props.navigation.addListener(
+    this.screenFocusSubcription = this.props.navigation.addListener(
       "willFocus",
       this.loadUserData
     );
+    this.subscribeToServer();
   };
+
   componentWillUnmount() {
-    this.loadUserDataSubcription.remove();
+    this.screenFocusSubcription.remove();
+    if (this.userSubscription) this.eventSubscription.unsubscribe();
   }
+
+  subscribeToServer = () => {
+    if (!this.context.isConnected) return;
+    const { settings = {}, setSettings } = this.props;
+    const { user } = settings;
+    this.userSubscription = subscribeToServerUpdate({
+      type: "User",
+      id: user.id,
+      callback: ({ event, error }) => {
+        if (error) this.setState({ error });
+        console.log("subscription returned");
+        this.loadUserData();
+      }
+    });
+  };
 
   fetchUserData = async () => {
     const { user, error: currentUserError } = await getCurrentUser();
@@ -61,7 +82,7 @@ class HomeScreen extends React.Component {
       eventPhones,
       error: eventPhonesError
     } = await getEventPhonesByPhone(user.phone);
-    if (eventPhonesError) return { error: eventPhoneError };
+    if (eventPhonesError) return { error: eventPhonesError };
     const events = eventPhones.map(ep => ep.event).filter(event => !!event);
     return { user, events };
   };
@@ -69,37 +90,13 @@ class HomeScreen extends React.Component {
   loadUserData = async () => {
     const { settings = {}, setSettings } = this.props;
     this.setState({ error: null });
-    if (this.context.isConnected) {
-      const { user, events, error } = await this.fetchUserData();
-      if (user) setSettings({ user, events });
-      if (error) this.setState({ error });
-    }
+    if (!this.context.isConnected) return;
+    const { user, events, error } = await this.fetchUserData();
+    if (user) setSettings({ user, events });
+    if (error) this.setState({ error });
   };
-  // const { error } = await cachedRefresh({
-  //   cachedData: settings.homeScreenUser &&
-  //     settings.homeScreenEvents && {
-  //       user: settings.homeScreenUser,
-  //       events: settings.homeScreenEvents
-  //     },
-  //   getData: async () => {
-  //     const { user, events, error } = await this.fetchUserData();
-  //     return { data: { user, events }, error };
-  //   },
-  //   onHaveData: ({ user, events }) => {
-  //     this.setState({ user, events, userLoaded: true });
-  //   },
-  //   updateCache: ({ user, events }) =>
-  //     setSettings({ homeScreenUser: user, homeScreenEvents: events }),
-  //   networkIsOffline: !this.context.isConnected
-  // });
-  //
-  // if (error)
-  //   return this.setState({
-  //     generalErrorMessage: error
-  //   });
 
-  handleRefresh = async () => {
-    // pull to refresh
+  handlePullToRefresh = async () => {
     this.setState({ isRefreshing: true });
     await this.loadUserData();
     this.setState({ isRefreshing: false });
@@ -121,7 +118,6 @@ class HomeScreen extends React.Component {
         event,
         user: user
       });
-    // console.log(event);
     const eventPhonesExceptMe = event.eventPhones.items.filter(
       ep => ep.phone !== user.phone
     );
@@ -214,7 +210,7 @@ class HomeScreen extends React.Component {
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
-              onRefresh={this.handleRefresh}
+              onRefresh={this.handlePullToRefresh}
             />
           }
         >
@@ -246,7 +242,7 @@ class HomeScreen extends React.Component {
 }
 export default connect(
   ({ settings }) => ({ settings }),
-  { setSettings }
+  { setSettings: setSettingsType }
 )(HomeScreen);
 
 const styles = StyleSheet.create({

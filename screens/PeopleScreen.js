@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -16,7 +17,9 @@ import {
   CardHeader,
   List,
   ListItem,
-  Spinner
+  Spinner,
+  TabView,
+  Tab
 } from "@ui-kitten/components";
 import { groupBy } from "lodash";
 import Form from "../components/Form";
@@ -25,84 +28,37 @@ import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import { Linking } from "expo";
-import { getCurrentUser } from "../utils/api";
+import { getCurrentUser, createContact } from "../utils/api";
 import { formatPhone } from "../utils/etc";
 import { gutterWidth, colors } from "../utils/style";
+import { setSettings as setSettingsType } from "../redux/actions";
+import AddContactActions from "../components/AddContactActions";
+import ContactsEmptyState from "../components/ContactsEmptyState";
+import { NetworkContext } from "../components/NetworkProvider";
 
-const AddContactButton = props => (
-  <Button
-    {...props}
-    appearance={props.appearance}
-    style={[props.style, styles.addContactButton]}
-    textStyle={styles.addContactButtonText}
-  >
-    {props.children}
-  </Button>
-);
-
-AddContactActions = ({ isParent, appearance, handleAddContact }) => (
-  <View style={styles.addContactActions}>
-    {isParent ? (
-      <AddContactButton
-        appearance={appearance}
-        onPress={() => handleAddContact({ type: "kid" })}
-      >
-        Add a kid
-      </AddContactButton>
-    ) : (
-      <React.Fragment>
-        <AddContactButton
-          appearance={appearance}
-          onPress={() => handleAddContact({ type: "parent" })}
-        >
-          Add parent
-        </AddContactButton>
-        <AddContactButton
-          appearance={appearance}
-          onPress={() => handleAddContact({ type: "friend" })}
-        >
-          Add friend
-        </AddContactButton>
-      </React.Fragment>
-    )}
-  </View>
-);
-
-ContactsEmptyState = ({ isParent, handleAddContact }) => (
-  <View>
-    <Text category="h6" style={styles.emptyStateIntroText}>
-      You are ready to add {isParent ? "a teeny bopper" : "parents and friends"}
-      . Let's do this!
-    </Text>
-    <AddContactActions
-      isParent={isParent}
-      handleAddContact={handleAddContact}
-      appearance="primary"
-    />
-  </View>
-);
-
-export default class PeopleScreen extends React.Component {
+class PeopleScreen extends React.Component {
+  static contextType = NetworkContext;
   state = {};
   componentDidMount = async () => {
-    /* call loadUserData() whenever this screen is displayed, in case data has changed */
-
-    this.loadUserDataSubcription = this.props.navigation.addListener(
+    this.screenFocusSubscription = this.props.navigation.addListener(
       "willFocus",
       this.loadUserData
     );
   };
   componentWillUnmount() {
-    this.loadUserDataSubcription.remove();
+    this.screenFocusSubscription.remove();
   }
+
   loadUserData = async () => {
+    const { settings = {}, setSettings } = this.props;
     this.setState({ error: null });
-    const { user, error: currentUserError } = await getCurrentUser();
-    if (currentUserError)
-      return this.setState({
-        error: `Error: ${currentUserError}`
-      });
-    this.setState({ user, userLoaded: true });
+    if (!this.context.isConnected) return;
+    const { user, error } = await getCurrentUser();
+    if (error) this.setState({ error });
+    if (user) {
+      setSettings({ user });
+      this.generateSuggestedContacts();
+    }
   };
   handleRefresh = async () => {
     this.setState({ isRefreshing: true });
@@ -110,15 +66,19 @@ export default class PeopleScreen extends React.Component {
     this.setState({ isRefreshing: false });
   };
   handleAddContact = ({ type }) => {
+    const { settings = {} } = this.props;
+    const { user } = settings;
     this.props.navigation.navigate("EditContact", {
       type,
-      user: this.state.user
+      user
     });
   };
   handleEditContact = ({ contact }) => {
+    const { settings = {} } = this.props;
+    const { user } = settings;
     this.props.navigation.navigate("EditContact", {
       contact,
-      user: this.state.user
+      user
     });
   };
 
@@ -158,24 +118,10 @@ export default class PeopleScreen extends React.Component {
     );
   };
 
-  renderListForContacts = contacts => (
-    <FlatList
-      style={styles.list}
-      renderItem={this.renderItem}
-      data={contacts}
-      keyExtractor={item => item.id}
-      ItemSeparatorComponent={() => <View style={styles.listItemSeparator} />}
-    />
-  );
-
-  renderContactsList = () => {
-    // <Card>
-    //   <CardHeader>Dale Cooper</CardHeader>
-    //   <Text>267</Text>
-    // </Card>
-    const { user } = this.state;
+  renderCurrentContacts = () => {
+    const { settings = {} } = this.props;
+    const { user } = settings;
     const { isParent } = user;
-
     const contactsByType = groupBy(user.contacts.items, "type");
     if (isParent && !contactsByType.kid) return null;
     if (!isParent && !contactsByType.parent && !contactsByType.friend)
@@ -189,40 +135,197 @@ export default class PeopleScreen extends React.Component {
           appearance="outline"
         />
         {isParent ? (
-          <View style={styles.contactsSection}>
-            <Text style={styles.contactsSectionHeader}>
-              Your {contactsByType.kid.length > 1 ? " kids" : " kid"}
-            </Text>
-            {this.renderListForContacts(contactsByType.kid)}
-          </View>
+          this.renderSection({
+            sectionContacts: contactsByType.kid,
+            singular: "kid",
+            plural: "kids"
+          })
         ) : (
           <React.Fragment>
-            {contactsByType.parent && (
-              <View style={styles.contactsSection}>
-                <Text style={styles.contactsSectionHeader}>
-                  Your{" "}
-                  {contactsByType.parent.length > 1
-                    ? " loving guardians"
-                    : " loving guardian"}
-                </Text>
-                {this.renderListForContacts(contactsByType.parent)}
-              </View>
-            )}
-            {contactsByType.friend && (
-              <View style={styles.contactsSection}>
-                <Text style={styles.contactsSectionHeader}>
-                  Your {contactsByType.friend.length > 1 ? "friends" : "friend"}
-                </Text>
-                {this.renderListForContacts(contactsByType.friend)}
-              </View>
-            )}
+            {contactsByType.parent &&
+              this.renderSection({
+                sectionContacts: contactsByType.parent,
+                singular: "guardian",
+                plural: "guardians"
+              })}
+            {contactsByType.friend &&
+              his.renderSection({
+                sectionContacts: contactsByType.friend,
+
+                singular: "friend",
+                plural: "friends"
+              })}
           </React.Fragment>
         )}
       </View>
     );
   };
+
+  renderSection = ({ sectionContacts, singular, plural }) => {
+    return (
+      <View style={styles.contactsSection}>
+        <Text style={styles.contactsSectionHeader}>
+          Your {sectionContacts.length > 1 ? plural : singular}
+        </Text>
+        <FlatList
+          style={styles.list}
+          renderItem={this.renderItem}
+          data={sectionContacts}
+          keyExtractor={item => item.id}
+          ItemSeparatorComponent={() => (
+            <View style={styles.listItemSeparator} />
+          )}
+        />
+      </View>
+    );
+  };
+
+  generateSuggestedContacts = () => {
+    const { settings = {} } = this.props;
+    const { user } = settings;
+    const contactsWithMyPhone = user.contactsByPhone.items;
+    let suggestedContacts = [];
+
+    for (const contact of contactsWithMyPhone) {
+      const { firstName, lastName, phone, id: userId } = contact.user;
+      if (user.contacts.items.findIndex(c => c.phone === phone) >= 0) continue; // already in my contacts
+      const type =
+        contact.type === "kid"
+          ? "parent"
+          : contact.type === "parent"
+          ? "kid"
+          : contact.type;
+      suggestedContacts.push({
+        type,
+        firstName,
+        lastName,
+        userId,
+        phone,
+        isReciprocal: true
+      });
+    }
+    this.setState({ suggestedContacts });
+  };
+
+  acceptSuggestedContact = async item => {
+    const { type, firstName, lastName, userId, phone, isReciprocal } = item;
+    const { settings = {} } = this.props;
+    const { user } = settings;
+
+    this.setState({
+      error: null,
+      accepting: { ...this.state.accepting, [phone]: true }
+    });
+    const { contact, error } = await createContact({
+      user,
+      firstName,
+      lastName,
+      phone,
+      type
+    });
+
+    if (error) {
+      this.setState({
+        error,
+        accepting: { ...this.state.accepting, [phone]: false }
+      });
+      return;
+    }
+
+    this.setState({
+      accepting: { ...this.state.accepting, [phone]: false },
+      accepted: { ...this.state.accepting, [phone]: true }
+    });
+    console.log("created contact", contact);
+  };
+
+  renderSuggestedContact = ({ item }) => {
+    const { type, firstName, lastName, userId, phone, isReciprocal } = item;
+    const { accepting = {}, accepted = {} } = this.state;
+    return (
+      <View>
+        <View style={styles.listItem}>
+          <View>
+            <Text style={styles.contactName}>
+              {firstName} {lastName}
+            </Text>
+            <Text>{formatPhone(phone)}</Text>
+          </View>
+          {accepted[phone] ? (
+            <Icon
+              fill="green"
+              height={24}
+              width={24}
+              animation="zoom"
+              name="checkmark-outline"
+            />
+          ) : (
+            <Button
+              appearance="ghost"
+              inline={true}
+              onPress={() => this.acceptSuggestedContact(item)}
+              // icon={style => <Icon {...style} name="square-outline" />}
+            >
+              {accepting[phone] ? "Adding..." : "Add contact"}
+            </Button>
+          )}
+          {/*<Button
+            appearance="ghost"
+            status="basic"
+            onPress={() => this.dismissSuggestedContact(item)}
+            icon={style => <Icon {...style} name="close-outline" />}
+          />*/}
+        </View>
+      </View>
+    );
+  };
+
+  renderSuggestedContacts = () => {
+    const { suggestedContacts } = this.state;
+    if (!suggestedContacts) return <Spinner />;
+
+    if (!suggestedContacts.length) return <Text>You have no messages.</Text>;
+
+    // <Text style={styles.contactsSectionHeader}>
+    //   People who added you already
+    // </Text>;
+
+    return (
+      <View style={styles.contactsSection}>
+        <Text style={styles.introText}>
+          These are people who added you as a contact. With one click you can
+          return the favor to each of them.
+        </Text>
+        <FlatList
+          style={styles.list}
+          renderItem={this.renderSuggestedContact}
+          data={suggestedContacts}
+          keyExtractor={item => item.phone}
+          ItemSeparatorComponent={() => (
+            <View style={styles.listItemSeparator} />
+          )}
+        />
+      </View>
+    );
+  };
+
+  handleTabFocus = tabIndex => {
+    tabIndex => this.setState({ tabIndex });
+    this.loadUserData();
+  };
+
   render() {
-    const { error, user, userLoaded, isRefreshing } = this.state;
+    const { settings = {} } = this.props;
+    const { user } = settings;
+
+    const {
+      error,
+      isRefreshing,
+      tabIndex = 0,
+      suggestedContacts = []
+    } = this.state;
+    // console.log(suggestedContacts);
+    // console.log("user..", !!user, suggestedContacts.length);
 
     return (
       <Layout style={{ flex: 1 }}>
@@ -235,29 +338,63 @@ export default class PeopleScreen extends React.Component {
             />
           }
         >
+          <Text style={styles.header}>This is your village</Text>
           {error && (
             <Text status="danger" style={styles.error}>
               {error}
             </Text>
           )}
-          <Text style={styles.header}>This is your village</Text>
-          <View style={styles.contactsContainer}>
-            {!userLoaded ? (
-              <Spinner />
-            ) : (
-              this.renderContactsList() || (
-                <ContactsEmptyState
-                  isParent={user.isParent}
-                  handleAddContact={this.handleAddContact}
-                />
-              )
-            )}
-          </View>
+          <TabView
+            selectedIndex={tabIndex}
+            onSelect={this.handleTabFocus}
+            // shouldLoadComponent={index => index === tabIndex}
+          >
+            <Tab title="CONTACTS">
+              <View style={styles.tabContent}>
+                {!user ? (
+                  <Spinner />
+                ) : (
+                  <React.Fragment>
+                    {!!suggestedContacts.length && (
+                      <Text style={styles.dismissableMessage} status="success">
+                        You have {suggestedContacts.length} suggested{" "}
+                        {suggestedContacts.length > 1 ? "contacts" : "contact"}.
+                        Please review them by selecting INBOX above.
+                      </Text>
+                    )}
+                    {this.renderCurrentContacts() || (
+                      <ContactsEmptyState
+                        isParent={user.isParent}
+                        handleAddContact={this.handleAddContact}
+                      />
+                    )}
+                  </React.Fragment>
+                )}
+              </View>
+            </Tab>
+            <Tab
+              title={
+                "INBOX" +
+                (suggestedContacts.length
+                  ? ` (${suggestedContacts.length})`
+                  : "")
+              }
+            >
+              <View style={styles.tabContent}>
+                {this.renderSuggestedContacts()}
+              </View>
+            </Tab>
+          </TabView>
         </ScrollView>
       </Layout>
     );
   }
 }
+
+export default connect(
+  ({ settings }) => ({ settings }),
+  { setSettings: setSettingsType }
+)(PeopleScreen);
 
 const styles = StyleSheet.create({
   container: {
@@ -278,7 +415,18 @@ const styles = StyleSheet.create({
   error: {
     marginVertical: 24
   },
-  contactsContainer: { paddingVertical: 0 },
+  introText: {
+    marginVertical: 24,
+    fontSize: 18,
+    lineHeight: 22
+  },
+  dismissableMessage: {
+    fontSize: 18,
+    lineHeight: 22
+  },
+  tabContent: {
+    paddingVertical: 32
+  },
   contactsSection: {
     marginBottom: 16
   },
@@ -313,15 +461,6 @@ const styles = StyleSheet.create({
   //   marginVertical: 10
   // },
   // contactsHeader: {},
-  contactName: { fontWeight: "bold", fontSize: 16 },
+  contactName: { fontWeight: "bold", fontSize: 16 }
   // contactPhone: { marginVertical: 2 },
-  addContactActions: {
-    marginVertical: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-evenly"
-  },
-  addContactButton: { marginVertical: 10 },
-  addContactButtonText: { textTransform: "uppercase" },
-  emptyStateIntroText: { marginTop: 20, fontWeight: "normal" }
 });

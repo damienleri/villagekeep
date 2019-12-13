@@ -1,6 +1,13 @@
 export const onUpdateEvent = `subscription OnUpdateEvent {
   onUpdateEvent {
-    id  
+    id
+  }
+}
+`;
+
+export const onUpdateUser = `subscription OnUpdateUser {
+  onUpdateUser {
+    id
   }
 }
 `;
