@@ -190,6 +190,7 @@ class EventScreen extends React.Component {
         ) : (
           <Text style={styles.messageTime}>Sending...</Text>
         )}
+        {message.error && <Text status="danger">{message.error}</Text>}
       </View>
     );
   };
@@ -308,15 +309,15 @@ class EventScreen extends React.Component {
 
     const moreActionsData = [
       {
-        title: "Add person",
+        title: "Add or remove people",
         icon: style => <Icon {...style} name="person-add" />,
         onPress: this.handleAddPerson
-      },
-      {
-        title: "Delete event",
-        icon: style => <Icon {...style} name="trash" />,
-        onPress: this.handleDeletePress
       }
+      // {
+      //   title: "Delete event",
+      //   icon: style => <Icon {...style} name="trash" />,
+      //   onPress: this.handleDeletePress
+      // }
     ];
     const event = this.props.navigation.getParam("event");
     const user = this.props.navigation.getParam("user");
@@ -386,6 +387,16 @@ class EventScreen extends React.Component {
           </View>
         )}
 
+        <View style={styles.peopleButtonRow}>
+          <Text>We have {event.eventPhones.items.length} people. </Text>
+          <Button
+            appearance="ghost"
+            inline={true}
+            // icon={style => <Icon {...style} name="people" />}
+          >
+            Add or remove people
+          </Button>
+        </View>
         {error && (
           <Text style={styles.error} status="danger">
             {error}
@@ -425,7 +436,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: gutterWidth,
     marginVertical: 10,
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  peopleButtonRow: {
+    flexDirection: "row",
+    marginHorizontal: gutterWidth,
+    marginVertical: 10,
+    justifyContent: "flex-start",
+    alignItems: "center"
   },
 
   titleContainer: {

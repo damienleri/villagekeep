@@ -80,6 +80,42 @@ export const getUser = `query GetUser($id: ID!) {
       }
       nextToken
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -117,6 +153,18 @@ export const listUsers = `query ListUsers(
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -159,6 +207,18 @@ export const getEvent = `query GetEvent($id: ID!) {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -322,6 +382,18 @@ export const getContact = `query GetContact($id: ID!) {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -401,6 +473,18 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -450,6 +534,42 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
       }
       owner
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
   }
 }
 `;
@@ -493,6 +613,18 @@ export const listEventPhones = `query ListEventPhones(
         userId
         owner
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
     }
     nextToken
   }
@@ -530,6 +662,18 @@ export const getMessage = `query GetMessage($id: ID!) {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -669,6 +813,18 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -716,6 +872,18 @@ export const userByPhone = `query UserByPhone(
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -881,6 +1049,7 @@ export const contactsByPhone = `query ContactsByPhone(
 `;
 export const eventPhonesByPhone = `query EventPhonesByPhone(
   $phone: String
+  $updatedAt: ModelStringKeyConditionInput
   $sortDirection: ModelSortDirection
   $filter: ModelEventPhoneFilterInput
   $limit: Int
@@ -888,6 +1057,7 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
 ) {
   eventPhonesByPhone(
     phone: $phone
+    updatedAt: $updatedAt
     sortDirection: $sortDirection
     filter: $filter
     limit: $limit
@@ -926,6 +1096,18 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
         title
         userId
         owner
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
     }
     nextToken
@@ -982,6 +1164,18 @@ export const eventPhonesByEvent = `query EventPhonesByEvent(
         userId
         owner
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
     }
     nextToken
   }
@@ -1036,6 +1230,18 @@ export const eventPhonesByUser = `query EventPhonesByUser(
         title
         userId
         owner
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
     }
     nextToken

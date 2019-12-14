@@ -69,7 +69,7 @@ class HomeScreen extends React.Component {
       id: user.id,
       callback: ({ event, error }) => {
         if (error) this.setState({ error });
-        console.log("subscription returned");
+        console.log("homscreen: user subscription fired.");
         this.loadUserData();
       }
     });
@@ -83,6 +83,10 @@ class HomeScreen extends React.Component {
       error: eventPhonesError
     } = await getEventPhonesByPhone(user.phone);
     if (eventPhonesError) return { error: eventPhonesError };
+    console.log(
+      "epsorting",
+      eventPhones.map(e => [e.phone, e.updatedAt, e.latestMessage])
+    );
     const events = eventPhones.map(ep => ep.event).filter(event => !!event);
     return { user, events };
   };

@@ -25,9 +25,24 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
     createdAt
     updatedAt
     title
+    eventPhones {
+      items {
+        user {
+          id
+        }
+      }
+    }
   }
 }
 `;
+
+export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPhoneInput!) {
+  updateEventPhone(input: $input) {
+    id
+  }
+}
+`;
+
 export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
   updateEvent(input: $input) {
     id

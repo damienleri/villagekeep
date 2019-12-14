@@ -29,7 +29,7 @@ export default class AuthLoadingScreen extends React.Component {
         bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
 
-      return this.props.navigation.navigate("People");
+      // return this.props.navigation.navigate("People");
 
       this.props.navigation.navigate("Main");
     } catch (e) {

@@ -57,7 +57,7 @@ const Step = ({ name, description, isDone, onPress }) => {
 const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
   let { isParent } = user;
   // isParent = false;
-  console.log(user);
+  // console.log(user);
   const contacts = user.contacts.items;
   const contactsByType = groupBy(contacts, "type");
 
@@ -92,7 +92,7 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
       {isParent && (
         <Step
-          name="3. Teens add events with specific friends"
+          name="3. Teens start threads with specific friends"
           description="The app keeps all the parents in the loop."
           onPress={() => navigation.navigate("People")}
           isDone={false}
@@ -120,7 +120,7 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
       {!isParent && (
         <Step
-          name="3. Add events"
+          name="3. Start threads"
           description="The app keeps parents in the loop."
           onPress={() => navigation.navigate("EditEvent")}
           isDone={false}

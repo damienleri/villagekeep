@@ -23,7 +23,7 @@ const AddEventActions = ({ user, appearance, handleAddEvent }) => {
         appearance={appearance}
         onPress={() => handleAddEvent({ type: "family", user })}
       >
-        Add event
+        New thread
       </Button>
     </View>
   );

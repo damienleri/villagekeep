@@ -71,7 +71,11 @@ type Contact
 }
 
 type EventPhone
-  @key(name: "byPhone", fields: ["phone"], queryField: "eventPhonesByPhone")
+  @key(
+    name: "byPhone"
+    fields: ["phone", "updatedAt"]
+    queryField: "eventPhonesByPhone"
+  )
   @key(
     name: "byEvent"
     fields: ["eventId", "createdAt"]
@@ -95,7 +99,9 @@ type EventPhone
   user: User! @connection(fields: ["userId"])
   eventId: ID!
   event: Event! @connection(fields: ["eventId"]) ## left this optional in case event gets deleted
+  latestMessage: Message @connection
 }
+
 type Message
   # @auth(rules: [{ allow: owner, operations: [ update, delete] }])
   @key(

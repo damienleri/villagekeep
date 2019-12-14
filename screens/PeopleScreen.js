@@ -338,7 +338,7 @@ class PeopleScreen extends React.Component {
             />
           }
         >
-          <Text style={styles.header}>This is your village</Text>
+          <Text style={styles.header}>Spect your village</Text>
           {error && (
             <Text status="danger" style={styles.error}>
               {error}

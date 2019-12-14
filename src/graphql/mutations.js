@@ -80,6 +80,42 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
       }
       nextToken
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -166,6 +202,42 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         userId
       }
       nextToken
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
     }
     deletedAt
     pushToken
@@ -254,6 +326,42 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       }
       nextToken
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -293,6 +401,18 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -401,6 +521,18 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -507,6 +639,18 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -618,6 +762,18 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -661,6 +817,18 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -706,6 +874,18 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -749,6 +929,18 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -797,6 +989,42 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
         deletedAt
       }
       owner
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
     }
   }
 }
@@ -835,6 +1063,18 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -883,6 +1123,42 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
         deletedAt
       }
       owner
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
     }
   }
 }
@@ -921,6 +1197,18 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -970,6 +1258,42 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
       }
       owner
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
   }
 }
 `;
@@ -1005,6 +1329,18 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -1093,6 +1429,18 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -1179,6 +1527,18 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken

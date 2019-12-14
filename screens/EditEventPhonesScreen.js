@@ -47,7 +47,7 @@ import {
 } from "../utils/etc";
 
 const generateEventTitle = () =>
-  `Event created ${moment().format("ddd [at] ha")}`;
+  `Started ${moment().format("MMM D [at] h:mma")}`;
 
 const aryToHash = ary => {
   let hash = {};
@@ -84,7 +84,7 @@ export default class EditEventPhonesScreen extends React.Component {
   handleSubmit = async () => {
     const { event, eventPhoneIsSelected, possibleEventPhones } = this.state;
     const user = this.props.navigation.getParam("user");
-    const returnToEvents = this.props.navigation.getParam("returnToEvents");
+    // const returnToEvents = this.props.navigation.getParam("returnToEvents");
     const selectedEventPhones = possibleEventPhones.filter(
       c => eventPhoneIsSelected[c.phone]
     );
@@ -108,11 +108,12 @@ export default class EditEventPhonesScreen extends React.Component {
         return;
       }
 
-      if (returnToEvents) {
-        this.props.navigation.navigate("Home");
-      } else {
-        this.props.navigation.navigate("Event", { user });
-      }
+      // if (returnToEvents) {
+      //   this.props.navigation.navigate("Home");
+      // } else {
+      // this.props.navigation.navigate("Event", { user, event });
+      this.props.navigation.goBack();
+      // }
     } else {
       /* Create mode */
 

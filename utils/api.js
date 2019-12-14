@@ -180,17 +180,36 @@ export const deleteCurrentUser = async () => {
 const updateLatestMessageForUsers = async ({ users, message }) => {
   try {
     for (const user of users) {
+      if (!user.id) throw "Missing ID for user";
       const res = await API.graphql(
         graphqlOperation(mutations.updateUser, {
           input: { id: user.id, userLatestMessageId: message.id }
         })
       );
     }
+    return {};
   } catch (e) {
-    console.log(e);
+    console.log("updateLatestMessageForUsers", e);
     return { error: `Error updating user: ${get(e, "errors[0].message")}` };
   }
 };
+const updateLatestMessageForEventPhones = async ({ eventPhones, message }) => {
+  try {
+    for (const eventPhone of eventPhones) {
+      if (!eventPhone.id) throw "Missing ID for eventphone";
+      const res = await API.graphql(
+        graphqlOperation(mutations.updateEventPhone, {
+          input: { id: eventPhone.id, eventPhoneLatestMessageId: message.id }
+        })
+      );
+    }
+    return {};
+  } catch (e) {
+    console.log("updateLatestMessageForEventPhones", e);
+    return { error: `Error updating user: ${get(e, "errors[0].message")}` };
+  }
+};
+
 export const createMessage = async ({ localSentAt, text, event, user }) => {
   try {
     const res = await API.graphql(
@@ -211,7 +230,20 @@ export const createMessage = async ({ localSentAt, text, event, user }) => {
     });
     if (updateEventError) return { error: updateEventError };
 
-    const users = event.eventPhones.items.map(ep => ep.user);
+    /// Update eventPhone.latestMessage
+    const eventPhones = event.eventPhones.items;
+    // console.log(`eventphones`, eventPhones.length, message);
+    // return {};
+    const {
+      error: updatedEventPhoneError
+    } = await updateLatestMessageForEventPhones({
+      eventPhones,
+      message
+    });
+    if (updatedEventPhoneError) return { error: updatedEventPhoneError };
+
+    //// Update user.latestMessage
+    const users = eventPhones.map(ep => ep.user);
     const { error: updatedUserError } = await updateLatestMessageForUsers({
       users,
       message
@@ -355,11 +387,11 @@ export const addEventPhones = async ({ event, eventPhones, user }) => {
     };
   }
 };
-export const deleteEventPhones = async ({ event, eventPhones }) => {
+
+export const deleteEventPhones = async ({ eventPhones }) => {
   try {
     for (const eventPhone of eventPhones) {
-      if (!eventPhone.id || !event.id)
-        throw "Missing eventPhone.id or event.id";
+      if (!eventPhone.id) throw "Missing eventPhone.id";
 
       const res = await API.graphql(
         graphqlOperation(mutations.deleteEventPhone, {
@@ -433,26 +465,30 @@ export const updateEvent = async eventInput => {
   }
 };
 export const deleteEvent = async ({ eventId }) => {
+  /// need to either use deletedAt or delete independent objects. for now avoid deleting events altogether
   try {
     await API.graphql(
       graphqlOperation(mutations.deleteEvent, {
         input: { id: eventId }
       })
     );
-    //Also delete dependent objects
-    ////on second thought there is no updateMany mutations so we would need to loop through the following individually:
 
-    // await API.graphql(
-    //   graphqlOperation(mutations.deleteEventPhone, {
-    //     input: { eventPhoneEventId: eventId }
-    //   })
-    // );
+    //     Also delete dependent objects
+
+    // deleteEventPhones({eventPhones})
     //
-    // await API.graphql(
-    //   graphqlOperation(mutations.deleteMessage, {
-    //     input: { messageEventId: eventId }
-    //   })
-    // );
+    // for (const of )
+    //     await API.graphql(
+    //       graphqlOperation(mutations.deleteEventPhone, {
+    //         input: { eventPhoneEventId: eventId }
+    //       })
+    //     );
+    //
+    //     await API.graphql(
+    //       graphqlOperation(mutations.deleteMessage, {
+    //         input: { messageEventId: eventId }
+    //       })
+    //     // );
 
     return {};
   } catch (e) {
@@ -531,8 +567,13 @@ export const getEventPhonesByPhone = async phone => {
   //  designed for HomeScreen
   try {
     const res = await API.graphql(
-      graphqlOperation(queries.eventPhonesByPhone, { phone })
+      graphqlOperation(queries.eventPhonesByPhone, {
+        phone,
+        sortDirection: "DESC",
+        limit: 100
+      })
     );
+    // console.log("p", res.data);
     return { eventPhones: res.data.eventPhonesByPhone.items };
   } catch (e) {
     console.log(e);
@@ -546,7 +587,7 @@ export const getContactsByPhone = async phone => {
   // authorization rules will be odd with this one. can make a resolver that takes userid
   try {
     const res = await API.graphql(
-      graphqlOperation(queries.contactsByPhone, { phone })
+      graphqlOperation(queries.contactsByPhone, { phone, limit: 100 })
     );
     return { contacts: res.data.contactsByPhone.items };
   } catch (e) {

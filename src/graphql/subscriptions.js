@@ -80,6 +80,42 @@ export const onCreateUser = `subscription OnCreateUser {
       }
       nextToken
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -166,6 +202,42 @@ export const onUpdateUser = `subscription OnUpdateUser {
         userId
       }
       nextToken
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
     }
     deletedAt
     pushToken
@@ -254,6 +326,42 @@ export const onDeleteUser = `subscription OnDeleteUser {
       }
       nextToken
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
     deletedAt
     pushToken
     pushEnabled
@@ -293,6 +401,18 @@ export const onCreateEvent = `subscription OnCreateEvent {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -401,6 +521,18 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -507,6 +639,18 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -618,6 +762,18 @@ export const onCreateContact = `subscription OnCreateContact {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -661,6 +817,18 @@ export const onUpdateContact = `subscription OnUpdateContact {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -706,6 +874,18 @@ export const onDeleteContact = `subscription OnDeleteContact {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -749,6 +929,18 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -797,6 +989,42 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
         deletedAt
       }
       owner
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
     }
   }
 }
@@ -835,6 +1063,18 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -883,6 +1123,42 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
         deletedAt
       }
       owner
+    }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
     }
   }
 }
@@ -921,6 +1197,18 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -970,6 +1258,42 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
       }
       owner
     }
+    latestMessage {
+      id
+      cognitoUserId
+      createdAt
+      updatedAt
+      localSentAt
+      text
+      userId
+      user {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      eventId
+      event {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        title
+        userId
+        owner
+      }
+      editedAt
+      deletedAt
+    }
   }
 }
 `;
@@ -1005,6 +1329,18 @@ export const onCreateMessage = `subscription OnCreateMessage {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken
@@ -1093,6 +1429,18 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
       contactsByPhone {
         nextToken
       }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
+      }
       deletedAt
       pushToken
       pushEnabled
@@ -1179,6 +1527,18 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
       }
       contactsByPhone {
         nextToken
+      }
+      latestMessage {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        localSentAt
+        text
+        userId
+        eventId
+        editedAt
+        deletedAt
       }
       deletedAt
       pushToken

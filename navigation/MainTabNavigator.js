@@ -43,15 +43,15 @@ const TabBarComponent = ({ navigation }) => {
           onSelect={onSelect}
         >
           <BottomNavigationTab
-            title="EVENTS"
+            // title="EVENTS"
             icon={style => <Icon {...style} name="message-square-outline" />}
           />
           <BottomNavigationTab
-            title="PEOPLE"
+            // title="PEOPLE"
             icon={style => <Icon {...style} name="people-outline" />}
           />
           <BottomNavigationTab
-            title="SETTINGS"
+            // title="SETTINGS"
             icon={style => <Icon {...style} name="settings-outline" />}
           />
         </BottomNavigation>

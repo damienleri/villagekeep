@@ -40,8 +40,12 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       lastName
       isParent
       pushEnabled
+      latestMessage {
+        id
+      }
       events {
         items {
+          id
           latestMessage {
             id
             text
@@ -103,6 +107,11 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
     nextToken: $nextToken
   ) {
     items {
+      updatedAt
+      phone
+      latestMessage {
+        id
+      }
       event {
         id
         createdAt
@@ -114,9 +123,13 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
         }
         eventPhones {
           items {
+            id
             firstName
             lastName
             phone
+            user {
+              id
+            }
           }
         }
         latestMessage {
@@ -196,7 +209,7 @@ export const getEventWithMessages = `query GetEvent($id: ID!) {
       firstName
       lastName
     }
-    messages(sortDirection: DESC) {
+    messages(sortDirection: DESC, limit: 100) {
       items {
         id
         localSentAt
