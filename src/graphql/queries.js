@@ -32,6 +32,7 @@ export const getUser = `query GetUser($id: ID!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -110,6 +111,7 @@ export const getUser = `query GetUser($id: ID!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -183,6 +185,7 @@ export const getEvent = `query GetEvent($id: ID!) {
     createdAt
     updatedAt
     title
+    type
     userId
     user {
       id
@@ -285,6 +288,7 @@ export const getEvent = `query GetEvent($id: ID!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -307,6 +311,7 @@ export const listEvents = `query ListEvents(
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -498,6 +503,7 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -564,6 +570,7 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -610,6 +617,7 @@ export const listEventPhones = `query ListEventPhones(
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -688,6 +696,7 @@ export const getMessage = `query GetMessage($id: ID!) {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -765,6 +774,7 @@ export const listMessages = `query ListMessages(
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -917,6 +927,7 @@ export const eventsByUser = `query EventsByUser(
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1094,6 +1105,7 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1161,6 +1173,7 @@ export const eventPhonesByEvent = `query EventPhonesByEvent(
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1228,6 +1241,7 @@ export const eventPhonesByUser = `query EventPhonesByUser(
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1294,6 +1308,7 @@ export const messagesByEvent = `query MessagesByEvent(
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1350,6 +1365,7 @@ export const messagesByUser = `query MessagesByUser(
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }

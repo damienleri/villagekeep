@@ -149,7 +149,7 @@ class PeopleScreen extends React.Component {
                 plural: "guardians"
               })}
             {contactsByType.friend &&
-              his.renderSection({
+              this.renderSection({
                 sectionContacts: contactsByType.friend,
 
                 singular: "friend",

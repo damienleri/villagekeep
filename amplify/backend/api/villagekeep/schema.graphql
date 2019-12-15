@@ -63,7 +63,7 @@ type Contact
   cognitoUserId: String!
   createdAt: String
   updatedAt: String
-  type: ContactType ## enum, defined below
+  type: ContactType
   phone: AWSPhone!
   firstName: String
   lastName: String

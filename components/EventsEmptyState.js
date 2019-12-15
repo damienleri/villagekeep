@@ -128,11 +128,7 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
 
       {contacts.length > 0 && (
-        <AddEventActions
-          user={user}
-          handleAddEvent={handleAddEvent}
-          appearance="primary"
-        />
+        <AddEventActions user={user} handleAddEvent={handleAddEvent} />
       )}
     </View>
   );

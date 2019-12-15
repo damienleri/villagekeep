@@ -196,6 +196,7 @@ const updateLatestMessageForPhones = async ({ phones, message }) => {
   for (const phone of phones) {
     const { user, error } = await getUserByPhone(phone);
     if (error) return { error };
+    if (!user) continue; // This is normal. Just means a contact whose phone hasn't been claimed by a user.
     const { error: updateError } = await updateLatestMessageForUser({
       user,
       message
@@ -206,6 +207,7 @@ const updateLatestMessageForPhones = async ({ phones, message }) => {
 };
 const updateLatestMessageForUser = async ({ user, message }) => {
   try {
+    if (!user) throw "Missing user";
     if (!user.id) throw "Missing ID for user";
     const res = await API.graphql(
       graphqlOperation(mutations.updateUser, {
@@ -338,13 +340,14 @@ export const deleteContact = async ({ contactId }) => {
   }
 };
 
-export const createEvent = async ({ title, user }) => {
+export const createEvent = async ({ title, type, user }) => {
   try {
     // console.log(`createing event for user ${userId}`);
     const res = await API.graphql(
       graphqlOperation(mutations.createEvent, {
         input: {
           title,
+          type,
           userId: user.id,
           cognitoUserId: user.cognitoUserId
         }
@@ -436,11 +439,17 @@ export const deleteEventPhones = async ({ eventPhones }) => {
     };
   }
 };
-export const createEventWithPhones = async ({ title, user, eventPhones }) => {
-  console.log(`creating event for user ${user.id}`);
+export const createEventWithPhones = async ({
+  title,
+  type,
+  user,
+  eventPhones
+}) => {
+  console.log(`creating event for user ${user.id} of type ${type}`);
   const { event, error: createEventError } = await createEvent({
     user,
-    title
+    title,
+    type
   });
   if (createEventError) return { error: createEventError };
 

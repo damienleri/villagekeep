@@ -32,6 +32,7 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -110,6 +111,7 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -155,6 +157,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -233,6 +236,7 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -278,6 +282,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -356,6 +361,7 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -377,6 +383,7 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
     createdAt
     updatedAt
     title
+    type
     userId
     user {
       id
@@ -479,6 +486,7 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -496,6 +504,7 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
     createdAt
     updatedAt
     title
+    type
     userId
     user {
       id
@@ -598,6 +607,7 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -615,6 +625,7 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
     createdAt
     updatedAt
     title
+    type
     userId
     user {
       id
@@ -717,6 +728,7 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -954,6 +966,7 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1020,6 +1033,7 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1088,6 +1102,7 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1154,6 +1169,7 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1222,6 +1238,7 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1288,6 +1305,7 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1355,6 +1373,7 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1454,6 +1473,7 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1553,6 +1573,7 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id

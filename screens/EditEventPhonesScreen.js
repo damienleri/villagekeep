@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   View,
@@ -45,6 +46,7 @@ import {
   getEventPhoneFromContact,
   getFormattedNameFromEventPhone
 } from "../utils/etc";
+import { setSettings as setSettingsType } from "../redux/actions";
 
 const generateEventTitle = () =>
   `Started ${moment().format("MMM D [at] h:mma")}`;
@@ -57,15 +59,22 @@ const aryToHash = ary => {
   return hash;
 };
 
-export default class EditEventPhonesScreen extends React.Component {
+class EditEventPhonesScreen extends React.Component {
   constructor(props) {
     super(props);
     const event = props.navigation.getParam("event");
-    const user = props.navigation.getParam("user");
+
+    const type = event ? event.type : props.navigation.getParam("type");
+    const { settings = {}, setSettings } = this.props;
+    const { user } = settings;
+
     const preselectedEventPhones = event
       ? event.eventPhones.items.filter(ep => ep.phone !== user.phone)
       : [];
-    const myContacts = user.contacts.items;
+    const myContacts = user.contacts.items.filter(c => {
+      if (!user.isParent && c.type === "parent") return false; // exclude kid's parents
+      return true;
+    });
     let possibleEventPhones = uniqBy(
       preselectedEventPhones.concat(myContacts.map(getEventPhoneFromContact)),
       eventPhone => eventPhone.phone
@@ -73,6 +82,7 @@ export default class EditEventPhonesScreen extends React.Component {
     this.state = {
       isLoading: false,
       event,
+      type,
       possibleEventPhones,
       eventPhoneIsSelected: aryToHash(
         preselectedEventPhones.map(ep => ep.phone)
@@ -82,14 +92,20 @@ export default class EditEventPhonesScreen extends React.Component {
   }
 
   handleSubmit = async () => {
-    const { event, eventPhoneIsSelected, possibleEventPhones } = this.state;
-    const user = this.props.navigation.getParam("user");
-    // const returnToEvents = this.props.navigation.getParam("returnToEvents");
+    const {
+      event,
+      type,
+      eventPhoneIsSelected,
+      possibleEventPhones
+    } = this.state;
+    const { settings = {}, setSettings } = this.props;
+    const { user } = settings;
+
     const selectedEventPhones = possibleEventPhones.filter(
       c => eventPhoneIsSelected[c.phone]
     );
     const eventPhones = selectedEventPhones.concat(getEventPhoneFromUser(user));
-    // console.log(eventPhones);
+
     this.setState({ isSubmitting: true });
 
     if (event) {
@@ -107,23 +123,14 @@ export default class EditEventPhonesScreen extends React.Component {
         });
         return;
       }
-
-      // if (returnToEvents) {
-      //   this.props.navigation.navigate("Home");
-      // } else {
-      // this.props.navigation.navigate("Event", { user, event });
       this.props.navigation.goBack();
-      // }
     } else {
       /* Create mode */
-
-      // todo:
-      // Handle the user clicking Back button to this screen:
-      // check if event exists and then update eventPhones only
 
       const { event, error: createEventError } = await createEventWithPhones({
         user,
         title: generateEventTitle(),
+        type,
         eventPhones
       });
       if (createEventError) {
@@ -166,33 +173,35 @@ export default class EditEventPhonesScreen extends React.Component {
     );
   };
   renderListItem = ({ item: eventPhone }) => {
-    const { eventPhoneIsSelected } = this.state;
+    const { eventPhoneIsSelected, type } = this.state;
+    const { firstName, lastName } = eventPhone;
+
     const isChecked = eventPhoneIsSelected[eventPhone.phone];
-    const description = ""; // last used in an event by me?
+    let description = "";
+    let title = "";
+    if (type === "both") {
+      title = `${firstName} ${lastName} and parents`;
+      // description = 'Includes parents'
+    } else if (type === "parents") {
+      title = `Parents of ${firstName} ${lastName}`;
+      // description = ''
+    } else if (type === "kids") {
+      title = `${firstName} ${lastName}`;
+    }
+
     let titleStyle = Object.assign({}, titleStyle);
-    if (isChecked) titleStyle.color = colors.brandColor;
+    if (isChecked) {
+      titleStyle.color = colors.brandColor;
+      titleStyle.fontWeight = "bold";
+    }
     let descriptionStyle = Object.assign({}, descriptionStyle);
     if (isChecked) descriptionStyle.color = colors.brandColor;
-    const { firstName, lastName } = eventPhone;
-    // <ListItem
-    //   style={styles.listItem}
-    //   title={getFormattedNameFromContact(contact)}
-    //   titleStyle={titleStyle}
-    //   description={description}
-    //   descriptionStyle={descriptionStyle}
-    //   accessory={style =>
-    //     this.renderAccessory({ style, isChecked, contact })
-    //   }
-    // />
-    // icon={this.renderAvatar}
 
     return (
       <TouchableOpacity onPress={() => this.handleSelectEventPhone(eventPhone)}>
         <View style={styles.listItem}>
           <View>
-            <Text style={titleStyle}>
-              {firstName} {lastName}
-            </Text>
+            <Text style={titleStyle}>{title}</Text>
             <Text style={descriptionStyle}>{description}</Text>
           </View>
           <View style={{ justifyContent: "center" }}>
@@ -203,7 +212,8 @@ export default class EditEventPhonesScreen extends React.Component {
     );
   };
   renderList = () => {
-    const user = this.props.navigation.getParam("user");
+    const { settings = {}, setSettings } = this.props;
+    const { user } = settings;
     const { eventPhoneIsSelected, possibleEventPhones } = this.state;
     return (
       <FlatList
@@ -218,7 +228,9 @@ export default class EditEventPhonesScreen extends React.Component {
 
   render() {
     const { eventPhoneIsSelected, errorMessage, isSubmitting } = this.state;
-    const numSelected = Object.keys(eventPhoneIsSelected).length;
+    console.log("ep", eventPhoneIsSelected);
+    const numSelected = Object.values(eventPhoneIsSelected).filter(val => val)
+      .length;
 
     return (
       <Layout style={styles.container}>
@@ -243,6 +255,11 @@ export default class EditEventPhonesScreen extends React.Component {
     );
   }
 }
+
+export default connect(
+  ({ settings }) => ({ settings }),
+  { setSettings: setSettingsType }
+)(EditEventPhonesScreen);
 
 const styles = StyleSheet.create({
   container: {

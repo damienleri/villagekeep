@@ -182,7 +182,7 @@ class EventScreen extends React.Component {
   };
 
   renderMessage = ({ item: message }) => {
-    const user = this.props.navigation.getParam("user");
+    const { user } = this.props.settings;
     const isByMe = !message.user || message.user.id === user.id;
     return (
       <View style={styles.message}>
@@ -269,8 +269,8 @@ class EventScreen extends React.Component {
 
   handleMessageSubmit = async () => {
     const { inputText = "" } = this.state;
+    const { user } = this.props.settings;
     const event = this.props.navigation.getParam("event");
-    const user = this.props.navigation.getParam("user");
 
     if (!inputText.length) return;
     // localSentAt is just a unique key that allows local messages to be identifed when they round trip from server
@@ -287,8 +287,8 @@ class EventScreen extends React.Component {
   };
 
   handleAddPerson = () => {
+    const { user } = this.props.settings;
     const event = this.props.navigation.getParam("event");
-    const user = this.props.navigation.getParam("user");
     // this.setState({ showMoreActions: false });
     this.props.navigation.navigate("EditEventPhones", { event, user });
   };
@@ -330,7 +330,7 @@ class EventScreen extends React.Component {
       // }
     ];
     const event = this.props.navigation.getParam("event");
-    const user = this.props.navigation.getParam("user");
+    const { user } = this.props.settings;
 
     return (
       <Layout style={styles.container}>
@@ -402,6 +402,9 @@ class EventScreen extends React.Component {
           <Button
             appearance="ghost"
             inline={true}
+            onPress={() =>
+              this.props.navigation.navigate("EditEventPhones", { event })
+            }
             // icon={style => <Icon {...style} name="people" />}
           >
             Add or remove people

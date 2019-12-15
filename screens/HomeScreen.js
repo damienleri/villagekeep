@@ -105,10 +105,10 @@ class HomeScreen extends React.Component {
     this.setState({ isRefreshing: false });
   };
 
-  handleAddEvent = ({}) => {
+  handleAddEvent = ({ type }) => {
     const { user } = this.props.settings;
     this.props.navigation.navigate("EditEventPhones", {
-      user
+      type
     });
   };
 
@@ -188,7 +188,11 @@ class HomeScreen extends React.Component {
           handleAddEvent={this.handleAddEvent}
           appearance="outline"
         />
-
+        <View style={styles.eventsSection}>
+          <Text style={styles.sectionHeaderText}>
+            Threads that you are included on:
+          </Text>
+        </View>
         <FlatList
           style={styles.list}
           renderItem={this.renderEvent}
@@ -260,6 +264,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: colors.brandColor
   },
+  eventsSection: {
+    marginTop: 20
+  },
+  sectionHeaderText: {
+    fontSize: 16,
+    color: colors.brandColor,
+    textTransform: "uppercase"
+  },
   error: {
     marginVertical: 24
   },
@@ -284,7 +296,8 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "normal",
     fontSize: 16,
-    color: colors.brandColor,
+    marginBottom: 5,
+    // color: colors.brandColor,
     fontWeight: "bold"
   },
   // creationTimeContainer: { justifyContent: "flex-end" },

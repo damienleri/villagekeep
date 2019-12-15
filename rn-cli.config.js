@@ -2,6 +2,6 @@ const blacklist = require("metro").createBlacklist;
 
 module.exports = {
   getBlacklistRE: function() {
-    return blacklist([/amplify\/.*/]);
+    return blacklist([/amplify\/.*/], [/tasks\/.*/]);
   }
 };

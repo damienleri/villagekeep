@@ -32,6 +32,7 @@ export const onCreateUser = `subscription OnCreateUser {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -110,6 +111,7 @@ export const onCreateUser = `subscription OnCreateUser {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -155,6 +157,7 @@ export const onUpdateUser = `subscription OnUpdateUser {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -233,6 +236,7 @@ export const onUpdateUser = `subscription OnUpdateUser {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -278,6 +282,7 @@ export const onDeleteUser = `subscription OnDeleteUser {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -356,6 +361,7 @@ export const onDeleteUser = `subscription OnDeleteUser {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -377,6 +383,7 @@ export const onCreateEvent = `subscription OnCreateEvent {
     createdAt
     updatedAt
     title
+    type
     userId
     user {
       id
@@ -479,6 +486,7 @@ export const onCreateEvent = `subscription OnCreateEvent {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -496,6 +504,7 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
     createdAt
     updatedAt
     title
+    type
     userId
     user {
       id
@@ -598,6 +607,7 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -615,6 +625,7 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
     createdAt
     updatedAt
     title
+    type
     userId
     user {
       id
@@ -717,6 +728,7 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -954,6 +966,7 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1020,6 +1033,7 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1088,6 +1102,7 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1154,6 +1169,7 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1222,6 +1238,7 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1288,6 +1305,7 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
         createdAt
         updatedAt
         title
+        type
         userId
         owner
       }
@@ -1355,6 +1373,7 @@ export const onCreateMessage = `subscription OnCreateMessage {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1454,6 +1473,7 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id
@@ -1553,6 +1573,7 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
       createdAt
       updatedAt
       title
+      type
       userId
       user {
         id

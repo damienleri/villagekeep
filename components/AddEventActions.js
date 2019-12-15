@@ -16,53 +16,67 @@ import { colors } from "../utils/style";
 
 // const AddIcon = style => <Icon {...style} name="star" />;
 
-const AddEventActions = ({ user, appearance, handleAddEvent }) => {
+const AddEventActions = ({ user, appearance = "outline", handleAddEvent }) => {
+  const { isParent } = user;
+
   return (
-    <View style={styles.addEventActions}>
-      <Button
-        appearance={appearance}
-        onPress={() => handleAddEvent({ type: "family", user })}
-      >
-        New thread
-      </Button>
+    <View style={styles.container}>
+      <View style={styles.headerRow}>
+        <Text style={styles.sectionHeaderText}>Start a thread:</Text>
+      </View>
+      <View style={styles.buttonRow}>
+        {isParent ? (
+          <React.Fragment>
+            <Button
+              appearance={appearance}
+              onPress={() => handleAddEvent({ type: "both" })}
+            >
+              Kids and parents
+            </Button>
+            <Button
+              appearance={appearance}
+              onPress={() => handleAddEvent({ type: "parents" })}
+            >
+              Parents only
+            </Button>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <Button
+              appearance={appearance}
+              onPress={() => handleAddEvent({ type: "both" })}
+            >
+              Kids and parents
+            </Button>
+            <Button
+              appearance={appearance}
+              onPress={() => handleAddEvent({ type: "kids" })}
+            >
+              Kids only
+            </Button>
+          </React.Fragment>
+        )}
+      </View>
     </View>
   );
-
-  // return (
-  //   <View style={styles.addEventActions}>
-  //     {user.isParent ? (
-  //       <AddEventButton
-  //         appearance={appearance}
-  //         onPress={() => handleAddEvent({ type: "family", user })}
-  //       >
-  //         Add Family event
-  //       </AddEventButton>
-  //     ) : (
-  //       <React.Fragment>
-  //         <AddEventButton
-  //           appearance={appearance}
-  //           onPress={() => handleAddEvent({ type: "friends", user })}
-  //         >
-  //           Add Friend event
-  //         </AddEventButton>
-  //         <AddEventButton
-  //           appearance={appearance}
-  //           onPress={() => handleAddEvent({ type: "family", user })}
-  //         >
-  //           Add Family event
-  //         </AddEventButton>
-  //       </React.Fragment>
-  //     )}
-  //   </View>
-  // );
 };
 export default AddEventActions;
 
 const styles = StyleSheet.create({
-  addEventActions: {
-    marginVertical: 10
-    // flexDirection: "row",
-    // flexWrap: "wrap",
-    // justifyContent: "space-between"
+  container: {},
+  headerRow: {
+    marginTop: 10
+  },
+  sectionHeaderText: {
+    fontSize: 16,
+    color: colors.brandColor,
+    textTransform: "uppercase"
+  },
+  buttonRow: {
+    marginBottom: 10,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly",
+    alignItems: "center"
   }
 });
