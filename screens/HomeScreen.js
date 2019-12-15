@@ -47,12 +47,12 @@ import { NetworkContext } from "../components/NetworkProvider";
 class HomeScreen extends React.Component {
   static contextType = NetworkContext;
   state = {};
+
   componentDidMount = async () => {
     this.screenFocusSubcription = this.props.navigation.addListener(
       "willFocus",
       this.loadUserData
     );
-    this.subscribeToServer();
   };
 
   componentWillUnmount() {
@@ -61,15 +61,17 @@ class HomeScreen extends React.Component {
   }
 
   subscribeToServer = () => {
-    if (!this.context.isConnected) return;
     const { settings = {}, setSettings } = this.props;
     const { user } = settings;
+    if (!this.context.isConnected) return;
+    if (this.userSubscription) return; //already subscribed
+    if (!user) return;
     this.userSubscription = subscribeToServerUpdate({
       type: "User",
       id: user.id,
-      callback: ({ event, error }) => {
+      callback: ({ data, error }) => {
         if (error) this.setState({ error });
-        console.log("homscreen: user subscription fired.");
+        // console.log("homscreen: user subscription fired.");
         this.loadUserData();
       }
     });
@@ -83,10 +85,6 @@ class HomeScreen extends React.Component {
       error: eventPhonesError
     } = await getEventPhonesByPhone(user.phone);
     if (eventPhonesError) return { error: eventPhonesError };
-    console.log(
-      "epsorting",
-      eventPhones.map(e => [e.phone, e.updatedAt, e.latestMessage])
-    );
     const events = eventPhones.map(ep => ep.event).filter(event => !!event);
     return { user, events };
   };
@@ -96,8 +94,9 @@ class HomeScreen extends React.Component {
     this.setState({ error: null });
     if (!this.context.isConnected) return;
     const { user, events, error } = await this.fetchUserData();
-    if (user) setSettings({ user, events });
     if (error) this.setState({ error });
+    if (user) await setSettings({ user, events });
+    this.subscribeToServer(); //will subscribe to graphql if not already subscribed. requires user to be loaded
   };
 
   handlePullToRefresh = async () => {

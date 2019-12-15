@@ -54,15 +54,28 @@ export default class EditContactScreen extends React.Component {
     const contact = this.props.navigation.getParam("contact");
     if (!contact) this.firstNameInputRef.current.focus();
   }
+
   handleChangePhone = async text => {
+    const contact = this.props.navigation.getParam("contact");
+    const user = this.props.navigation.getParam("user");
     const parsed = parsePhoneNumberFromString(text, "US");
     const isValidPhone = !!parsed && parsed.isValid();
     const isBackspace = text.length < this.state.phone.length;
     const phone = isBackspace ? text : new AsYouType("US").input(text);
+    let validPhone = isValidPhone ? parsed.format("E.164") : null;
+    let phoneErrorMessage = null;
+    if (
+      !contact &&
+      validPhone &&
+      user.contacts.items.findIndex(c => c.phone === validPhone) >= 0
+    ) {
+      phoneErrorMessage = "That number is already in your contacts list.";
+      validPhone = null;
+    }
     this.setState({
       phone,
-      validPhone: isValidPhone ? parsed.format("E.164") : null,
-      phoneErrorMessage: null
+      validPhone,
+      phoneErrorMessage
     });
   };
 

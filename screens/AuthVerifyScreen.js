@@ -9,12 +9,20 @@ import { Auth } from "aws-amplify";
 import { createCurrentUser } from "../utils/api";
 import { gutterWidth } from "../utils/style";
 import { setSettings as setSettingsType } from "../redux/actions";
+import TopNavigation from "../components/TopNavigation";
 
 const codeLength = 6;
 
 class AuthVerifyScreen extends React.Component {
   state = { code: "" };
-
+  static navigationOptions = props => ({
+    header: (
+      <TopNavigation
+        {...props}
+        onBackPress={() => props.navigation.navigate("Welcome")}
+      />
+    )
+  });
   constructor() {
     super();
     this.codeInputRef = React.createRef();

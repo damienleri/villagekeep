@@ -21,7 +21,11 @@ const MenuAction = props => <TopNavigationAction {...props} icon={MenuIcon} />;
 
 export default function(props) {
   const onBackPress = () => {
-    props.navigation.goBack();
+    if (props.onBackPress) {
+      props.onBackPress();
+    } else {
+      props.navigation.goBack();
+    }
   };
   const isFirstInStack =
     props.navigation.dangerouslyGetParent().state.index === 0;

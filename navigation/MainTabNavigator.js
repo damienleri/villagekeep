@@ -62,7 +62,7 @@ const TabBarComponent = ({ navigation }) => {
 
 const EventsStack = createStackNavigator(
   {
-    Events: HomeScreen,
+    Home: HomeScreen,
     Event: EventScreen,
     EditEventPhones: EditEventPhonesScreen
     // EditEvent: EditEventScreen

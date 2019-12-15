@@ -223,7 +223,7 @@ export default class EditEventPhonesScreen extends React.Component {
     return (
       <Layout style={styles.container}>
         <View style={styles.intro}>
-          <Text>Choose who to include.</Text>
+          <Text>Choose people to include.</Text>
         </View>
         {this.renderList()}
 

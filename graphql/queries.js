@@ -40,6 +40,7 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       lastName
       isParent
       pushEnabled
+      pushToken
       latestMessage {
         id
       }
@@ -176,29 +177,28 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
 //   }
 // }
 // `;
-// export const getEvent = `query GetEvent($id: ID!) {
-//   getEvent(id: $id) {
-//     id
-//     createdAt
-//     title
-//
-//     user {
-//       id
-//       firstName
-//       lastName
-//     }
-//     eventPhones {
-//       items {
-//         id
-//         phone
-//         firstName
-//         lastName
-//       }
-//       nextToken
-//     }
-//   }
-// }
-// `;
+export const getEvent = `query GetEvent($id: ID!) {
+  getEvent(id: $id) {
+    id
+    createdAt
+    title
+    user {
+      id
+      firstName
+      lastName
+    }
+    eventPhones {
+      items {
+        id
+        phone
+        firstName
+        lastName
+      }
+      nextToken
+    }
+  }
+}
+`;
 export const getEventWithMessages = `query GetEvent($id: ID!) {
   getEvent(id: $id) {
     id
@@ -333,41 +333,27 @@ export const getEventWithMessages = `query GetEvent($id: ID!) {
 // }
 // `;
 
-// export const userByPhone = `query UserByPhone(
-//   $phone: AWSPhone
-//   $sortDirection: ModelSortDirection
-//   $filter: ModelUserFilterInput
-//   $limit: Int
-//   $nextToken: String
-// ) {
-//   userByPhone(
-//     phone: $phone
-//     sortDirection: $sortDirection
-//     filter: $filter
-//     limit: $limit
-//     nextToken: $nextToken
-//   ) {
-//     items {
-//       id
-//       createdAt
-//       updatedAt
-//       cognitoUserId
-//       phone
-//       firstName
-//       lastName
-//       isParent
-//       contacts {
-//         nextToken
-//       }
-//       events {
-//         nextToken
-//       }
-//       deletedAt
-//     }
-//     nextToken
-//   }
-// }
-// `;
+// used by createMessage to update user.latestMessage for home page subscription
+export const userByPhone = `query UserByPhone(
+  $phone: AWSPhone
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  userByPhone(
+    phone: $phone
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+    }
+  }
+}
+`;
 export const contactsByPhone = `query ContactsByPhone(
   $phone: AWSPhone
   $sortDirection: ModelSortDirection

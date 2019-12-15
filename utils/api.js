@@ -177,22 +177,48 @@ export const deleteCurrentUser = async () => {
 //   }
 // };
 
-const updateLatestMessageForUsers = async ({ users, message }) => {
+const getUserByPhone = async phone => {
   try {
-    for (const user of users) {
-      if (!user.id) throw "Missing ID for user";
-      const res = await API.graphql(
-        graphqlOperation(mutations.updateUser, {
-          input: { id: user.id, userLatestMessageId: message.id }
-        })
-      );
-    }
+    if (!phone) throw "Missing phone";
+    const res = await API.graphql(
+      graphqlOperation(queries.userByPhone, {
+        phone
+      })
+    );
+
+    return { user: res.data.userByPhone.items[0] };
+  } catch (e) {
+    console.log("getUserByPhone", e);
+    return { error: `Error finding user: ${get(e, "errors[0].message")}` };
+  }
+};
+const updateLatestMessageForPhones = async ({ phones, message }) => {
+  for (const phone of phones) {
+    const { user, error } = await getUserByPhone(phone);
+    if (error) return { error };
+    const { error: updateError } = await updateLatestMessageForUser({
+      user,
+      message
+    });
+    if (updateError) return { error: updateError };
+  }
+  return {};
+};
+const updateLatestMessageForUser = async ({ user, message }) => {
+  try {
+    if (!user.id) throw "Missing ID for user";
+    const res = await API.graphql(
+      graphqlOperation(mutations.updateUser, {
+        input: { id: user.id, userLatestMessageId: message.id }
+      })
+    );
     return {};
   } catch (e) {
     console.log("updateLatestMessageForUsers", e);
     return { error: `Error updating user: ${get(e, "errors[0].message")}` };
   }
 };
+
 const updateLatestMessageForEventPhones = async ({ eventPhones, message }) => {
   try {
     for (const eventPhone of eventPhones) {
@@ -243,9 +269,9 @@ export const createMessage = async ({ localSentAt, text, event, user }) => {
     if (updatedEventPhoneError) return { error: updatedEventPhoneError };
 
     //// Update user.latestMessage
-    const users = eventPhones.map(ep => ep.user);
-    const { error: updatedUserError } = await updateLatestMessageForUsers({
-      users,
+    const phones = eventPhones.map(ep => ep.phone);
+    const { error: updatedUserError } = await updateLatestMessageForPhones({
+      phones,
       message
     });
     if (updatedUserError) return { error: updatedUserError };
@@ -378,7 +404,6 @@ export const addEventPhones = async ({ event, eventPhones, user }) => {
       );
       console.log(`added eventPhone ${eventPhone.id}`, res);
     }
-
     return {};
   } catch (e) {
     console.log(e);
@@ -418,7 +443,7 @@ export const createEventWithPhones = async ({ title, user, eventPhones }) => {
     title
   });
   if (createEventError) return { error: createEventError };
-  console.log(`created event`, event);
+
   console.log("adding eventPhones", eventPhones);
   // return { error: "testing" };
   const { error: eventPhoneError } = await addEventPhones({
@@ -448,7 +473,11 @@ export const createEventWithPhones = async ({ title, user, eventPhones }) => {
 
   if (eventPhoneError) return { error: eventPhoneError };
 
-  return { event };
+  const { event: updatedEvent, error: getEventError } = await getEventById(
+    event.id
+  );
+  if (getEventError) return { error: getEventError };
+  return { event: updatedEvent };
 };
 
 export const updateEvent = async eventInput => {

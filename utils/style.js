@@ -10,13 +10,16 @@ export const window = {
 };
 
 export const gutterWidth = 32;
+// other brand color is the background: #222B45 (midnight)
 export const colors = {
   textLinkColor: "#3366FF",
   primaryColor: "#3366FF",
   successColor: "#18E3A0",
   dangerColor: "red",
-  brandColor: "#72C89E",
-  darkAccentColor: "#005B7B",
+  // brandColor: "#72C89E",
+  brandColor: "#92aaaa",
+  // darkAccentColor: "#005B7B",
+  darkAccentColor: "#083682",
   lightAccentColor: "#A9CDDF",
   veryLightAccentColor: "#EBF1F0",
   darkAccentColor2: "#92AAAA",

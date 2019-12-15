@@ -55,11 +55,21 @@ import { cachedRefresh } from "../utils/caching";
 
 class EventScreen extends React.Component {
   static contextType = NetworkContext;
-  // static navigationOptions = props => ({
-  //   header: <TopNavigation {...props} style={{ height: topNavHeight }} />
-  // });
+  static navigationOptions = props => {
+    if (props.navigation.getParam("isNewEvent"))
+      return {
+        header: (
+          <TopNavigation
+            {...props}
+            onBackPress={() => props.navigation.navigate("Home")}
+          />
+        )
+      };
+  };
+
   constructor(props) {
     super(props);
+    // console.log("constructor", props.isNewEvent);
     const event = props.navigation.getParam("event");
     this.messageInputRef = React.createRef();
     this.titleInputRef = React.createRef();
@@ -369,7 +379,7 @@ class EventScreen extends React.Component {
                 fill={colors.brandColor}
               />
             </TouchableOpacity>
-            <OverflowMenu
+            {/*<OverflowMenu
               data={moreActionsData}
               visible={showMoreActions}
               selectedIndex={null}
@@ -383,7 +393,7 @@ class EventScreen extends React.Component {
                 fill={colors.brandColor}
                 onPress={() => this.setState({ showMoreActions: true })}
               />
-            </OverflowMenu>
+            </OverflowMenu>*/}
           </View>
         )}
 
@@ -443,7 +453,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: gutterWidth,
     marginVertical: 10,
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center"
   },
 

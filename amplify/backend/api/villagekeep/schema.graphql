@@ -41,6 +41,7 @@ type Event
   createdAt: String
   updatedAt: String
   title: String
+  type: EventType
   userId: ID!
   user: User! @connection(fields: ["userId"])
   messages: [Message] @connection(keyName: "byEvent", fields: ["id"])
@@ -134,4 +135,10 @@ enum ContactType {
   kid
   friend
   other
+}
+enum EventType {
+  parents
+  kids
+  both
+  custom
 }
