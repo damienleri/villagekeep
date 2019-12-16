@@ -20,6 +20,8 @@ type User
   messages: [Message] @connection(keyName: "byUser", fields: ["id"])
   eventPhones: [EventPhone] @connection(keyName: "byUser", fields: ["id"])
   contactsByPhone: [Contact] @connection(keyName: "byPhone", fields: ["phone"])
+  eventPhonesByPhone: [EventPhone]
+    @connection(keyName: "byPhone", fields: ["phone"])
   latestMessage: Message @connection
   deletedAt: AWSTimestamp
   pushToken: String
@@ -65,6 +67,8 @@ type Contact
   updatedAt: String
   type: ContactType
   phone: AWSPhone!
+  eventPhonesByPhone: [EventPhone]
+    @connection(keyName: "byPhone", fields: ["phone"])
   firstName: String
   lastName: String
   userId: ID!
@@ -93,7 +97,7 @@ type EventPhone
   cognitoUserId: String!
   createdAt: String
   updatedAt: String
-  phone: String!
+  phone: AWSPhone!
   firstName: String
   lastName: String
   userId: ID!

@@ -81,6 +81,20 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
       }
       nextToken
     }
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     latestMessage {
       id
       cognitoUserId
@@ -203,6 +217,20 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         firstName
         lastName
         userId
+      }
+      nextToken
+    }
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -331,6 +359,20 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       }
       nextToken
     }
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     latestMessage {
       id
       cognitoUserId
@@ -407,6 +449,9 @@ export const createEvent = `mutation CreateEvent($input: CreateEventInput!) {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -530,6 +575,9 @@ export const updateEvent = `mutation UpdateEvent($input: UpdateEventInput!) {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -651,6 +699,9 @@ export const deleteEvent = `mutation DeleteEvent($input: DeleteEventInput!) {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -747,6 +798,20 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
     updatedAt
     type
     phone
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -772,6 +837,9 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -803,6 +871,20 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
     updatedAt
     type
     phone
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -828,6 +910,9 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -859,6 +944,20 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
     updatedAt
     type
     phone
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -884,6 +983,9 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -939,6 +1041,9 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -1077,6 +1182,9 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -1211,6 +1319,9 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -1348,6 +1459,9 @@ export const createMessage = `mutation CreateMessage($input: CreateMessageInput!
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -1448,6 +1562,9 @@ export const updateMessage = `mutation UpdateMessage($input: UpdateMessageInput!
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -1546,6 +1663,9 @@ export const deleteMessage = `mutation DeleteMessage($input: DeleteMessageInput!
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {

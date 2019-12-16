@@ -72,11 +72,38 @@ class EditEventPhonesScreen extends React.Component {
       ? event.eventPhones.items.filter(ep => ep.phone !== user.phone)
       : [];
     const myContacts = user.contacts.items.filter(c => {
-      if (!user.isParent && c.type === "parent") return false; // exclude kid's parents
+      // Exclude kid's parents:
+      if (!user.isParent && c.type === "parent") return false;
+
+      // The following can happen if the user switched their
+      // account mode (isParent); let's hide those orphaned contacts
+      if (user.isParent && c.type !== "kid") return false;
+      if (!user.isParent && c.type == "kid") return false;
+
       return true;
     });
+
+    function getKidsContacts(user) {
+      let contacts = [];
+      for (const myContact of user.contacts.items) {
+        if (myContact.type !== "kid" || myContact.user) continue;
+        for (const kidContact of myContact.user) {
+          contacts.push(kidContact);
+        }
+      }
+      return contacts;
+    }
+    const myKidsContacts = user.isParent ? getKidsContacts(user) : [];
+    // Concat the lists:
+    //  + preselected items (if editing an event)
+    //  + own contacts
+    //  + kids' contacts
+
     let possibleEventPhones = uniqBy(
-      preselectedEventPhones.concat(myContacts.map(getEventPhoneFromContact)),
+      preselectedEventPhones.concat(
+        myContacts.map(getEventPhoneFromContact),
+        myKidsContacts
+      ),
       eventPhone => eventPhone.phone
     );
     this.state = {
@@ -228,7 +255,6 @@ class EditEventPhonesScreen extends React.Component {
 
   render() {
     const { eventPhoneIsSelected, errorMessage, isSubmitting } = this.state;
-    console.log("ep", eventPhoneIsSelected);
     const numSelected = Object.values(eventPhoneIsSelected).filter(val => val)
       .length;
 

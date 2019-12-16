@@ -1,34 +1,18 @@
 import { Auth } from "aws-amplify";
 import API, { graphqlOperation } from "@aws-amplify/api";
 import { differenceBy, get } from "lodash";
-
 import { Buffer } from "buffer";
 global.Buffer = global.Buffer || Buffer;
-
 import * as mutations from "../graphql/mutations";
 import * as queries from "../graphql/queries";
 import * as subscriptions from "../graphql/subscriptions";
 
-// export const subscribeToMessages = async onReceiveMessage => {
-//   const subscription = API.graphql(
-//     graphqlOperation(subscriptions.onCreateMessage)
-//   ).subscribe({
-//     next: messageData => {
-//       console.log(messageData);
-//       onReceiveMessage({ message: messageData });
-//     }
-//   });
-//   return {subscription}
-// };
-//
-// export const unsubscribeToMessages = subscription => {
-//   subscription.unsubscribe();
-// };
 export const subscribeToServerUpdate = ({ callback, type, id }) => {
   API.graphql(
     graphqlOperation(subscriptions[`onUpdate${type}`], { id })
   ).subscribe({
     next: data => {
+      console.log("received data from server subscription");
       callback({ data: data.value.data[`onUpdate${type}`] });
     },
     // complete: data => {
@@ -176,6 +160,26 @@ export const deleteCurrentUser = async () => {
 //     return { error: `Error deleting contact: ${get(e, "errors[0].message")}` };
 //   }
 // };
+
+export const getEventsForKids = async ({ user }) => {
+  if (!user) return { error: "Missing user in getEventPhonesForKids" };
+  const kidContacts = user.contacts.items.filter(c => c.type === "kid");
+  let eventPhones = [];
+
+  for (const kidContact of kidContacts) {
+    // console.log("getting ep for kidcontact", kidContact.firstName);
+    const { eventPhones: kidEventPhones, error } = await getEventPhonesByPhone(
+      kidContact.phone
+    );
+    // console.log("got ep", kidEventPhones.length);
+    if (error) return { error };
+    eventPhones.push(...kidEventPhones);
+  }
+  const events = eventPhones
+    .map(ep => ep.event)
+    .filter(ev => ev.type === "both");
+  return { events };
+};
 
 const getUserByPhone = async phone => {
   try {

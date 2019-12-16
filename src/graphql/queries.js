@@ -81,6 +81,20 @@ export const getUser = `query GetUser($id: ID!) {
       }
       nextToken
     }
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     latestMessage {
       id
       cognitoUserId
@@ -156,6 +170,9 @@ export const listUsers = `query ListUsers(
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -209,6 +226,9 @@ export const getEvent = `query GetEvent($id: ID!) {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -360,6 +380,20 @@ export const getContact = `query GetContact($id: ID!) {
     updatedAt
     type
     phone
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -385,6 +419,9 @@ export const getContact = `query GetContact($id: ID!) {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -421,6 +458,9 @@ export const listContacts = `query ListContacts(
       updatedAt
       type
       phone
+      eventPhonesByPhone {
+        nextToken
+      }
       firstName
       lastName
       userId
@@ -476,6 +516,9 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -671,6 +714,9 @@ export const getMessage = `query GetMessage($id: ID!) {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -823,6 +869,9 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -881,6 +930,9 @@ export const userByPhone = `query UserByPhone(
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -991,6 +1043,9 @@ export const contactsByUser = `query ContactsByUser(
       updatedAt
       type
       phone
+      eventPhonesByPhone {
+        nextToken
+      }
       firstName
       lastName
       userId
@@ -1035,6 +1090,9 @@ export const contactsByPhone = `query ContactsByPhone(
       updatedAt
       type
       phone
+      eventPhonesByPhone {
+        nextToken
+      }
       firstName
       lastName
       userId
@@ -1059,7 +1117,7 @@ export const contactsByPhone = `query ContactsByPhone(
 }
 `;
 export const eventPhonesByPhone = `query EventPhonesByPhone(
-  $phone: String
+  $phone: AWSPhone
   $updatedAt: ModelStringKeyConditionInput
   $sortDirection: ModelSortDirection
   $filter: ModelEventPhoneFilterInput

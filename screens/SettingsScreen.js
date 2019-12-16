@@ -36,8 +36,10 @@ class SettingsScreen extends React.Component {
   static contextType = NetworkContext;
   state = {};
   handleLogout = async () => {
+    const { settings, setSettings } = this.props;
     try {
       await Auth.signOut();
+      setSettings({ user: null, events: null });
       this.props.navigation.navigate("AuthHome");
     } catch (error) {
       this.setState({ error });
@@ -89,6 +91,7 @@ class SettingsScreen extends React.Component {
   render() {
     const { settings, setSettings } = this.props;
     const { theme, user = {} } = settings;
+    if (!user) return null;
     const { error } = this.state;
     const isDeveloper = !Constants.isDevice; // in simulator
 
@@ -102,7 +105,9 @@ class SettingsScreen extends React.Component {
       },
       {
         title: "Account",
-        description: `${user.firstName} ${user.lastName}`,
+        description: `${user.firstName} ${user.lastName} - ${
+          user.isParent ? "parent or guardian" : "teen"
+        }`,
         onPress: () => this.props.navigation.navigate("SettingAccount")
       }
     ];
@@ -159,10 +164,9 @@ class SettingsScreen extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(SettingsScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(SettingsScreen);
 
 const styles = StyleSheet.create({
   container: {

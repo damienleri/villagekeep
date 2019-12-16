@@ -81,6 +81,20 @@ export const onCreateUser = `subscription OnCreateUser {
       }
       nextToken
     }
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     latestMessage {
       id
       cognitoUserId
@@ -203,6 +217,20 @@ export const onUpdateUser = `subscription OnUpdateUser {
         firstName
         lastName
         userId
+      }
+      nextToken
+    }
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
       }
       nextToken
     }
@@ -331,6 +359,20 @@ export const onDeleteUser = `subscription OnDeleteUser {
       }
       nextToken
     }
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     latestMessage {
       id
       cognitoUserId
@@ -407,6 +449,9 @@ export const onCreateEvent = `subscription OnCreateEvent {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -530,6 +575,9 @@ export const onUpdateEvent = `subscription OnUpdateEvent {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -651,6 +699,9 @@ export const onDeleteEvent = `subscription OnDeleteEvent {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -747,6 +798,20 @@ export const onCreateContact = `subscription OnCreateContact {
     updatedAt
     type
     phone
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -772,6 +837,9 @@ export const onCreateContact = `subscription OnCreateContact {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -803,6 +871,20 @@ export const onUpdateContact = `subscription OnUpdateContact {
     updatedAt
     type
     phone
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -828,6 +910,9 @@ export const onUpdateContact = `subscription OnUpdateContact {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -859,6 +944,20 @@ export const onDeleteContact = `subscription OnDeleteContact {
     updatedAt
     type
     phone
+    eventPhonesByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        userId
+        eventId
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -884,6 +983,9 @@ export const onDeleteContact = `subscription OnDeleteContact {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -939,6 +1041,9 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -1077,6 +1182,9 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -1211,6 +1319,9 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {
@@ -1348,6 +1459,9 @@ export const onCreateMessage = `subscription OnCreateMessage {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -1448,6 +1562,9 @@ export const onUpdateMessage = `subscription OnUpdateMessage {
       contactsByPhone {
         nextToken
       }
+      eventPhonesByPhone {
+        nextToken
+      }
       latestMessage {
         id
         cognitoUserId
@@ -1546,6 +1663,9 @@ export const onDeleteMessage = `subscription OnDeleteMessage {
         nextToken
       }
       contactsByPhone {
+        nextToken
+      }
+      eventPhonesByPhone {
         nextToken
       }
       latestMessage {

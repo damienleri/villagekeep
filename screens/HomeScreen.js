@@ -29,7 +29,8 @@ import Button from "../components/Button";
 import {
   getCurrentUser,
   getEventPhonesByPhone,
-  subscribeToServerUpdate
+  subscribeToServerUpdate,
+  getEventsForKids
 } from "../utils/api";
 import {
   formatPhone,
@@ -85,7 +86,17 @@ class HomeScreen extends React.Component {
       error: eventPhonesError
     } = await getEventPhonesByPhone(user.phone);
     if (eventPhonesError) return { error: eventPhonesError };
-    const events = eventPhones.map(ep => ep.event).filter(event => !!event);
+    let events = eventPhones.map(ep => ep.event);
+
+    if (user.isParent) {
+      const {
+        events: eventsForKids,
+        error: eventsForKidsError
+      } = await getEventsForKids({ user });
+      if (eventsForKidsError) return { error: eventsForKidsError };
+      events.push(...eventsForKids);
+    }
+
     return { user, events };
   };
 
@@ -93,7 +104,9 @@ class HomeScreen extends React.Component {
     const { settings = {}, setSettings } = this.props;
     this.setState({ error: null });
     if (!this.context.isConnected) return;
+
     const { user, events, error } = await this.fetchUserData();
+
     if (error) this.setState({ error });
     if (user) await setSettings({ user, events });
     this.subscribeToServer(); //will subscribe to graphql if not already subscribed. requires user to be loaded
@@ -124,6 +137,7 @@ class HomeScreen extends React.Component {
     const eventPhonesExceptMe = event.eventPhones.items.filter(
       ep => ep.phone !== user.phone
     );
+    console.log(event.eventPhones.items[0]);
     const eventPhonesText =
       eventPhonesExceptMe
         .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
@@ -230,7 +244,7 @@ class HomeScreen extends React.Component {
           <Text style={styles.header}>Village Keep</Text>
 
           <View style={styles.eventsContainer}>
-            {!user ? (
+            {!user || !events ? (
               <Spinner />
             ) : (
               this.renderEventsList() || (
@@ -247,10 +261,9 @@ class HomeScreen extends React.Component {
     );
   }
 }
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(HomeScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {

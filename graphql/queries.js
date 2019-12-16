@@ -16,7 +16,50 @@
 //   }
 // }
 // `;
-export const userByCognitoUserId = `query UserByCognitoUserId(
+// const eventPhones = `
+const eventPhonesFragment = `fragment EventPhones on EventPhone {
+    updatedAt
+    phone
+    latestMessage {
+      id
+    }
+    event {
+      id
+      createdAt
+      title
+      type
+      user {
+        id
+        firstName
+        lastName
+      }
+      eventPhones {
+        items {
+          id
+          firstName
+          lastName
+          phone
+          user {
+            id
+          }
+        }
+      }
+      latestMessage {
+        createdAt
+        text
+        user {
+          id
+          firstName
+          lastName
+          phone
+        }
+      }
+    }
+  }
+`;
+
+export const userByCognitoUserId = `
+query UserByCognitoUserId(
   $cognitoUserId: String
   $sortDirection: ModelSortDirection
   $filter: ModelUserFilterInput
@@ -67,6 +110,7 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
           firstName
           lastName
           phone
+
           user {
             id
             firstName
@@ -93,9 +137,11 @@ export const userByCognitoUserId = `query UserByCognitoUserId(
   }
 }
 `;
+//${eventPhonesFragment}
 
-export const eventPhonesByPhone = `query EventPhonesByPhone(
-  $phone: String
+export const eventPhonesByPhone = `
+query EventPhonesByPhone(
+  $phone: AWSPhone
   $sortDirection: ModelSortDirection
   $filter: ModelEventPhoneFilterInput
   $limit: Int
@@ -125,15 +171,16 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
           lastName
         }
         eventPhones {
-          items {
-            id
-            firstName
-            lastName
-            phone
-            user {
-              id
-            }
-          }
+           items {
+             id
+             firstName
+             lastName
+             phone
+             user {
+               id
+             }
+           }
+           nextToken
         }
         latestMessage {
           createdAt
@@ -234,7 +281,7 @@ export const userByPhone = `query UserByPhone(
 }
 `;
 
-// used by homescreen for parents to find their kids' phones in order to call eventphonesbyphone
+// used by homescreen for parents to find eventphones that reference their kids' phones
 export const contactsByPhone = `query ContactsByPhone(
   $phone: AWSPhone
   $sortDirection: ModelSortDirection
@@ -255,9 +302,40 @@ export const contactsByPhone = `query ContactsByPhone(
       user {
         id
         phone
+        eventPhonesByPhone {
+          items {
+
+          }
+        }
       }
     }
     nextToken
   }
 }
 `;
+// export const contactsByPhone = `query ContactsByPhone(
+//   $phone: AWSPhone
+//   $sortDirection: ModelSortDirection
+//   $filter: ModelContactFilterInput
+//   $limit: Int
+//   $nextToken: String
+// ) {
+//   contactsByPhone(
+//     phone: $phone
+//     sortDirection: $sortDirection
+//     filter: $filter
+//     limit: $limit
+//     nextToken: $nextToken
+//   ) {
+//     items {
+//       id
+//       type
+//       user {
+//         id
+//         phone
+//       }
+//     }
+//     nextToken
+//   }
+// }
+// `;
