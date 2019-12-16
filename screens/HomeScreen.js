@@ -137,7 +137,7 @@ class HomeScreen extends React.Component {
     const eventPhonesExceptMe = event.eventPhones.items.filter(
       ep => ep.phone !== user.phone
     );
-    console.log(event.eventPhones.items[0]);
+    // console.log(event.eventPhones.items[0]);
     const eventPhonesText =
       eventPhonesExceptMe
         .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
