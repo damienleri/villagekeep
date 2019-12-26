@@ -28,14 +28,14 @@ export const getFormattedNameFromEventPhone = eventPhone => {
   return `${eventPhone.firstName} ${eventPhone.lastName} (${eventPhone.phone})`;
 };
 
-export const getEventPhoneFromUser = user => {
+export const generateEventPhoneFromUser = user => {
   return {
     phone: user.phone,
     firstName: user.firstName,
     lastName: user.lastName
   };
 };
-export const getEventPhoneFromContact = contact => {
+export const generateEventPhoneFromContact = contact => {
   return {
     phone: contact.phone,
     firstName: contact.firstName,
@@ -48,3 +48,14 @@ export const getFormattedMessageTime = timeString => {
   if (time > moment().subtract(5, "second")) return "now";
   return time.fromNow();
 };
+
+export function getKidsContacts(user) {
+  let contacts = [];
+  for (const myContact of user.contacts.items) {
+    if (myContact.type !== "kid") continue;
+    const userForMyKid = myContact.usersByPhone.items[0];
+    if (!userForMyKid) continue; // this kid never signed up
+    contacts.push(userForMyKid.contacts.items.filter(c => c.type === "friend"));
+  }
+  return contacts.flat();
+}

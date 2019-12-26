@@ -1,50 +1,28 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-  StyleSheet,
-  View,
-  Alert,
-  ScrollView,
-  FlatList,
-  TouchableOpacity
-} from "react-native";
-import {
-  Icon,
-  Layout,
-  Text,
-  Radio,
-  Card,
-  CardHeader,
-  List,
-  ListItem,
-  Spinner,
-  Select,
-  Datepicker
-} from "@ui-kitten/components";
+import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
+import { Icon, Layout, Text, Spinner } from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import { uniqBy } from "lodash";
-// import { Appearance } from "react-native-appearance";
-// const colorScheme = Appearance.getColorScheme();
-
 import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
 import {
-  getCurrentUser,
   createEventWithPhones,
-  updateEventPhones,
-  deleteEvent
+  updateEventPhones
+  // deleteEvent
 } from "../utils/api";
 import { gutterWidth, colors } from "../utils/style";
 import {
   formatPhone,
-  getEventPhoneFromUser,
-  getEventPhoneFromContact,
-  getFormattedNameFromEventPhone
+  generateEventPhoneFromUser,
+  generateEventPhoneFromContact,
+  getFormattedNameFromEventPhone,
+  getKidsContacts
 } from "../utils/etc";
 import { setSettings as setSettingsType } from "../redux/actions";
 
@@ -71,38 +49,14 @@ class EditEventPhonesScreen extends React.Component {
     const preselectedEventPhones = event
       ? event.eventPhones.items.filter(ep => ep.phone !== user.phone)
       : [];
-    const myContacts = user.contacts.items.filter(c => {
-      // Exclude kid's parents:
-      if (!user.isParent && c.type === "parent") return false;
 
-      // The following can happen if the user switched their
-      // account mode (isParent); let's hide those orphaned contacts
-      if (user.isParent && c.type !== "kid") return false;
-      if (!user.isParent && c.type == "kid") return false;
+    const contacts = user.isParent
+      ? getKidsContacts(user)
+      : user.contacts.items.filter(c => c.type === "friends");
 
-      return true;
-    });
-
-    function getKidsContacts(user) {
-      let contacts = [];
-      for (const myContact of user.contacts.items) {
-        if (myContact.type !== "kid" || myContact.user) continue;
-        for (const kidContact of myContact.user) {
-          contacts.push(kidContact);
-        }
-      }
-      return contacts;
-    }
-    const myKidsContacts = user.isParent ? getKidsContacts(user) : [];
-    // Concat the lists:
-    //  + preselected items (if editing an event)
-    //  + own contacts
-    //  + kids' contacts
-
-    let possibleEventPhones = uniqBy(
+    const possibleEventPhones = uniqBy(
       preselectedEventPhones.concat(
-        myContacts.map(getEventPhoneFromContact),
-        myKidsContacts
+        contacts.map(generateEventPhoneFromContact)
       ),
       eventPhone => eventPhone.phone
     );
@@ -131,7 +85,10 @@ class EditEventPhonesScreen extends React.Component {
     const selectedEventPhones = possibleEventPhones.filter(
       c => eventPhoneIsSelected[c.phone]
     );
-    const eventPhones = selectedEventPhones.concat(getEventPhoneFromUser(user));
+
+    const eventPhones = selectedEventPhones.concat(
+      generateEventPhoneFromUser(user)
+    );
 
     this.setState({ isSubmitting: true });
 
@@ -282,10 +239,9 @@ class EditEventPhonesScreen extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(EditEventPhonesScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(EditEventPhonesScreen);
 
 const styles = StyleSheet.create({
   container: {

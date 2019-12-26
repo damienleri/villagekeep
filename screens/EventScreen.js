@@ -4,26 +4,20 @@ import {
   StyleSheet,
   View,
   Alert,
-  ScrollView,
   TouchableOpacity,
-  FlatList,
-  Platform,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  TextInput
+  FlatList
 } from "react-native";
 import {
   Icon,
   Layout,
   Text,
   Spinner,
-  Input,
-  OverflowMenu,
-  withStyles
+  Input
+  // OverflowMenu,
 } from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import moment from "moment";
-import { cloneDeep, sortBy } from "lodash";
+import { cloneDeep, sortBy, uniqBy } from "lodash";
 import NetInfo, { useNetInfo } from "@react-native-community/netinfo";
 import Button from "../components/Button";
 import InlineForm from "../components/InlineForm";
@@ -75,7 +69,8 @@ class EventScreen extends React.Component {
     this.titleInputRef = React.createRef();
     this.state = {
       title: event.title,
-      messagesKey: `eventScreenMessages-${event.id}`,
+      serverMessagesKey: `eventScreenServerMessages-${event.id}`,
+      localMessagesKey: `eventScreenLocalMessages-${event.id}`,
       error: null
     };
   }
@@ -107,7 +102,7 @@ class EventScreen extends React.Component {
     this.eventSubscription = subscribeToServerUpdate({
       type: "Event",
       id: event.id,
-      callback: ({ event, error }) => {
+      callback: ({ data, error }) => {
         if (error) this.setState({ error });
         this.loadEventWithMessages();
       }
@@ -123,12 +118,13 @@ class EventScreen extends React.Component {
 
   loadEventWithMessages = async () => {
     const { settings = {}, setSettings } = this.props;
-    const { messagesKey } = this.state;
+    const { serverMessagesKey } = this.state;
     const event = this.props.navigation.getParam("event");
 
     if (this.context.isConnected) {
       const { messages, error } = await this.fetchMessagesForEventId(event.id);
-      if (messages) setSettings({ [messagesKey]: messages });
+      if (messages) setSettings({ [serverMessagesKey]: messages });
+      // console.log(messages);
       if (error) this.setState({ error });
     }
   };
@@ -184,6 +180,7 @@ class EventScreen extends React.Component {
   renderMessage = ({ item: message }) => {
     const { user } = this.props.settings;
     const isByMe = !message.user || message.user.id === user.id;
+    const userId = message.userId || message.user.id;
     return (
       <View style={styles.message}>
         <Text style={styles.messageText}>{message.text}</Text>
@@ -192,7 +189,7 @@ class EventScreen extends React.Component {
             {getFormattedMessageTime(message.createdAt || message.localSentAt)}{" "}
             by{" "}
             <Text style={styles.messageAuthor}>
-              {message.user.id === user.id
+              {userId === user.id
                 ? "you"
                 : getFormattedNameFromUser(message.user)}
             </Text>
@@ -206,16 +203,29 @@ class EventScreen extends React.Component {
   };
 
   renderMessageList = () => {
-    const { event, messagesKey } = this.state;
-    const { [messagesKey]: messages } = this.props.settings;
-    // console.log(messages);
-    if (!messages) return <Spinner />;
+    const { event, localMessagesKey, serverMessagesKey } = this.state;
+    const {
+      [localMessagesKey]: localMessages,
+      [serverMessagesKey]: serverMessages
+    } = this.props.settings;
+    if (!serverMessages) return <Spinner />;
+    // const messages = [].concat(serverMessages);
+    const messages = uniqBy(
+      (localMessages || []).concat(serverMessages),
+      "localSentAt"
+    );
+
+    const sortedMessages = sortBy(
+      messages,
+      m => m.localSentAt || m.createdAt
+    ).reverse();
+    // console.log("localMessages", localMessages);
     return (
       <FlatList
         inverted
         style={styles.messageList}
         renderItem={this.renderMessage}
-        data={messages}
+        data={sortedMessages}
         keyExtractor={message => message.localSentAt.toString()}
         ItemSeparatorComponent={() => <View style={styles.listItemSeparator} />}
       />
@@ -223,17 +233,18 @@ class EventScreen extends React.Component {
   };
 
   addMessageToQueue = async localMessage => {
-    const { messagesKey } = this.state;
-    const { [messagesKey]: messages } = this.props.settings;
+    const { localMessagesKey } = this.state;
+    const { [localMessagesKey]: localMessages } = this.props.settings;
     const { setSettings } = this.props;
-    await setSettings({ [messagesKey]: [localMessage].concat(messages) });
-    // await this.setState({
-    //   messages: [localMessage].concat(this.state.messages) // at the beginning because list is inverted
-    // });
+    console.log("addMessageToQueue", localMessage);
+    // await setSettings({ [localMessagesKey]: [localMessage].concat(localMessages) });
+    await setSettings({
+      [localMessagesKey]: [localMessage].concat(localMessages)
+    });
   };
   sendMessageInQueue = async localSentAt => {
-    const { messagesKey } = this.state;
-    const { [messagesKey]: messages } = this.props.settings;
+    const { localMessagesKey } = this.state;
+    const { [localMessagesKey]: messages } = this.props.settings;
     this.setState({ isSubittingMessage: true });
     const localMessage = messages.find(m => m.localSentAt === localSentAt);
     if (!localMessage)
@@ -251,9 +262,12 @@ class EventScreen extends React.Component {
     });
   };
   updateMessageInQueue = ({ localSentAt, message, error }) => {
-    const { messagesKey } = this.state;
-    const { [messagesKey]: messages } = this.props.settings;
-    // Either 'message' or 'error' should be sent. message is the returned object from server after creation.
+    /*
+    This function expects either 'message' or 'error'.
+    Message is the returned object from server after creation.
+    */
+    const { localMessagesKey } = this.state;
+    const { [localMessagesKey]: messages } = this.props.settings;
     const localMessage = messages.find(m => m.localSentAt === localSentAt);
     if (!localMessage)
       return console.log(
@@ -279,8 +293,9 @@ class EventScreen extends React.Component {
     await this.addMessageToQueue({
       localSentAt,
       text: inputText,
-      event,
-      user
+      eventId: event.id,
+      userId: user.id,
+      cognitoUserId: user.cognitoUserId
     });
     this.setState({ inputText: "" });
     await this.sendMessageInQueue(localSentAt);
@@ -435,10 +450,9 @@ class EventScreen extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(EventScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(EventScreen);
 
 const styles = StyleSheet.create({
   container: {

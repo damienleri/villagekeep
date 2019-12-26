@@ -5,7 +5,7 @@
     "privacy": "unlisted",
     "sdkVersion": "35.0.0",
     "platforms": ["ios", "android"],
-    "version": "0.1.3",
+    "version": "0.1.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "primaryColor": "#92aaaa",
@@ -15,7 +15,7 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 10
+      "fallbackToCacheTimeout": 30
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -23,7 +23,8 @@
       "bundleIdentifier": "com.villagekeep"
     },
     "android": {
-      "package": "com.bigyellowstar.villagekeep"
+      "package": "com.bigyellowstar.villagekeep",
+      "versionCode": 2
     },
     "description": ""
   }

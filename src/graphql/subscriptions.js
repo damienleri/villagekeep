@@ -812,6 +812,24 @@ export const onCreateContact = `subscription OnCreateContact {
       }
       nextToken
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -885,6 +903,24 @@ export const onUpdateContact = `subscription OnUpdateContact {
       }
       nextToken
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -955,6 +991,24 @@ export const onDeleteContact = `subscription OnDeleteContact {
         lastName
         userId
         eventId
+      }
+      nextToken
+    }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       nextToken
     }

@@ -13,6 +13,7 @@ export const subscribeToServerUpdate = ({ callback, type, id }) => {
   ).subscribe({
     next: data => {
       console.log("received data from server subscription");
+      // console.log(Object.keys(data.value));
       callback({ data: data.value.data[`onUpdate${type}`] });
     },
     // complete: data => {
@@ -177,7 +178,8 @@ export const getEventsForKids = async ({ user }) => {
   }
   const events = eventPhones
     .map(ep => ep.event)
-    .filter(ev => ev.type === "both");
+    .filter(ev => ev.type === "both" || ev.type === "parents");
+  // .filter(ev => ev.type === "both");
   return { events };
 };
 
@@ -242,16 +244,25 @@ const updateLatestMessageForEventPhones = async ({ eventPhones, message }) => {
   }
 };
 
-export const createMessage = async ({ localSentAt, text, event, user }) => {
+export const createMessage = async ({
+  localSentAt,
+  text,
+  eventId,
+  userId,
+  cognitoUserId
+}) => {
+  const { event, error: getEventError } = await getEventById(eventId);
+  if (getEventError) return { error: getEventError };
+
   try {
     const res = await API.graphql(
       graphqlOperation(mutations.createMessage, {
         input: {
           localSentAt,
           text,
-          eventId: event.id,
-          userId: user.id,
-          cognitoUserId: user.cognitoUserId
+          eventId,
+          userId,
+          cognitoUserId
         }
       })
     );
@@ -262,8 +273,10 @@ export const createMessage = async ({ localSentAt, text, event, user }) => {
     });
     if (updateEventError) return { error: updateEventError };
 
-    /// Update eventPhone.latestMessage
+    /* Update eventPhone.latestMessage */
+
     const eventPhones = event.eventPhones.items;
+
     // console.log(`eventphones`, eventPhones.length, message);
     // return {};
     const {

@@ -6,18 +6,9 @@ import {
   ScrollView,
   RefreshControl,
   FlatList,
-  SectionList,
   TouchableOpacity
 } from "react-native";
-import {
-  Icon,
-  Layout,
-  Text,
-  Radio,
-  Card,
-  CardHeader,
-  Spinner
-} from "@ui-kitten/components";
+import { Icon, Layout, Text, Spinner } from "@ui-kitten/components";
 import { groupBy } from "lodash";
 import moment from "moment";
 import Form from "../components/Form";
@@ -89,12 +80,16 @@ class HomeScreen extends React.Component {
     let events = eventPhones.map(ep => ep.event);
 
     if (user.isParent) {
+      // Add our kids' "both" events to the list
       const {
         events: eventsForKids,
         error: eventsForKidsError
       } = await getEventsForKids({ user });
       if (eventsForKidsError) return { error: eventsForKidsError };
       events.push(...eventsForKids);
+    } else {
+      // Hide parents-only events from kids
+      events = events.filter(ev => ev.type !== "parents");
     }
 
     return { user, events };

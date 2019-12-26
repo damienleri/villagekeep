@@ -394,6 +394,24 @@ export const getContact = `query GetContact($id: ID!) {
       }
       nextToken
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -459,6 +477,9 @@ export const listContacts = `query ListContacts(
       type
       phone
       eventPhonesByPhone {
+        nextToken
+      }
+      usersByPhone {
         nextToken
       }
       firstName
@@ -1046,6 +1067,9 @@ export const contactsByUser = `query ContactsByUser(
       eventPhonesByPhone {
         nextToken
       }
+      usersByPhone {
+        nextToken
+      }
       firstName
       lastName
       userId
@@ -1091,6 +1115,9 @@ export const contactsByPhone = `query ContactsByPhone(
       type
       phone
       eventPhonesByPhone {
+        nextToken
+      }
+      usersByPhone {
         nextToken
       }
       firstName

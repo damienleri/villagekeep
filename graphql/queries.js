@@ -111,11 +111,23 @@ query UserByCognitoUserId(
           lastName
           phone
 
-          user {
-            id
-            firstName
-            lastName
-            phone
+          usersByPhone {
+            items {
+              id
+              firstName
+              lastName
+              phone
+              contacts {
+                items {
+                  id
+                  type
+                  firstName
+                  lastName
+                  phone
+                }
+                nextToken
+              }
+            }
           }
         }
         nextToken

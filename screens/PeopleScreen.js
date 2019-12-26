@@ -374,7 +374,7 @@ class PeopleScreen extends React.Component {
             </Tab>
             <Tab
               title={
-                "INBOX" +
+                "SUGGESTIONS" +
                 (suggestedContacts.length
                   ? ` (${suggestedContacts.length})`
                   : "")
@@ -391,10 +391,9 @@ class PeopleScreen extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(PeopleScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(PeopleScreen);
 
 const styles = StyleSheet.create({
   container: {

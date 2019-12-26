@@ -69,6 +69,7 @@ type Contact
   phone: AWSPhone!
   eventPhonesByPhone: [EventPhone]
     @connection(keyName: "byPhone", fields: ["phone"])
+  usersByPhone: [User] @connection(keyName: "byPhone", fields: ["phone"])
   firstName: String
   lastName: String
   userId: ID!

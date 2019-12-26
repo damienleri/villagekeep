@@ -812,6 +812,24 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
       }
       nextToken
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -885,6 +903,24 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
       }
       nextToken
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     firstName
     lastName
     userId
@@ -955,6 +991,24 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
         lastName
         userId
         eventId
+      }
+      nextToken
+    }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
       }
       nextToken
     }
