@@ -18,7 +18,7 @@ import {
   Toggle,
   Icon
 } from "@ui-kitten/components";
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";

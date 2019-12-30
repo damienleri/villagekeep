@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View, ActivityIndicator } from "react-native";
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 import * as Device from "expo-device";
 import { deleteCurrentUser } from "../utils/api";
 import { colors } from "../utils/style";
@@ -12,7 +12,7 @@ export default class AuthLoadingScreen extends React.Component {
   loadApp = async () => {
     console.log("\n******Auth loading*******\n");
 
-    // return this.props.navigation.navigate("AuthVerify");
+    // return this.props.navigation.navigate("Welcome");
     try {
       if (!Device.isDevice) {
         // if (0 && !Device.isDevice) {
@@ -20,7 +20,7 @@ export default class AuthLoadingScreen extends React.Component {
         // in simulator
         // for testing
         // await Auth.signIn("+16109104174", "testtest1");
-        // await Auth.signIn("+12678086023", "testtest1");
+        await Auth.signIn("+12678086023", "testtest1");
         console.log("Debugging: signed in");
         // return this.props.navigation.navigate("EditEvent");
         return this.props.navigation.navigate("Home");

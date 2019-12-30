@@ -49,7 +49,6 @@ export default class App extends React.Component {
       return (
         <React.Fragment>
           <AppearanceProvider>
-            <IconRegistry icons={EvaIconsPack} />
             <ApplicationProvider
               mapping={mapping}
               theme={colorScheme === "dark" ? darkTheme : lightTheme}

@@ -101,7 +101,6 @@ class HomeScreen extends React.Component {
     if (!this.context.isConnected) return;
 
     const { user, events, error } = await this.fetchUserData();
-
     if (error) this.setState({ error });
     if (user) await setSettings({ user, events });
     this.subscribeToServer(); //will subscribe to graphql if not already subscribed. requires user to be loaded
@@ -185,11 +184,11 @@ class HomeScreen extends React.Component {
   };
 
   renderEventsList = () => {
+    const { isRefreshing } = this.state;
     const { user, events } = this.props.settings;
     const { isParent } = user;
 
     if (!events.length) return null;
-
     return (
       <View>
         <AddEventActions
@@ -199,7 +198,7 @@ class HomeScreen extends React.Component {
         />
         <View style={styles.eventsSection}>
           <Text style={styles.sectionHeaderText}>
-            Threads that you are included on:
+            Threads that include you:
           </Text>
         </View>
         <FlatList
@@ -210,26 +209,24 @@ class HomeScreen extends React.Component {
           ItemSeparatorComponent={() => (
             <View style={styles.listItemSeparator} />
           )}
-        />
-      </View>
-    );
-  };
-  render() {
-    const { error, isRefreshing } = this.state;
-    const { user, events } = this.props.settings;
-    const showSteps = true;
-
-    return (
-      <Layout style={{ flex: 1 }}>
-        <ScrollView
-          style={styles.container}
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
               onRefresh={this.handlePullToRefresh}
             />
           }
-        >
+        />
+      </View>
+    );
+  };
+  render() {
+    const { error } = this.state;
+    const { user, events } = this.props.settings;
+    const showSteps = true;
+
+    return (
+      <Layout style={{ flex: 1 }}>
+        <View style={styles.container}>
           {error && (
             <Text status="danger" style={styles.error}>
               {error}
@@ -251,7 +248,7 @@ class HomeScreen extends React.Component {
               )
             )}
           </View>
-        </ScrollView>
+        </View>
       </Layout>
     );
   }

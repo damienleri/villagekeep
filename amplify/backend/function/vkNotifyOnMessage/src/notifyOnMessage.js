@@ -1,13 +1,22 @@
-const Expo = require("expo-server-sdk").Expo;
+const { Expo } = require("expo-server-sdk");
+const Amplify = require("@aws-amplify/core");
+const API = require("@aws-amplify/api");
 
-let expo = new Expo();
+const awsConfig = {
+  aws_appsync_graphqlEndpoint:
+    "https://xxxxxx.appsync-api.us-east-1.amazonaws.com/graphql",
+  aws_appsync_region: "us-east-1",
+  aws_appsync_authenticationType: "API_KEY",
+  aws_appsync_apiKey: "da2-xxxxxxxxxxxxxxxxxxxxxxxxxx"
+};
 
-exports.handler = async event => {
+exports.getTokensForEvent = async function({ eventId }) {
   const pushTokens = ["ExponentPushToken[E9TwZxLmNHaIqMYmHxKdZF]"]; //damien's token
+  return { pushTokens };
+};
 
-  const message = event.Records[0].dynamodb.NewImage;
-  const eventId = message.eventId.S;
-  const text = message.text.S;
+exports.sendNotifications = async function({ pushTokens, eventId, text }) {
+  let expo = new Expo();
 
   let messages = [];
   for (let pushToken of pushTokens) {
@@ -49,10 +58,4 @@ exports.handler = async event => {
       console.error(error);
     }
   }
-
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify(event)
-  };
-  return response;
 };

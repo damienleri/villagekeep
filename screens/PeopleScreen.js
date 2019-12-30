@@ -19,6 +19,7 @@ import {
   ListItem,
   Spinner,
   TabView,
+  TabBar,
   Tab
 } from "@ui-kitten/components";
 import { groupBy } from "lodash";
@@ -38,7 +39,7 @@ import { NetworkContext } from "../components/NetworkProvider";
 
 class PeopleScreen extends React.Component {
   static contextType = NetworkContext;
-  state = {};
+  state = { tabIndex: 0 };
   componentDidMount = async () => {
     this.screenFocusSubscription = this.props.navigation.addListener(
       "willFocus",
@@ -162,6 +163,7 @@ class PeopleScreen extends React.Component {
   };
 
   renderSection = ({ sectionContacts, singular, plural }) => {
+    const { isRefreshing } = this.state;
     return (
       <View style={styles.contactsSection}>
         <Text style={styles.contactsSectionHeader}>
@@ -175,6 +177,12 @@ class PeopleScreen extends React.Component {
           ItemSeparatorComponent={() => (
             <View style={styles.listItemSeparator} />
           )}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={this.handleRefresh}
+            />
+          }
         />
       </View>
     );
@@ -232,11 +240,16 @@ class PeopleScreen extends React.Component {
       return;
     }
 
-    this.setState({
+    await this.setState({
       accepting: { ...this.state.accepting, [phone]: false },
       accepted: { ...this.state.accepting, [phone]: true }
     });
     console.log("created contact", contact);
+
+    // Workaround for the tabview onselect not firing when returning to tab 0:
+    setTimeout(() => {
+      this.loadUserData();
+    }, 200);
   };
 
   renderSuggestedContact = ({ item }) => {
@@ -310,6 +323,7 @@ class PeopleScreen extends React.Component {
   };
 
   handleTabFocus = tabIndex => {
+    /* This only fires when changing to tab index 1; maybe a bug in UI kitten. so workaround above. */
     tabIndex => this.setState({ tabIndex });
     this.loadUserData();
   };
@@ -320,7 +334,7 @@ class PeopleScreen extends React.Component {
 
     const {
       error,
-      isRefreshing,
+
       tabIndex = 0,
       suggestedContacts = []
     } = this.state;
@@ -329,16 +343,8 @@ class PeopleScreen extends React.Component {
 
     return (
       <Layout style={{ flex: 1 }}>
-        <ScrollView
-          style={styles.container}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={this.handleRefresh}
-            />
-          }
-        >
-          <Text style={styles.header}>Spect your village</Text>
+        <View style={styles.container}>
+          <Text style={styles.header}>'Spect your village</Text>
           {error && (
             <Text status="danger" style={styles.error}>
               {error}
@@ -359,7 +365,7 @@ class PeopleScreen extends React.Component {
                       <Text style={styles.dismissableMessage} status="success">
                         You have {suggestedContacts.length} suggested{" "}
                         {suggestedContacts.length > 1 ? "contacts" : "contact"}.
-                        Please review them by selecting INBOX above.
+                        Please review them on the SUGGESTIONS tab above.
                       </Text>
                     )}
                     {this.renderCurrentContacts() || (
@@ -385,7 +391,7 @@ class PeopleScreen extends React.Component {
               </View>
             </Tab>
           </TabView>
-        </ScrollView>
+        </View>
       </Layout>
     );
   }

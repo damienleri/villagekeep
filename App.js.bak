@@ -14,7 +14,6 @@ import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { Provider } from "react-redux";
 import Amplify from "@aws-amplify/core";
-import API from "@aws-amplify/api";
 import { AppearanceProvider, Appearance } from "react-native-appearance";
 import { PersistGate } from "redux-persist/integration/react";
 
@@ -26,7 +25,6 @@ import { store, persistor } from "./redux/store";
 import AppNavigator from "./navigation/AppNavigator";
 
 Amplify.configure(awsConfig);
-API.configure(awsConfig);
 // Amplify.Logger.LOG_LEVEL = "DEBUG";
 
 function AppContents(props) {

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { Layout, Button } from "@ui-kitten/components";
 import API, { graphqlOperation } from "@aws-amplify/api";
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 import * as mutations from "../graphql/mutations";
 import {
   getCurrentUser,

@@ -5,7 +5,7 @@ import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 
 const minPasswordLength = 8;
 export default class AuthSignUpTab extends React.Component {

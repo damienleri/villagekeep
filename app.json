@@ -3,9 +3,9 @@
     "name": "Village Keep",
     "slug": "villagekeep",
     "privacy": "unlisted",
-    "sdkVersion": "35.0.0",
+    "sdkVersion": "36.0.0",
     "platforms": ["ios", "android"],
-    "version": "0.1.4",
+    "version": "0.1.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "primaryColor": "#92aaaa",
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.bigyellowstar.villagekeep",
-      "versionCode": 2
+      "versionCode": 4
     },
     "description": ""
   }

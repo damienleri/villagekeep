@@ -11,7 +11,7 @@ import {
   Toggle,
   Icon
 } from "@ui-kitten/components";
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
@@ -26,6 +26,22 @@ import { getCurrentUser, updateUser } from "../utils/api";
 
 class SettingNotificationsForm extends React.Component {
   state = {};
+  // constructor(props) {
+  //   super(props)
+
+  componentDidMount() {
+    this.checkForMismatch();
+  }
+
+  checkForMismatch = async () => {
+    const { settings, setSettings } = this.props;
+    const { user = {} } = settings;
+    if (!Constants.isDevice) return;
+    if (!user.pushEnabled) return;
+    const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    if (status !== "granted") setSettings({ pushEnabled: false });
+  };
+
   registerForPushNotifications = async () => {
     const { settings, setSettings } = this.props;
     const { theme, user = {} } = settings;
@@ -119,10 +135,9 @@ class SettingNotificationsForm extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(SettingNotificationsForm);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(SettingNotificationsForm);
 
 const styles = StyleSheet.create({
   row: {

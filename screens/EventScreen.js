@@ -209,12 +209,14 @@ class EventScreen extends React.Component {
       [serverMessagesKey]: serverMessages
     } = this.props.settings;
     if (!serverMessages) return <Spinner />;
+    console.log("localMessages", localMessages);
+    console.log("serverMessages", serverMessages);
     // const messages = [].concat(serverMessages);
     const messages = uniqBy(
       (localMessages || []).concat(serverMessages),
       "localSentAt"
     );
-
+    // console.log(messages);
     const sortedMessages = sortBy(
       messages,
       m => m.localSentAt || m.createdAt
@@ -239,7 +241,7 @@ class EventScreen extends React.Component {
     console.log("addMessageToQueue", localMessage);
     // await setSettings({ [localMessagesKey]: [localMessage].concat(localMessages) });
     await setSettings({
-      [localMessagesKey]: [localMessage].concat(localMessages)
+      [localMessagesKey]: [localMessage].concat(localMessages || [])
     });
   };
   sendMessageInQueue = async localSentAt => {

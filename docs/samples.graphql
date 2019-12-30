@@ -1,16 +1,16 @@
-mutation DeleteEvent {
-  deleteEvent(input: { id: "" }) {
+mutation CreateMessage {
+  createMessage(input: {}) {
     id
   }
 }
-mutation DeleteEventPhone {
-  deleteEventPhone(input: { id: "" }) {
-    id
-  }
-}
-mutation DeleteContact {
-  deleteContact(input: { id: "" }) {
-    id
+
+query listUsers {
+  listUsers {
+    items {
+      id
+      phone
+      pushToken
+    }
   }
 }
 
@@ -26,6 +26,22 @@ query ListEvents {
         }
       }
     }
+  }
+}
+
+mutation DeleteEvent {
+  deleteEvent(input: { id: "" }) {
+    id
+  }
+}
+mutation DeleteEventPhone {
+  deleteEventPhone(input: { id: "" }) {
+    id
+  }
+}
+mutation DeleteContact {
+  deleteContact(input: { id: "" }) {
+    id
   }
 }
 

@@ -6,7 +6,7 @@ import { defaults } from "lodash";
 import { colors } from "../utils/style";
 
 const Button = props => {
-  const { settings, appearance } = props;
+  const { settings, appearance = "primary" } = props;
   const { theme } = settings;
   // const buttonProps = defaults({}, props, {
   //   appearance: "ghost",
@@ -21,10 +21,10 @@ const Button = props => {
   let buttonStyles = [];
   let textStyles = [];
 
-  if (!props.status || props.status === "primary") {
-    buttonStyles.push(styles[`${appearance}Button`]);
-    textStyles.push(styles[`${appearance}ButtonText`]);
-  }
+  // if (!props.status || props.status === "primary") {
+  buttonStyles.push(styles[`${appearance}Button`]);
+  textStyles.push(styles[`${appearance}ButtonText`]);
+  // }
 
   if (props.inline) {
     buttonStyles.push({
@@ -69,13 +69,16 @@ const themeStyles = {
     outlineButtonText: {
       color: colors.brandColor,
       textTransform: "uppercase"
+    },
+    primaryButton: {
+      borderColor: colors.brandColor,
+      backgroundColor: colors.brandColor,
+      marginVertical: 10
+    },
+    primaryButtonText: {
+      color: colors.darkAccentColor,
+      textTransform: "uppercase"
     }
-    // primaryButton: { borderColor: colors.brandColor, marginVertical: 10 },
-    // primaryButtonText: {
-    //   backgroundColor: colors.brandColor,
-    //   color: colors.lightAccentColor,
-    //   textTransform: "uppercase"
-    // }
   }),
   light: StyleSheet.create({
     ghostButton: { marginVertical: 10 },
@@ -86,6 +89,15 @@ const themeStyles = {
     outlineButton: { borderColor: colors.darkAccentColor, marginVertical: 10 },
     outlineButtonText: {
       color: colors.darkAccentColor,
+      textTransform: "uppercase"
+    },
+    primaryButton: {
+      borderColor: colors.darkAccentColor,
+      backgroundColor: colors.darkAccentColor,
+      marginVertical: 10
+    },
+    primaryButtonText: {
+      color: "white",
       textTransform: "uppercase"
     }
   })

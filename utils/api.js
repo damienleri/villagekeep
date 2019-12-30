@@ -1,4 +1,4 @@
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 import API, { graphqlOperation } from "@aws-amplify/api";
 import { differenceBy, get } from "lodash";
 import { Buffer } from "buffer";
@@ -8,6 +8,7 @@ import * as queries from "../graphql/queries";
 import * as subscriptions from "../graphql/subscriptions";
 
 export const subscribeToServerUpdate = ({ callback, type, id }) => {
+  // return {};
   API.graphql(
     graphqlOperation(subscriptions[`onUpdate${type}`], { id })
   ).subscribe({
@@ -31,20 +32,20 @@ export const subscribeToServerUpdate = ({ callback, type, id }) => {
   });
 };
 
-export const getUserShallow = async userId => {
-  try {
-    const res = await API.graphql(
-      graphqlOperation(queries.getUserShallow, { id: userId })
-    );
-    const user = res.data.getUser;
-    return { user };
-  } catch (e) {
-    console.log(e);
-    return {
-      error: `Error loading your account: ${get(e, "errors[0].message")}`
-    };
-  }
-};
+// export const getUserShallow = async userId => {
+//   try {
+//     const res = await API.graphql(
+//       graphqlOperation(queries.getUserShallow, { id: userId })
+//     );
+//     const user = res.data.getUser;
+//     return { user };
+//   } catch (e) {
+//     console.log(e);
+//     return {
+//       error: `Error loading your account: ${get(e, "errors[0].message")}`
+//     };
+//   }
+// };
 // let cache = {}
 export async function getCurrentUser() {
   const cognitoUser = await Auth.currentAuthenticatedUser();
@@ -168,12 +169,39 @@ export const getEventsForKids = async ({ user }) => {
   let eventPhones = [];
 
   for (const kidContact of kidContacts) {
+    // const { user: kidUser, error: getUserError } = await getUserByPhone(
+    //   kidContact.phone
+    // );
+    // console.log("kiduser", kidUser);
+    // if (!kidUser) {
+    //   console.log(
+    //     `skipping kid ${kidContact.phone} because they aren't a user`
+    //   );
+    //   continue;
+    // }
+    //
+    // if (getUserError) return { error: getUserError };
+
     // console.log("getting ep for kidcontact", kidContact.firstName);
-    const { eventPhones: kidEventPhones, error } = await getEventPhonesByPhone(
+    const { user: kidUser, error } = await getKidUserWithEventPhones(
       kidContact.phone
     );
     // console.log("got ep", kidEventPhones.length);
     if (error) return { error };
+    // console.log("kiduser", kidUser);
+
+    const isReciprocal = !!kidUser.contacts.items.find(
+      c => c.type === "parent" && c.phone === user.phone
+    );
+    if (!isReciprocal) {
+      console.log(
+        `kid ${kidContact.phone} did not reciprocate so skipping this kid on the parent's home screen`
+      );
+      continue;
+    }
+
+    const kidEventPhones = kidUser.eventPhonesByPhone.items;
+
     eventPhones.push(...kidEventPhones);
   }
   const events = eventPhones
@@ -183,6 +211,21 @@ export const getEventsForKids = async ({ user }) => {
   return { events };
 };
 
+const getKidUserWithEventPhones = async phone => {
+  try {
+    if (!phone) throw "Missing phone";
+    const res = await API.graphql(
+      graphqlOperation(queries.kidUsersWithEventPhones, {
+        phone
+      })
+    );
+
+    return { user: res.data.userByPhone.items[0] };
+  } catch (e) {
+    console.log("getKidUserWithEventPhones", e);
+    return { error: `Error finding user: ${get(e, "errors[0].message")}` };
+  }
+};
 const getUserByPhone = async phone => {
   try {
     if (!phone) throw "Missing phone";
@@ -625,7 +668,7 @@ export const getEventPhonesByPhone = async phone => {
       graphqlOperation(queries.eventPhonesByPhone, {
         phone,
         sortDirection: "DESC",
-        limit: 100
+        limit: 200
       })
     );
     // console.log("p", res.data);

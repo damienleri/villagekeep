@@ -5,7 +5,7 @@ import { Icon, Layout, Text, Button } from "@ui-kitten/components";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 import { createCurrentUser } from "../utils/api";
 import { gutterWidth } from "../utils/style";
 import { setSettings as setSettingsType } from "../redux/actions";

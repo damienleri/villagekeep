@@ -151,6 +151,76 @@ query UserByCognitoUserId(
 `;
 //${eventPhonesFragment}
 
+export const kidUsersWithEventPhones = `query kidUsersWithEventPhones(
+  $phone: AWSPhone
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  userByPhone(
+    phone: $phone
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      contacts(limit: 500) {
+        items {
+          id
+          type
+          phone
+        }
+      }
+      eventPhonesByPhone(limit: 200, sortDirection: DESC) {
+        items {
+          updatedAt
+          phone
+          latestMessage {
+            id
+          }
+          event {
+            id
+            createdAt
+            title
+            type
+            user {
+              id
+              firstName
+              lastName
+            }
+            eventPhones {
+              items {
+                id
+                firstName
+                lastName
+                phone
+                user {
+                  id
+                }
+              }
+              nextToken
+            }
+            latestMessage {
+              createdAt
+              text
+              user {
+                id
+                firstName
+                lastName
+                phone
+              }
+            }
+          }
+        }
+        nextToken
+      }
+    }
+  }
+}
+`;
 export const eventPhonesByPhone = `
 query EventPhonesByPhone(
   $phone: AWSPhone

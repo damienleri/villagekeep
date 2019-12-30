@@ -1,4 +1,4 @@
-import { Auth } from "aws-amplify";
+import Auth from "@aws-amplify/auth";
 import API, { graphqlOperation } from "@aws-amplify/api";
 import { differenceBy, get } from "lodash";
 import * as mutations from "../graphql/mutations";
