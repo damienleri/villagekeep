@@ -14,7 +14,7 @@ export default function BuildInfo(props) {
       ]}
     >
       <Text style={[{ textAlign: "right" }, props.textStyle]} appearance="hint">
-        This is beta version {buildInfo.jsBuildNumber}.
+        Version {buildInfo.jsBuildNumber}.
       </Text>
     </View>
   );

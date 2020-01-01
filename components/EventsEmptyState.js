@@ -61,15 +61,15 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
   const contacts = user.contacts.items;
   const contactsByType = groupBy(contacts, "type");
 
-  return (
-    <View>
-      <Text category="h5" style={styles.stepsHeader}>
-        Welcome.
-        <Text style={styles.stepsHeaderHint} category="h5">
-          {"  "}Here's how to use this.
-        </Text>
-      </Text>
+  // <Text category="h5" style={styles.stepsHeader}>
+  //   Welcome.
+  // </Text>
+  // <Text style={styles.stepsHeaderHint} category="h5">
+  //   {"  "}Here's how to use this.
+  // </Text>
 
+  return (
+    <ScrollView>
       {isParent && (
         <Step
           name="1. Add your teens"
@@ -128,9 +128,11 @@ const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
       )}
 
       {contacts.length > 0 && (
-        <AddEventActions user={user} handleAddEvent={handleAddEvent} />
+        <View style={{ marginTop: 10 }}>
+          <AddEventActions user={user} handleAddEvent={handleAddEvent} />
+        </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 export default EventsEmptyState;

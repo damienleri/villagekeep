@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import Button from "../components/Button";
+import { Button } from "@ui-kitten/components";
+// import Button from "../components/Button";
 
 export default function FormSubmitButton(props) {
   return (
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   textStyle: {
-    fontWeight: "normal"
-    // textTransform: "uppercase"
+    fontWeight: "normal",
+    textTransform: "uppercase"
   }
 });

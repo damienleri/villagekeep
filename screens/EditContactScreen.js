@@ -93,8 +93,8 @@ export default class EditContactScreen extends React.Component {
         error: updateContactError
       } = await updateContact({
         id: contact.id,
-        firstName,
-        lastName,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
         phone: validPhone
       });
       if (updateContactError) {

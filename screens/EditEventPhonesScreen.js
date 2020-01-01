@@ -5,7 +5,7 @@ import { Icon, Layout, Text, Spinner } from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
-import { uniqBy } from "lodash";
+import { uniqBy, sortBy } from "lodash";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
@@ -43,7 +43,7 @@ class EditEventPhonesScreen extends React.Component {
     const event = props.navigation.getParam("event");
 
     const type = event ? event.type : props.navigation.getParam("type");
-    const { settings = {}, setSettings } = this.props;
+    const { settings = {} } = this.props;
     const { user } = settings;
 
     const preselectedEventPhones = event
@@ -51,8 +51,14 @@ class EditEventPhonesScreen extends React.Component {
       : [];
 
     const contacts = user.isParent
-      ? getKidsContacts(user)
-      : user.contacts.items.filter(c => c.type === "friends");
+      ? [
+          ...sortBy(
+            user.contacts.items.filter(c => c.type === "kid"),
+            "firstName"
+          ),
+          ...getKidsContacts(user)
+        ]
+      : user.contacts.items.filter(c => c.type === "friend");
 
     const possibleEventPhones = uniqBy(
       preselectedEventPhones.concat(
@@ -158,13 +164,19 @@ class EditEventPhonesScreen extends React.Component {
   };
   renderListItem = ({ item: eventPhone }) => {
     const { eventPhoneIsSelected, type } = this.state;
-    const { firstName, lastName } = eventPhone;
+    const { settings = {} } = this.props;
+    const { user } = settings;
+    const { firstName, lastName, phone } = eventPhone;
 
     const isChecked = eventPhoneIsSelected[eventPhone.phone];
     let description = "";
     let title = "";
     if (type === "both") {
-      title = `${firstName} ${lastName} and parents`;
+      const isMyKid =
+        user.contacts.items.findIndex(
+          c => c.phone === phone && c.type === "kid"
+        ) >= 0;
+      title = isMyKid ? firstName : `${firstName} ${lastName} and parents`;
       // description = 'Includes parents'
     } else if (type === "parents") {
       title = `Parents of ${firstName} ${lastName}`;
@@ -218,7 +230,7 @@ class EditEventPhonesScreen extends React.Component {
     return (
       <Layout style={styles.container}>
         <View style={styles.intro}>
-          <Text>Choose people to include.</Text>
+          <Text category="h5">Choose people to include.</Text>
         </View>
         {this.renderList()}
 

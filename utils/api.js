@@ -1,5 +1,6 @@
 import Auth from "@aws-amplify/auth";
 import API, { graphqlOperation } from "@aws-amplify/api";
+import _PubSub from "@aws-amplify/pubsub"; // keep this line for current version of react. it's a workaround for https://github.com/aws-amplify/amplify-js/issues/2184
 import { differenceBy, get } from "lodash";
 import { Buffer } from "buffer";
 global.Buffer = global.Buffer || Buffer;
@@ -8,28 +9,33 @@ import * as queries from "../graphql/queries";
 import * as subscriptions from "../graphql/subscriptions";
 
 export const subscribeToServerUpdate = ({ callback, type, id }) => {
-  // return {};
-  API.graphql(
-    graphqlOperation(subscriptions[`onUpdate${type}`], { id })
-  ).subscribe({
-    next: data => {
-      console.log("received data from server subscription");
-      // console.log(Object.keys(data.value));
-      callback({ data: data.value.data[`onUpdate${type}`] });
-    },
-    // complete: data => {
-    //   console.log("subscribeToEventUpdate/complete: ", data);
-    // },
-    error: e => {
-      console.log(e);
-      callback({
-        error: `Error subscribing to server updates: ${get(
-          e,
-          "error.errors[0].message"
-        )}`
-      });
-    }
-  });
+  try {
+    return API.graphql(
+      graphqlOperation(subscriptions[`onUpdate${type}`], { id })
+    ).subscribe({
+      next: data => {
+        console.log("received data from server subscription");
+        // console.log(Object.keys(data.value));
+        callback({ data: data.value.data[`onUpdate${type}`] });
+      },
+      // complete: data => {
+      //   console.log("subscribeToEventUpdate/complete: ", data);
+      // },
+      error: e => {
+        console.log(e);
+        callback({
+          error: `Error subscribing to server updates: ${get(
+            e,
+            "error.errors[0].message"
+          )}`
+        });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    callback({ error: `Error subscribing to server: ${e}` });
+    return;
+  }
 };
 
 // export const getUserShallow = async userId => {
@@ -74,38 +80,6 @@ export async function getCurrentUser() {
     return { error: `Error getting your account: ${e.errors.join(". ")}` };
   }
 }
-// export const getCurrentUser = getCurrentUserFn;
-// export const getCurrentUser2 = connect(
-//   () => {},
-//   { setSettings }
-// )(getCurrentUserFn);
-// export const connect(null, {setSettings})(getCurrentUser)
-// export const getCurrentUser = async () => {
-//   const cognitoUser = await Auth.currentAuthenticatedUser();
-//   if (!cognitoUser) return { error: "You are not logged in." };
-//   const cognitoUserId = cognitoUser.attributes.sub;
-//   try {
-//     console.log("getting API user for cognito ID", cognitoUserId);
-//
-//     const res = await API.graphql(
-//       graphqlOperation(queries.userByCognitoUserId, { cognitoUserId })
-//     );
-//     // console.log("userByCognitoUserId result", res);
-//     const user = res.data.userByCognitoUserId.items[0];
-//     if (!user) {
-//       console.log("No account found.");
-//       return {
-//         cognitoUser,
-//         error:
-//           "Your user account was not created. Please report this to tech support."
-//       };
-//     }
-//     return { cognitoUser, user };
-//   } catch (e) {
-//     console.log("error from auth", e);
-//     return { error: `Error getting your account: ${e.errors.join(". ")}` };
-//   }
-// };
 
 export const createCurrentUser = async () => {
   const cognitoUser = await Auth.currentAuthenticatedUser();
@@ -169,26 +143,10 @@ export const getEventsForKids = async ({ user }) => {
   let eventPhones = [];
 
   for (const kidContact of kidContacts) {
-    // const { user: kidUser, error: getUserError } = await getUserByPhone(
-    //   kidContact.phone
-    // );
-    // console.log("kiduser", kidUser);
-    // if (!kidUser) {
-    //   console.log(
-    //     `skipping kid ${kidContact.phone} because they aren't a user`
-    //   );
-    //   continue;
-    // }
-    //
-    // if (getUserError) return { error: getUserError };
-
-    // console.log("getting ep for kidcontact", kidContact.firstName);
     const { user: kidUser, error } = await getKidUserWithEventPhones(
       kidContact.phone
     );
-    // console.log("got ep", kidEventPhones.length);
     if (error) return { error };
-    // console.log("kiduser", kidUser);
 
     const isReciprocal = !!kidUser.contacts.items.find(
       c => c.type === "parent" && c.phone === user.phone
@@ -207,7 +165,6 @@ export const getEventsForKids = async ({ user }) => {
   const events = eventPhones
     .map(ep => ep.event)
     .filter(ev => ev.type === "both" || ev.type === "parents");
-  // .filter(ev => ev.type === "both");
   return { events };
 };
 

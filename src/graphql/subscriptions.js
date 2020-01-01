@@ -1118,6 +1118,24 @@ export const onCreateEventPhone = `subscription OnCreateEventPhone {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     eventId
     event {
       id
@@ -1257,6 +1275,24 @@ export const onUpdateEventPhone = `subscription OnUpdateEventPhone {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     eventId
     event {
       id
@@ -1395,6 +1431,24 @@ export const onDeleteEventPhone = `subscription OnDeleteEventPhone {
       pushEnabled
       pushEnabledForEvents
       pushEnabledForMessages
+    }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
     }
     eventId
     event {

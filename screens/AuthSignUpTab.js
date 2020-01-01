@@ -4,10 +4,11 @@ import { Icon, Layout, Text } from "@ui-kitten/components";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
-import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
+import { parsePhoneTyping } from "../utils/etc";
 import Auth from "@aws-amplify/auth";
+import { minPasswordLength } from "../utils/constants";
+import { validatePasswordChoice } from "../utils/etc";
 
-const minPasswordLength = 8;
 export default class AuthSignUpTab extends React.Component {
   state = {
     phone: "",
@@ -33,48 +34,41 @@ export default class AuthSignUpTab extends React.Component {
   }
 
   handleChangePhone = async text => {
-    const parsed = parsePhoneNumberFromString(text, "US");
-    const isValidPhone = !!parsed && parsed.isValid();
-    const isBackspace = text.length < this.state.phone.length;
-    const phone = isBackspace ? text : new AsYouType("US").input(text);
-
+    const { phone, isValidPhone, fullPhone } = parsePhoneTyping({
+      text,
+      previousText: this.state.phone
+    });
     this.setState({
       phone,
-      validPhone: isValidPhone ? parsed.format("E.164") : null,
+      fullPhone,
+      isValidPhone,
       phoneErrorMessage: null
     });
   };
   handleChangePassword = async password => {
-    const tooShort = password.length < minPasswordLength;
-    const tooSimple = password.match(/^([A-Za-z]+|\d+)$/);
+    const { error } = validatePasswordChoice(password);
     this.setState({
       password,
-      isValidPassword: !tooShort && !tooSimple,
-      passwordErrorMessage: !password.length
-        ? null
-        : tooShort
-        ? "At least 8 characters please"
-        : tooSimple
-        ? "Include numbers or other characters please"
-        : null
+      isValidPassword: !error,
+      passwordErrorMessage: error
     });
   };
 
   handleSubmit = async () => {
-    const { validPhone, password } = this.state;
-    this.setState({ isLoading: true });
+    const { fullPhone, password } = this.state;
+    this.setState({ isSubmitting: true });
     try {
       const newUser = await Auth.signUp({
-        username: validPhone,
+        username: fullPhone,
         password
       });
       this.props.navigation.navigate("AuthVerify", {
-        phone: validPhone,
+        phone: fullPhone,
         password /* The verify screen uses the password to login the user once verified. */
       });
     } catch (e) {
       this.setState({
-        isLoading: false,
+        isSubmitting: false,
         phoneErrorMessage:
           e.code === "UsernameExistsException"
             ? "That phone is already signed up. Please check the number, or else login or reset your password."
@@ -90,9 +84,9 @@ export default class AuthSignUpTab extends React.Component {
       phoneErrorMessage,
       passwordErrorMessage,
       showPassword,
-      validPhone,
+      isValidPhone,
       isValidPassword,
-      isLoading
+      isSubmitting
     } = this.state;
     return (
       <Form>
@@ -108,15 +102,13 @@ export default class AuthSignUpTab extends React.Component {
           status={
             !phone.length
               ? null
-              : phoneErrorMessage || !validPhone
+              : phoneErrorMessage || !isValidPhone
               ? "danger"
               : "success"
           }
           caption={phoneErrorMessage}
           keyboardType={"phone-pad"}
           returnKeyType="done"
-          autoCapitalize="none"
-          autoCorrect={false}
         />
         <FormInput
           label="Password"
@@ -143,9 +135,9 @@ export default class AuthSignUpTab extends React.Component {
         />
         <FormSubmitButton
           onPress={this.handleSubmit}
-          disabled={!validPhone || !isValidPassword || isLoading}
+          disabled={!isValidPhone || !isValidPassword || isSubmitting}
         >
-          {isLoading ? "Signing up..." : "Sign up"}
+          {isSubmitting ? "Signing up..." : "Sign up"}
         </FormSubmitButton>
       </Form>
     );

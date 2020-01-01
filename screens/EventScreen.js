@@ -85,6 +85,7 @@ class EventScreen extends React.Component {
 
     this.subscribeToServer();
   };
+
   componentWillUnmount = async () => {
     this.screenFocusSubscription.remove();
     if (this.eventSubscription) this.eventSubscription.unsubscribe();

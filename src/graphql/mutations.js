@@ -1118,6 +1118,24 @@ export const createEventPhone = `mutation CreateEventPhone($input: CreateEventPh
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     eventId
     event {
       id
@@ -1257,6 +1275,24 @@ export const updateEventPhone = `mutation UpdateEventPhone($input: UpdateEventPh
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     eventId
     event {
       id
@@ -1395,6 +1431,24 @@ export const deleteEventPhone = `mutation DeleteEventPhone($input: DeleteEventPh
       pushEnabled
       pushEnabledForEvents
       pushEnabledForMessages
+    }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
     }
     eventId
     event {

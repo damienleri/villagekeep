@@ -1,11 +1,14 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Icon, Layout, Text } from "@ui-kitten/components";
+import Auth from "@aws-amplify/auth";
 import Form from "../components/Form";
+import Button from "../components/Button";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
-import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
-import Auth from "@aws-amplify/auth";
+import { parsePhoneTyping } from "../utils/etc";
+
+// import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 
 export default class AuthSignUpTab extends React.Component {
   state = {
@@ -27,14 +30,14 @@ export default class AuthSignUpTab extends React.Component {
   }
 
   handleChangePhone = async text => {
-    const parsed = parsePhoneNumberFromString(text, "US");
-    const isValidPhone = !!parsed && parsed.isValid();
-    const isBackspace = text.length < this.state.phone.length;
-    const phone = isBackspace ? text : new AsYouType("US").input(text);
+    const { phone, isValidPhone, fullPhone } = parsePhoneTyping({
+      text,
+      previousText: this.state.phone
+    });
     this.setState({
       phone,
       isValidPhone,
-      fullPhone: isValidPhone ? parsed.format("E.164") : null,
+      fullPhone,
       phoneErrorMessage: null
     });
   };
@@ -51,7 +54,7 @@ export default class AuthSignUpTab extends React.Component {
     this.setState({ isLoading: true });
     try {
       const newUser = await Auth.signIn(fullPhone, password);
-      this.props.navigation.navigate("Main", { fromLogin: true });
+      this.props.navigation.navigate("Home", { fromLogin: true });
     } catch (e) {
       let phoneErrorMessage = null,
         passwordErrorMessage = null;
@@ -150,6 +153,13 @@ export default class AuthSignUpTab extends React.Component {
         >
           {isLoading ? "Logging in..." : "Log in"}
         </FormSubmitButton>
+
+        <Button
+          appearance="ghost"
+          onPress={() => this.props.navigation.navigate("AuthForgotPassword")}
+        >
+          Forgot password?
+        </Button>
       </Form>
     );
   }

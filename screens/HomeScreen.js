@@ -5,11 +5,12 @@ import {
   View,
   ScrollView,
   RefreshControl,
+  SectionList,
   FlatList,
   TouchableOpacity
 } from "react-native";
 import { Icon, Layout, Text, Spinner } from "@ui-kitten/components";
-import { groupBy } from "lodash";
+import { groupBy, uniqBy, sortBy } from "lodash";
 import moment from "moment";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
@@ -39,7 +40,9 @@ import { NetworkContext } from "../components/NetworkProvider";
 class HomeScreen extends React.Component {
   static contextType = NetworkContext;
   state = {};
-
+  // static navigationOptions = props => ({
+  //   header: null
+  // });
   componentDidMount = async () => {
     this.screenFocusSubcription = this.props.navigation.addListener(
       "willFocus",
@@ -49,7 +52,7 @@ class HomeScreen extends React.Component {
 
   componentWillUnmount() {
     this.screenFocusSubcription.remove();
-    if (this.userSubscription) this.eventSubscription.unsubscribe();
+    if (this.userSubscription) this.userSubscription.unsubscribe();
   }
 
   subscribeToServer = () => {
@@ -62,8 +65,9 @@ class HomeScreen extends React.Component {
       type: "User",
       id: user.id,
       callback: ({ data, error }) => {
-        if (error) this.setState({ error });
+        if (error) this.setState({ error }); // doesn't seem to work
         // console.log("homscreen: user subscription fired.");
+        // if (error && this.userSubscription) this.userSubscription.unsubscribe();
         this.loadUserData();
       }
     });
@@ -86,13 +90,16 @@ class HomeScreen extends React.Component {
         error: eventsForKidsError
       } = await getEventsForKids({ user });
       if (eventsForKidsError) return { error: eventsForKidsError };
-      events.push(...eventsForKids);
+      if (eventsForKids.length) {
+        // Can be a duplicate if a parent starts a 'both' event with their kid
+        events = uniqBy(events.concat(...eventsForKids), "id");
+      }
     } else {
       // Hide parents-only events from kids
       events = events.filter(ev => ev.type !== "parents");
     }
 
-    return { user, events };
+    return { user, events: sortBy(events, "updatedAt").reverse() };
   };
 
   loadUserData = async () => {
@@ -183,12 +190,10 @@ class HomeScreen extends React.Component {
     );
   };
 
-  renderEventsList = () => {
-    const { isRefreshing } = this.state;
+  renderHeader = () => {
     const { user, events } = this.props.settings;
-    const { isParent } = user;
+    //         <Text style={styles.header}>Village Keep</Text>
 
-    if (!events.length) return null;
     return (
       <View>
         <AddEventActions
@@ -201,29 +206,47 @@ class HomeScreen extends React.Component {
             Threads that include you:
           </Text>
         </View>
-        <FlatList
-          style={styles.list}
-          renderItem={this.renderEvent}
-          data={events}
-          keyExtractor={event => event.id}
-          ItemSeparatorComponent={() => (
-            <View style={styles.listItemSeparator} />
-          )}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={this.handlePullToRefresh}
-            />
-          }
-        />
       </View>
     );
   };
+  renderEventsList = () => {
+    const { isRefreshing } = this.state;
+    const { user, events } = this.props.settings;
+    // const events = [];
+    if (!events.length) return null;
+    return (
+      <FlatList
+        style={styles.list}
+        renderItem={this.renderEvent}
+        data={events}
+        keyExtractor={event => event.id}
+        ItemSeparatorComponent={() => <View style={styles.listItemSeparator} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={this.handlePullToRefresh}
+          />
+        }
+        ListHeaderComponent={this.renderHeader}
+        // stickyHeaderIndices={[0]}
+      />
+    );
+  };
+  renderLoading() {
+    return (
+      <Layout style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Text style={styles.header}>Loading Village Keep...</Text>
+          <Spinner />
+        </View>
+      </Layout>
+    );
+  }
   render() {
     const { error } = this.state;
     const { user, events } = this.props.settings;
     const showSteps = true;
-
+    if (!user || !events) return this.renderLoading();
     return (
       <Layout style={{ flex: 1 }}>
         <View style={styles.container}>
@@ -232,22 +255,16 @@ class HomeScreen extends React.Component {
               {error}
             </Text>
           )}
-
-          <Text style={styles.header}>Village Keep</Text>
-
-          <View style={styles.eventsContainer}>
-            {!user || !events ? (
-              <Spinner />
-            ) : (
-              this.renderEventsList() || (
-                <EventsEmptyState
-                  user={user}
-                  handleAddEvent={this.handleAddEvent}
-                  navigation={this.props.navigation}
-                />
-              )
-            )}
-          </View>
+          {this.renderEventsList() || (
+            <>
+              <Text style={styles.header}>Welcome to Village Keep</Text>
+              <EventsEmptyState
+                user={user}
+                handleAddEvent={this.handleAddEvent}
+                navigation={this.props.navigation}
+              />
+            </>
+          )}
         </View>
       </Layout>
     );
@@ -262,8 +279,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: gutterWidth
   },
   header: {
-    paddingVertical: 18,
-    fontSize: 28,
+    paddingTop: 20,
+    fontSize: 20,
     fontWeight: "normal",
     textTransform: "uppercase",
     textAlign: "center",
@@ -275,7 +292,8 @@ const styles = StyleSheet.create({
   sectionHeaderText: {
     fontSize: 16,
     color: colors.brandColor,
-    textTransform: "uppercase"
+    textTransform: "uppercase",
+    marginBottom: 10
   },
   error: {
     marginVertical: 24

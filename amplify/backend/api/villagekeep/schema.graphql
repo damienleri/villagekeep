@@ -103,6 +103,7 @@ type EventPhone
   lastName: String
   userId: ID!
   user: User! @connection(fields: ["userId"])
+  usersByPhone: [User] @connection(keyName: "byPhone", fields: ["phone"])
   eventId: ID!
   event: Event! @connection(fields: ["eventId"]) ## left this optional in case event gets deleted
   latestMessage: Message @connection

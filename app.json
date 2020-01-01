@@ -4,9 +4,9 @@
     "slug": "villagekeep",
     "privacy": "unlisted",
     "sdkVersion": "36.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": ["ios", "android", "web"],
     "version": "0.1.6",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "primaryColor": "#92aaaa",
     "splash": {

@@ -560,6 +560,24 @@ export const getEventPhone = `query GetEventPhone($id: ID!) {
       pushEnabledForEvents
       pushEnabledForMessages
     }
+    usersByPhone {
+      items {
+        id
+        cognitoUserId
+        createdAt
+        updatedAt
+        phone
+        firstName
+        lastName
+        isParent
+        deletedAt
+        pushToken
+        pushEnabled
+        pushEnabledForEvents
+        pushEnabledForMessages
+      }
+      nextToken
+    }
     eventId
     event {
       id
@@ -673,6 +691,9 @@ export const listEventPhones = `query ListEventPhones(
         pushEnabled
         pushEnabledForEvents
         pushEnabledForMessages
+      }
+      usersByPhone {
+        nextToken
       }
       eventId
       event {
@@ -1183,6 +1204,9 @@ export const eventPhonesByPhone = `query EventPhonesByPhone(
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      usersByPhone {
+        nextToken
+      }
       eventId
       event {
         id
@@ -1251,6 +1275,9 @@ export const eventPhonesByEvent = `query EventPhonesByEvent(
         pushEnabledForEvents
         pushEnabledForMessages
       }
+      usersByPhone {
+        nextToken
+      }
       eventId
       event {
         id
@@ -1318,6 +1345,9 @@ export const eventPhonesByUser = `query EventPhonesByUser(
         pushEnabled
         pushEnabledForEvents
         pushEnabledForMessages
+      }
+      usersByPhone {
+        nextToken
       }
       eventId
       event {

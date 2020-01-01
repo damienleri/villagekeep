@@ -35,6 +35,20 @@ export default function(props) {
   const renderRightControls = () => [];
   // const renderRightControls = () => [<EditAction />, <MenuAction />];
 
+  const hasContent = !isFirstInStack;
+  const styles = StyleSheet.create({
+    container: {
+      paddingTop: topNavigationPaddingTop
+      // paddingTop: hasContent ? topNavigationPaddingTop : 0
+    },
+    navStyle: {
+      height: topNavigationHeight - topNavigationPaddingTop
+
+      // height: hasContent
+      //   ? topNavigationHeight - topNavigationPaddingTop
+      //   : topNavigationPaddingTop
+    }
+  });
   /* Not using SafeAreaView as it causes the screen to be vertically jumpy when switching tabs */
   return (
     <Layout style={styles.container}>
@@ -47,11 +61,3 @@ export default function(props) {
     </Layout>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: topNavigationPaddingTop
-  },
-  navStyle: {
-    height: topNavigationHeight - topNavigationPaddingTop
-  }
-});

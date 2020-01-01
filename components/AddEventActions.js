@@ -31,7 +31,7 @@ const AddEventActions = ({ user, appearance = "outline", handleAddEvent }) => {
               appearance={appearance}
               onPress={() => handleAddEvent({ type: "both" })}
             >
-              Kids and parents
+              Kids & parents
             </Button>
             <Button
               appearance={appearance}
@@ -46,7 +46,7 @@ const AddEventActions = ({ user, appearance = "outline", handleAddEvent }) => {
               appearance={appearance}
               onPress={() => handleAddEvent({ type: "both" })}
             >
-              Kids and parents
+              Kids & parents
             </Button>
             <Button
               appearance={appearance}
@@ -64,9 +64,6 @@ export default AddEventActions;
 
 const styles = StyleSheet.create({
   container: {},
-  headerRow: {
-    marginTop: 10
-  },
   sectionHeaderText: {
     fontSize: 16,
     color: colors.brandColor,

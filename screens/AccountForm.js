@@ -50,8 +50,8 @@ class AccountForm extends React.Component {
     this.setState({ isSubmitting: true });
     const { error } = await updateUser({
       id: user.id,
-      firstName,
-      lastName,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       isParent
     });
 
@@ -171,10 +171,9 @@ class AccountForm extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(AccountForm);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(AccountForm);
 
 const styles = StyleSheet.create({
   radioRow: {

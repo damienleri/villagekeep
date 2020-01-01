@@ -111,7 +111,7 @@ query UserByCognitoUserId(
           lastName
           phone
 
-          usersByPhone {
+          usersByPhone(limit: 1) {
             items {
               id
               firstName
@@ -184,6 +184,7 @@ export const kidUsersWithEventPhones = `query kidUsersWithEventPhones(
           event {
             id
             createdAt
+            updatedAt
             title
             type
             user {
@@ -245,6 +246,7 @@ query EventPhonesByPhone(
       event {
         id
         createdAt
+        updatedAt
         title
         type
         user {

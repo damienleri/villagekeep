@@ -16,10 +16,10 @@ export default class WelcomeScreen extends React.Component {
     return (
       <Layout style={styles.container}>
         <SafeAreaView>
-          <Text category="h4" style={styles.header}>
+          <Text category="h5" style={styles.header}>
             It takes a village to raise a kid.
           </Text>
-          <Text category="h6" style={styles.subHeader}>
+          <Text style={styles.subHeader}>
             Now keep the village in your pocket!
           </Text>
 

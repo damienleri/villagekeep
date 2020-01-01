@@ -12,7 +12,10 @@ export default class AuthLoadingScreen extends React.Component {
   loadApp = async () => {
     console.log("\n******Auth loading*******\n");
 
-    // return this.props.navigation.navigate("Welcome");
+    // return this.props.navigation.navigate("AuthForgotPassword");
+    // return this.props.navigation.navigate("AuthForgotPasswordVerify", {
+    //   phone: "+12678086023"
+    // });
     try {
       if (!Device.isDevice) {
         // if (0 && !Device.isDevice) {

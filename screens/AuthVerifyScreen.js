@@ -123,7 +123,9 @@ class AuthVerifyScreen extends React.Component {
             placeholder=""
             onChangeText={this.handleChangeCode}
             value={code}
-            status={codeErrorMessage ? "danger" : null}
+            status={
+              codeErrorMessage ? "danger" : isCorrectLength ? "success" : null
+            }
             caption={codeErrorMessage}
             oneTimeCode="oneTimeCode"
             keyboardType={"number-pad"}
@@ -154,10 +156,9 @@ class AuthVerifyScreen extends React.Component {
     );
   }
 }
-export default connect(
-  ({ settings }) => ({ settings }),
-  { setSettings: setSettingsType }
-)(AuthVerifyScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(AuthVerifyScreen);
 
 const styles = StyleSheet.create({
   container: {

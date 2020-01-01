@@ -28,7 +28,7 @@ export default function Form(props) {
   return (
     <KeyboardAvoidingView
       style={[styles.container, props.style]}
-      behavior={Platform.OS === "ios" ? "height" : null}
+      behavior={Platform.OS === "ios" ? "height" : "height"}
       keyboardVerticalOffset={topNavigationHeight}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -17,8 +17,11 @@
 							"authenticationType": "API_KEY",
 							"apiKeyConfig": {
 								"description": "vktasks",
-								"apiKeyExpirationDays": "365"
+								"apiKeyExpirationDays": "364"
 							}
+						},
+						{
+							"authenticationType": "AWS_IAM"
 						}
 					],
 					"defaultAuthentication": {
