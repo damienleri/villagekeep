@@ -16,7 +16,7 @@ export default class AuthForgotPasswordScreen extends React.Component {
   }
   componentDidMount() {
     this.phoneInputRef.current.focus();
-    if (1) {
+    if (0) {
       this.setState({
         isValidPhone: true,
         phone: "+12678086023",

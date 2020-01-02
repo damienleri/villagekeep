@@ -6,7 +6,8 @@ import {
   ScrollView,
   RefreshControl,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from "react-native";
 import {
   Icon,
@@ -39,7 +40,7 @@ import { NetworkContext } from "../components/NetworkProvider";
 
 class PeopleScreen extends React.Component {
   static contextType = NetworkContext;
-  state = { tabIndex: 0 };
+  state = { modalIsVisible: false };
   componentDidMount = async () => {
     this.screenFocusSubscription = this.props.navigation.addListener(
       "willFocus",
@@ -277,19 +278,29 @@ class PeopleScreen extends React.Component {
               appearance="ghost"
               inline={true}
               onPress={() => this.acceptSuggestedContact(item)}
-              // icon={style => <Icon {...style} name="square-outline" />}
             >
               {accepting[phone] ? "Adding..." : "Add contact"}
             </Button>
           )}
-          {/*<Button
-            appearance="ghost"
-            status="basic"
-            onPress={() => this.dismissSuggestedContact(item)}
-            icon={style => <Icon {...style} name="close-outline" />}
-          />*/}
         </View>
       </View>
+    );
+  };
+
+  toggleModal = () => {
+    this.setState({ modalIsVisible: !this.state.modalIsVisible });
+    this.loadUserData();
+  };
+
+  renderModal = () => {
+    return (
+      <Layout style={styles.modalContainer}>
+        <Text category="h4">Suggestions</Text>
+        <View style={styles.tabContent}>{this.renderSuggestedContacts()}</View>
+        <Button appearance="outline" onPress={this.toggleModal}>
+          Close
+        </Button>
+      </Layout>
     );
   };
 
@@ -297,11 +308,7 @@ class PeopleScreen extends React.Component {
     const { suggestedContacts } = this.state;
     if (!suggestedContacts) return <Spinner />;
 
-    if (!suggestedContacts.length) return <Text>You have no messages.</Text>;
-
-    // <Text style={styles.contactsSectionHeader}>
-    //   People who added you already
-    // </Text>;
+    if (!suggestedContacts.length) return <Text>You have no suggestions.</Text>;
 
     return (
       <View style={styles.contactsSection}>
@@ -322,76 +329,57 @@ class PeopleScreen extends React.Component {
     );
   };
 
-  handleTabFocus = tabIndex => {
-    /* This only fires when changing to tab index 1; maybe a bug in UI kitten. so workaround above. */
-    tabIndex => this.setState({ tabIndex });
-    this.loadUserData();
-  };
-
   render() {
     const { settings = {} } = this.props;
     const { user } = settings;
 
     const {
       error,
-
+      modalIsVisible,
       tabIndex = 0,
       suggestedContacts = []
     } = this.state;
-    // console.log(suggestedContacts);
-    // console.log("user..", !!user, suggestedContacts.length);
 
     return (
       <Layout style={{ flex: 1 }}>
         <View style={styles.container}>
-          <Text style={styles.header}>'Spect your village</Text>
+          <Text style={styles.header} status="primary">
+            'Spect your village
+          </Text>
           {error && (
             <Text status="danger" style={styles.error}>
               {error}
             </Text>
           )}
-          <TabView
-            selectedIndex={tabIndex}
-            onSelect={this.handleTabFocus}
-            // shouldLoadComponent={index => index === tabIndex}
-          >
-            <Tab title="CONTACTS">
-              <View style={styles.tabContent}>
-                {!user ? (
-                  <Spinner />
-                ) : (
-                  <React.Fragment>
-                    {!!suggestedContacts.length && (
-                      <Text style={styles.dismissableMessage} status="success">
-                        You have {suggestedContacts.length} suggested{" "}
-                        {suggestedContacts.length > 1 ? "contacts" : "contact"}.
-                        Please review them on the SUGGESTIONS tab above.
-                      </Text>
-                    )}
-                    {this.renderCurrentContacts() || (
-                      <ContactsEmptyState
-                        isParent={user.isParent}
-                        handleAddContact={this.handleAddContact}
-                      />
-                    )}
-                  </React.Fragment>
-                )}
-              </View>
-            </Tab>
-            <Tab
-              title={
-                "SUGGESTIONS" +
-                (suggestedContacts.length
-                  ? ` (${suggestedContacts.length})`
-                  : "")
-              }
-            >
-              <View style={styles.tabContent}>
-                {this.renderSuggestedContacts()}
-              </View>
-            </Tab>
-          </TabView>
+          {!user ? (
+            <Spinner />
+          ) : (
+            <React.Fragment>
+              {suggestedContacts.length > 0 && (
+                <Button appearance="primary" onPress={this.toggleModal}>
+                  View {suggestedContacts.length} suggested{" "}
+                  {suggestedContacts.length > 1 ? "contacts" : "contact"}
+                </Button>
+              )}
+
+              {this.renderCurrentContacts() || (
+                <ContactsEmptyState
+                  isParent={user.isParent}
+                  handleAddContact={this.handleAddContact}
+                />
+              )}
+            </React.Fragment>
+          )}
         </View>
+
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={modalIsVisible}
+          onRequestClose={this.toggleModal}
+        >
+          {this.renderModal()}
+        </Modal>
       </Layout>
     );
   }
@@ -410,8 +398,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "normal",
     textTransform: "uppercase",
-    textAlign: "center",
-    color: colors.brandColor
+    textAlign: "center"
   },
   // header: {
   //   marginBottom: 10,
@@ -466,6 +453,11 @@ const styles = StyleSheet.create({
   //   marginVertical: 10
   // },
   // contactsHeader: {},
-  contactName: { fontWeight: "bold", fontSize: 16 }
+  contactName: { fontWeight: "bold", fontSize: 16 },
   // contactPhone: { marginVertical: 2 },
+  modalContainer: {
+    flex: 1,
+    paddingHorizontal: gutterWidth,
+    paddingTop: 50
+  }
 });

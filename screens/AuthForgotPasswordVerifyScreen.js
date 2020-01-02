@@ -18,11 +18,6 @@ export default class AuthForgotPasswordVerifyScreen extends React.Component {
   }
   componentDidMount() {
     this.codeInputRef.current.focus();
-    if (0) {
-      this.setState({
-        password: ""
-      });
-    }
   }
 
   handleChangeCode = async code => {

@@ -26,20 +26,21 @@ import { getCurrentUser, updateUser } from "../utils/api";
 
 class SettingNotificationsForm extends React.Component {
   state = {};
-  // constructor(props) {
-  //   super(props)
 
   componentDidMount() {
-    this.checkForMismatch();
+    this.initFromPerms();
   }
 
-  checkForMismatch = async () => {
+  initFromPerms = async () => {
     const { settings, setSettings } = this.props;
     const { user = {} } = settings;
-    if (!Constants.isDevice) return;
     if (!user.pushEnabled) return;
     const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-    if (status !== "granted") setSettings({ pushEnabled: false });
+    if (!Constants.isDevice || status === "granted") {
+      this.setState({ pushEnabled: true });
+    } else {
+      setSettings({ pushEnabled: false });
+    }
   };
 
   registerForPushNotifications = async () => {
@@ -60,29 +61,28 @@ class SettingNotificationsForm extends React.Component {
         finalStatus = status;
       }
       if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
-        return;
+        return { error: "Failed to get push token for push notification!" };
       }
       pushToken = await Notifications.getExpoPushTokenAsync();
     } else {
       // in simulator
-      console.log("Must use physical device for Push Notifications");
+      // return {error: "Must use physical device for Push Notifications"}
       pushToken = "9999";
     }
 
     if (!pushToken) {
-      this.setState({
+      return {
         error:
           "Please enable notifications for this app in your phone's Settings."
-      });
-      return;
+      };
     }
 
     const { error } = await this.updateElseRevertUser({
       user,
       updates: { pushEnabled: true, pushToken }
     });
-    if (error) this.setState({ error });
+    if (error) return { error };
+    return { pushToken };
   };
 
   updateElseRevertUser = async ({ user: beforeUser, updates }) => {
@@ -93,7 +93,9 @@ class SettingNotificationsForm extends React.Component {
       ...updates
     });
     if (error) {
-      setSettings({ user: beforeUser }); // Revert the checkbox
+      // Revert the checkbox
+      this.setState({ pushEnabled: false });
+      setSettings({ user: beforeUser });
       return { error };
     }
     const { user, error: getError } = await getCurrentUser();
@@ -107,9 +109,12 @@ class SettingNotificationsForm extends React.Component {
   handlePushEnabledChange = async isChecked => {
     const { settings, setSettings } = this.props;
     const { user = {} } = settings;
+    this.setState({ pushEnabled: isChecked });
     if (isChecked) {
-      await this.registerForPushNotifications();
+      const { error } = await this.registerForPushNotifications();
+      if (error) this.setState({ error, pushEnabled: false });
     } else {
+      // user wants to turn it off
       const { error } = await this.updateElseRevertUser({
         user,
         updates: { pushEnabled: false }
@@ -121,15 +126,18 @@ class SettingNotificationsForm extends React.Component {
   render() {
     const { settings, setSettings } = this.props;
     const { theme, user = {} } = settings;
-    const { error } = this.state;
+    const { error, pushEnabled } = this.state;
 
     return (
-      <View style={styles.row}>
-        <Toggle
-          text="Allow push notifications"
-          checked={user.pushEnabled}
-          onChange={this.handlePushEnabledChange}
-        />
+      <View>
+        <View style={styles.row}>
+          <Toggle
+            text="Allow push notifications"
+            checked={pushEnabled}
+            onChange={this.handlePushEnabledChange}
+          />
+        </View>
+        {error && <Text status="danger">{error}</Text>}
       </View>
     );
   }

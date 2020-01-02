@@ -98,9 +98,7 @@ class SettingsScreen extends React.Component {
     const items = [
       {
         title: "Notifications",
-        description: user.pushEnabled
-          ? "You have push notifications enabled"
-          : "You do not have push notifications enabled",
+        description: user.pushEnabled ? "Enabled" : "Disabled",
         onPress: () => this.props.navigation.navigate("SettingNotifications")
       },
       {

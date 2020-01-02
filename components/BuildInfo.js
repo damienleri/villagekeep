@@ -13,8 +13,11 @@ export default function BuildInfo(props) {
         props.style
       ]}
     >
-      <Text style={[{ textAlign: "right" }, props.textStyle]} appearance="hint">
-        Version {buildInfo.jsBuildNumber}.
+      <Text
+        style={[{ textAlign: "right", fontStyle: "italic" }, props.textStyle]}
+        appearance="hint"
+      >
+        Version {buildInfo.jsBuildNumber}
       </Text>
     </View>
   );

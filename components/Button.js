@@ -8,23 +8,13 @@ import { colors } from "../utils/style";
 const Button = props => {
   const { settings, appearance = "primary" } = props;
   const { theme } = settings;
-  // const buttonProps = defaults({}, props, {
-  //   appearance: "ghost",
-  //   size: "small"
-  // });
-
-  // if (!buttonProps.status || buttonProps.status === "primary") {
-  //   buttonTextStyle.color = colors.brandColor;
-  // }
 
   const styles = themeStyles[theme];
   let buttonStyles = [];
   let textStyles = [];
 
-  // if (!props.status || props.status === "primary") {
-  buttonStyles.push(styles[`${appearance}Button`]);
-  textStyles.push(styles[`${appearance}ButtonText`]);
-  // }
+  buttonStyles.push(styles.button, styles[`${appearance}Button`]);
+  textStyles.push(styles.buttonText, styles[`${appearance}ButtonText`]);
 
   if (props.inline) {
     buttonStyles.push({
@@ -49,56 +39,17 @@ const Button = props => {
 };
 export default connect(({ settings }) => ({ settings }))(Button);
 
-// const styles = StyleSheet.create({
-//   ghostButton: { marginVertical: 10 },
-//   ghostButtonText: { color: colors.brandColor, textTransform: "uppercase" },
-//   outlineButton: { borderColor: colors.darkAccentColor, marginVertical: 10 },
-//   outlineButtonText: {
-//     color: colors.darkAccentColor,
-//     textTransform: "uppercase"
-//   }
-// });
 const themeStyles = {
   dark: StyleSheet.create({
-    ghostButton: { marginVertical: 10 },
-    ghostButtonText: {
-      color: colors.brandColor,
-      textTransform: "uppercase"
-    },
-    outlineButton: { borderColor: colors.brandColor, marginVertical: 10 },
-    outlineButtonText: {
-      color: colors.brandColor,
-      textTransform: "uppercase"
-    },
-    primaryButton: {
-      borderColor: colors.brandColor,
-      backgroundColor: colors.brandColor,
-      marginVertical: 10
-    },
+    button: { marginVertical: 10 },
+    buttonText: { textTransform: "uppercase" },
     primaryButtonText: {
-      color: colors.darkAccentColor,
-      textTransform: "uppercase"
+      color: colors.darkAccentColor
     }
   }),
   light: StyleSheet.create({
-    ghostButton: { marginVertical: 10 },
-    ghostButtonText: {
-      color: colors.darkAccentColor,
-      textTransform: "uppercase"
-    },
-    outlineButton: { borderColor: colors.darkAccentColor, marginVertical: 10 },
-    outlineButtonText: {
-      color: colors.darkAccentColor,
-      textTransform: "uppercase"
-    },
-    primaryButton: {
-      borderColor: colors.darkAccentColor,
-      backgroundColor: colors.darkAccentColor,
-      marginVertical: 10
-    },
-    primaryButtonText: {
-      color: "white",
-      textTransform: "uppercase"
-    }
+    button: { marginVertical: 10 },
+    buttonText: { textTransform: "uppercase" },
+    primaryButtonText: { color: "white" }
   })
 };

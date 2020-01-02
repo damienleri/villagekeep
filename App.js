@@ -5,11 +5,9 @@ import { Asset } from "expo-asset";
 import * as Font from "expo-font";
 import { Platform, StatusBar, StyleSheet, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  mapping,
-  light as lightTheme,
-  dark as darkTheme
-} from "@eva-design/eva";
+import { mapping } from "@eva-design/eva";
+import lightTheme from "./themes/light";
+import darkTheme from "./themes/dark";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { Provider } from "react-redux";
