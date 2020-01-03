@@ -90,13 +90,7 @@ class EventScreen extends React.Component {
     this.screenFocusSubscription.remove();
     if (this.eventSubscription) this.eventSubscription.unsubscribe();
   };
-  // handleNetworkChanges = state => {
-  //   if (state.isConnected === this.context.isConnected) return; // no change
-  //   if (state.isConnected) {
-  //     this.loadEventWithMessages();
-  //     if (!this.eventSubscription) this.subscribeToServer();
-  //   }
-  // };
+
   subscribeToServer = () => {
     if (!this.context.isConnected) return;
     const event = this.props.navigation.getParam("event");
@@ -146,7 +140,6 @@ class EventScreen extends React.Component {
       return;
     }
     this.setState({ isSubmittingTitle: false, isEditingTitle: false });
-    // console.log("updated event", updatedEvent);
   };
 
   handleDelete = async () => {

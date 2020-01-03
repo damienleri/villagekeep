@@ -6,6 +6,7 @@ import {
   ScrollView,
   RefreshControl,
   FlatList,
+  SectionList,
   TouchableOpacity,
   Modal
 } from "react-native";
@@ -88,11 +89,65 @@ class PeopleScreen extends React.Component {
     Linking.openURL(`tel:${phone}`);
   };
 
+  renderCurrentContacts = () => {
+    const { settings = {} } = this.props;
+    const { user } = settings;
+    const { isParent } = user;
+    const { isRefreshing } = this.state;
+    const contactsByType = groupBy(user.contacts.items, "type");
+    if (isParent && !contactsByType.kid) return null;
+    if (!isParent && !contactsByType.parent && !contactsByType.friend)
+      return null;
+
+    let sections = [];
+
+    if (isParent) {
+      sections.push({
+        data: contactsByType.kid,
+        singular: "kid",
+        plural: "kids"
+      });
+    } else {
+      sections.push({
+        data: contactsByType.parent,
+        singular: "guardian",
+        plural: "guardians"
+      });
+      sections.push({
+        data: contactsByType.friend,
+        singular: "friend",
+        plural: "friends"
+      });
+    }
+
+    return (
+      <SectionList
+        style={styles.list}
+        sections={sections}
+        renderItem={this.renderItem}
+        renderSectionHeader={this.renderSectionHeader}
+        ListHeaderComponent={
+          <AddContactActions
+            isParent={isParent}
+            handleAddContact={this.handleAddContact}
+            appearance="outline"
+          />
+        }
+        keyExtractor={item => item.id}
+        ItemSeparatorComponent={() => <View style={styles.listItemSeparator} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={this.handleRefresh}
+          />
+        }
+      />
+    );
+  };
+
   renderItem = ({ item: contact, index }) => {
     let { firstName, lastName, phone, isParent } = contact;
     const description = "";
-    //            <Text style={styles.listItemDescription}>{description}</Text>
-
     return (
       <View>
         <View style={styles.listItem}>
@@ -120,72 +175,11 @@ class PeopleScreen extends React.Component {
     );
   };
 
-  renderCurrentContacts = () => {
-    const { settings = {} } = this.props;
-    const { user } = settings;
-    const { isParent } = user;
-    const contactsByType = groupBy(user.contacts.items, "type");
-    if (isParent && !contactsByType.kid) return null;
-    if (!isParent && !contactsByType.parent && !contactsByType.friend)
-      return null;
-
+  renderSectionHeader = ({ section: { data, singular, plural } }) => {
     return (
-      <View>
-        <AddContactActions
-          isParent={isParent}
-          handleAddContact={this.handleAddContact}
-          appearance="outline"
-        />
-        {isParent ? (
-          this.renderSection({
-            sectionContacts: contactsByType.kid,
-            singular: "kid",
-            plural: "kids"
-          })
-        ) : (
-          <React.Fragment>
-            {contactsByType.parent &&
-              this.renderSection({
-                sectionContacts: contactsByType.parent,
-                singular: "guardian",
-                plural: "guardians"
-              })}
-            {contactsByType.friend &&
-              this.renderSection({
-                sectionContacts: contactsByType.friend,
-
-                singular: "friend",
-                plural: "friends"
-              })}
-          </React.Fragment>
-        )}
-      </View>
-    );
-  };
-
-  renderSection = ({ sectionContacts, singular, plural }) => {
-    const { isRefreshing } = this.state;
-    return (
-      <View style={styles.contactsSection}>
-        <Text style={styles.contactsSectionHeader}>
-          Your {sectionContacts.length > 1 ? plural : singular}
-        </Text>
-        <FlatList
-          style={styles.list}
-          renderItem={this.renderItem}
-          data={sectionContacts}
-          keyExtractor={item => item.id}
-          ItemSeparatorComponent={() => (
-            <View style={styles.listItemSeparator} />
-          )}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={this.handleRefresh}
-            />
-          }
-        />
-      </View>
+      <Text style={styles.contactsSectionHeader}>
+        Your {data.length > 1 ? plural : singular}
+      </Text>
     );
   };
 
@@ -341,45 +335,42 @@ class PeopleScreen extends React.Component {
     } = this.state;
 
     return (
-      <Layout style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text style={styles.header} status="primary">
-            'Spect your village
+      <Layout style={styles.container}>
+        {error && (
+          <Text status="danger" style={styles.error}>
+            {error}
           </Text>
-          {error && (
-            <Text status="danger" style={styles.error}>
-              {error}
-            </Text>
-          )}
-          {!user ? (
-            <Spinner />
-          ) : (
-            <React.Fragment>
-              {suggestedContacts.length > 0 && (
-                <Button appearance="primary" onPress={this.toggleModal}>
-                  View {suggestedContacts.length} suggested{" "}
-                  {suggestedContacts.length > 1 ? "contacts" : "contact"}
-                </Button>
-              )}
+        )}
+        {!user ? (
+          <Spinner />
+        ) : (
+          <React.Fragment>
+            {suggestedContacts.length > 0 && (
+              <Button appearance="primary" onPress={this.toggleModal}>
+                View {suggestedContacts.length} suggested{" "}
+                {suggestedContacts.length > 1 ? "contacts" : "contact"}
+              </Button>
+            )}
 
-              {this.renderCurrentContacts() || (
-                <ContactsEmptyState
-                  isParent={user.isParent}
-                  handleAddContact={this.handleAddContact}
-                />
-              )}
-            </React.Fragment>
-          )}
-        </View>
+            {this.renderCurrentContacts() || (
+              <ContactsEmptyState
+                isParent={user.isParent}
+                handleAddContact={this.handleAddContact}
+              />
+            )}
+          </React.Fragment>
+        )}
 
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalIsVisible}
-          onRequestClose={this.toggleModal}
-        >
-          {this.renderModal()}
-        </Modal>
+        {user && (
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={modalIsVisible}
+            onRequestClose={this.toggleModal}
+          >
+            {this.renderModal()}
+          </Modal>
+        )}
       </Layout>
     );
   }
@@ -391,19 +382,9 @@ export default connect(({ settings }) => ({ settings }), {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: gutterWidth
+    paddingHorizontal: gutterWidth,
+    flex: 1
   },
-  header: {
-    paddingVertical: 16,
-    fontSize: 28,
-    fontWeight: "normal",
-    textTransform: "uppercase",
-    textAlign: "center"
-  },
-  // header: {
-  //   marginBottom: 10,
-  //   fontWeight: "normal"
-  // },
   error: {
     marginVertical: 24
   },
@@ -429,11 +410,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8
   },
-  list: {
-    // marginVertical: 20
-  },
   listItem: {
-    // marginVertical: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center"
@@ -443,18 +420,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.brandColor,
     marginVertical: 8
   },
-  // listItemTitle: { color: colors.brandColor },
-  // listItemDescription: {},
-  // contact: {
-  //   paddingVertical: 10,
-  //   paddingHorizontal: 10,
-  //   borderWidth: 1,
-  //   borderColor: "#aaa",
-  //   marginVertical: 10
-  // },
-  // contactsHeader: {},
   contactName: { fontWeight: "bold", fontSize: 16 },
-  // contactPhone: { marginVertical: 2 },
   modalContainer: {
     flex: 1,
     paddingHorizontal: gutterWidth,

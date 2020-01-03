@@ -5,6 +5,9 @@ import AddContactActions from "./AddContactActions";
 function ContactsEmptyState({ isParent, handleAddContact }) {
   return (
     <View>
+      <Text style={styles.header} status="primary">
+        Build your village
+      </Text>
       <Text style={styles.emptyStateIntroText}>
         You are ready to add{" "}
         {isParent ? "a teeny bopper" : "parents and friends"}. Let's do this!
@@ -20,6 +23,13 @@ function ContactsEmptyState({ isParent, handleAddContact }) {
 export default ContactsEmptyState;
 
 const styles = StyleSheet.create({
+  header: {
+    paddingVertical: 16,
+    fontSize: 28,
+    fontWeight: "normal",
+    textTransform: "uppercase",
+    textAlign: "center"
+  },
   emptyStateIntroText: {
     marginTop: 20,
     fontWeight: "normal",

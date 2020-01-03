@@ -177,10 +177,8 @@ class EditEventPhonesScreen extends React.Component {
           c => c.phone === phone && c.type === "kid"
         ) >= 0;
       title = isMyKid ? firstName : `${firstName} ${lastName} and parents`;
-      // description = 'Includes parents'
     } else if (type === "parents") {
       title = `Parents of ${firstName} ${lastName}`;
-      // description = ''
     } else if (type === "kids") {
       title = `${firstName} ${lastName}`;
     }

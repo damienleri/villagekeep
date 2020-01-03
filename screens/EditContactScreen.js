@@ -121,15 +121,12 @@ export default class EditContactScreen extends React.Component {
         });
         return;
       }
-      console.log("created contact", contact);
     }
     this.props.navigation.goBack();
   };
 
   handleDelete = async () => {
     const contact = this.props.navigation.getParam("contact");
-    console.log("deleting contact", contact);
-    // const { error: errorMessage } = await deleteContact(contact);
     const { error: errorMessage } = await deleteContact({
       contactId: contact.id
     });

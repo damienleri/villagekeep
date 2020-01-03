@@ -212,7 +212,6 @@ class HomeScreen extends React.Component {
   renderEventsList = () => {
     const { isRefreshing } = this.state;
     const { user, events } = this.props.settings;
-    // const events = [];
     if (!events.length) return null;
     return (
       <FlatList
@@ -248,24 +247,22 @@ class HomeScreen extends React.Component {
     const showSteps = true;
     if (!user || !events) return this.renderLoading();
     return (
-      <Layout style={{ flex: 1 }}>
-        <View style={styles.container}>
-          {error && (
-            <Text status="danger" style={styles.error}>
-              {error}
-            </Text>
-          )}
-          {this.renderEventsList() || (
-            <>
-              <Text style={styles.header}>Welcome to Village Keep</Text>
-              <EventsEmptyState
-                user={user}
-                handleAddEvent={this.handleAddEvent}
-                navigation={this.props.navigation}
-              />
-            </>
-          )}
-        </View>
+      <Layout style={styles.container}>
+        {error && (
+          <Text status="danger" style={styles.error}>
+            {error}
+          </Text>
+        )}
+        {this.renderEventsList() || (
+          <>
+            <Text style={styles.header}>Welcome to Village Keep</Text>
+            <EventsEmptyState
+              user={user}
+              handleAddEvent={this.handleAddEvent}
+              navigation={this.props.navigation}
+            />
+          </>
+        )}
       </Layout>
     );
   }
@@ -276,7 +273,8 @@ export default connect(({ settings }) => ({ settings }), {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: gutterWidth
+    paddingHorizontal: gutterWidth,
+    flex: 1
   },
   header: {
     paddingTop: 20,
@@ -320,10 +318,8 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     fontSize: 16,
     marginBottom: 5,
-    // color: colors.brandColor,
     fontWeight: "bold"
   },
-  // creationTimeContainer: { justifyContent: "flex-end" },
   eventInnerRow: {
     marginVertical: 2
   },

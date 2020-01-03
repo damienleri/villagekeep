@@ -16,22 +16,7 @@ export default class AuthSignUpTab extends React.Component {
     password: ""
   };
 
-  componentDidMount() {
-    // for testing:
-    if (false) {
-      this.setState({
-        isValidPhone: true,
-        isValidPassword: true,
-        phone: "+12678086023",
-        validPhone: "+12678086023",
-        password: "testtest1"
-      });
-      this.props.navigation.navigate("AuthVerify", {
-        phone: "+12678086023",
-        password: "testtest1"
-      });
-    }
-  }
+  componentDidMount() {}
 
   handleChangePhone = async text => {
     const { phone, isValidPhone, fullPhone } = parsePhoneTyping({

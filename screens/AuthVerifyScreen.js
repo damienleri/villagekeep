@@ -77,7 +77,6 @@ class AuthVerifyScreen extends React.Component {
       this.setState({ codeErrorMessage: createUserError, isLoading: false });
       return;
     }
-    console.log("created api user", user);
 
     setSettings({ user });
     this.props.navigation.navigate("AuthEditAccount");

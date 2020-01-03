@@ -24,7 +24,7 @@ export default class AuthSignUpTab extends React.Component {
         isValidPhone: true,
         phone: "+12678086023",
         fullPhone: "+12678086023",
-        password: "testtest"
+        password: ""
       });
     }
   }
