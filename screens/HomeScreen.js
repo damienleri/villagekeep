@@ -75,6 +75,7 @@ class HomeScreen extends React.Component {
 
   fetchUserData = async () => {
     const { user, error: currentUserError } = await getCurrentUser();
+    console.log("user", user, currentUserError);
     if (currentUserError) return { error: currentUserError };
     const {
       eventPhones,
@@ -245,7 +246,7 @@ class HomeScreen extends React.Component {
     const { error } = this.state;
     const { user, events } = this.props.settings;
     const showSteps = true;
-    if (!user || !events) return this.renderLoading();
+
     return (
       <Layout style={styles.container}>
         {error && (
@@ -253,16 +254,18 @@ class HomeScreen extends React.Component {
             {error}
           </Text>
         )}
-        {this.renderEventsList() || (
-          <>
-            <Text style={styles.header}>Welcome to Village Keep</Text>
-            <EventsEmptyState
-              user={user}
-              handleAddEvent={this.handleAddEvent}
-              navigation={this.props.navigation}
-            />
-          </>
-        )}
+        {!user || !events
+          ? this.renderLoading()
+          : this.renderEventsList() || (
+              <>
+                <Text style={styles.header}>Welcome to Village Keep</Text>
+                <EventsEmptyState
+                  user={user}
+                  handleAddEvent={this.handleAddEvent}
+                  navigation={this.props.navigation}
+                />
+              </>
+            )}
       </Layout>
     );
   }

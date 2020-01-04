@@ -19,7 +19,8 @@ class AuthVerifyScreen extends React.Component {
     header: (
       <TopNavigation
         {...props}
-        onBackPress={() => props.navigation.navigate("Welcome")}
+        hideBack={true}
+        // onBackPress={() => props.navigation.navigate("Welcome")}
       />
     )
   });
@@ -55,11 +56,14 @@ class AuthVerifyScreen extends React.Component {
     try {
       await Auth.confirmSignUp(phone, code);
     } catch (e) {
-      this.setState({
-        codeErrorMessage: `Error verifying: ${e.message}`,
-        isLoading: false
-      });
-      return;
+      // NotAuthorizedException means already confirmed so continue with account creation
+      if (e.code !== "NotAuthorizedException") {
+        this.setState({
+          codeErrorMessage: `Error verifying: ${e.message}`,
+          isLoading: false
+        });
+        return;
+      }
     }
 
     try {
@@ -148,7 +152,15 @@ class AuthVerifyScreen extends React.Component {
             onPress={this.handleResend}
             disabled={isLoadingResend}
           >
-            {isLoadingResend ? "Sending another code..." : "Send another code"}
+            {isLoadingResend ? "Resending code..." : "Resend code"}
+          </Button>
+          <Button
+            appearance="ghost"
+            onPress={() =>
+              this.props.navigation.navigate("AuthHome", { selectedIndex: 1 })
+            }
+          >
+            Entered wrong phone number?
           </Button>
         </Form>
       </Layout>

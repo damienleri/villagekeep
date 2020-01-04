@@ -21,10 +21,11 @@ export default class AuthLoadingScreen extends React.Component {
         //   phone: "+12678086023"
         // });
 
-        // await Auth.signIn("+16109104174", "testtest1");
+        // await Auth.signIn("+16109104174", "testtest1"); // eli
         // await Auth.signIn("+12678086023", "testtest1");
+        await Auth.signIn("+12678080275", "44kimchi");
         // return this.props.navigation.navigate("EditEvent");
-        return this.props.navigation.navigate("Home");
+        return this.props.navigation.navigate("AuthVerify");
         // this.props.navigation.navigate("EditContact", { type: "kid" });
       }
 

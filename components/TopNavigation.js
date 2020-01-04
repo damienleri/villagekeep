@@ -30,7 +30,9 @@ export default function(props) {
   const isFirstInStack =
     props.navigation.dangerouslyGetParent().state.index === 0;
   const renderLeftControl = () =>
-    isFirstInStack ? null : <BackAction onPress={onBackPress} />;
+    isFirstInStack || props.hideBack ? null : (
+      <BackAction onPress={onBackPress} />
+    );
 
   const renderRightControls = () => [];
   // const renderRightControls = () => [<EditAction />, <MenuAction />];

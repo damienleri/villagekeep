@@ -73,7 +73,7 @@ export async function getCurrentUser() {
           "Your user account was not created. Please report this to tech support."
       };
     }
-    // console.log(user);
+
     return { cognitoUser, user };
   } catch (e) {
     console.log("error from auth", e);
