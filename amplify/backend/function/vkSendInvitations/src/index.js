@@ -1,9 +1,13 @@
-const awsServerlessExpress = require("aws-serverless-express");
-const app = require("./app");
+const { getInvitationsToSend, sendInvitations } = require("./invitations");
 
-const server = awsServerlessExpress.createServer(app);
+exports.handler = async (event, context) => {
+  const { error, invitations } = await getInvitationsToSend();
+  const { error: sendError } = await sendInvitations({ invitations });
+  if (sendError)
+    return {
+      statusCode: 500,
+      body: `Error sending invitation: ${sendError}`
+    };
 
-exports.handler = (event, context) => {
-  console.log(`EVENT: ${JSON.stringify(event)}`);
-  awsServerlessExpress.proxy(server, event, context);
+  return { statusCode: 200, body: "ok" };
 };

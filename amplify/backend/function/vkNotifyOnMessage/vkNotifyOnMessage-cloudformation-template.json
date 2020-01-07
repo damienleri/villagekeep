@@ -63,7 +63,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-villagekeep-prod-165232-deployment",
-					"S3Key": "amplify-builds/vkNotifyOnMessage-30793739465449356955-build.zip"
+					"S3Key": "amplify-builds/vkNotifyOnMessage-497a414f69764f704967-build.zip"
 				}
 			}
 		},

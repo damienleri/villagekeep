@@ -180,7 +180,7 @@ const getKidUserWithEventPhones = async phone => {
     return { user: res.data.userByPhone.items[0] };
   } catch (e) {
     console.log("getKidUserWithEventPhones", e);
-    return { error: `Error finding user: ${get(e, "errors[0].message")}` };
+    return { error: `Error getting your data: ${get(e, "errors[0].message")}` };
   }
 };
 const getUserByPhone = async phone => {
@@ -195,7 +195,7 @@ const getUserByPhone = async phone => {
     return { user: res.data.userByPhone.items[0] };
   } catch (e) {
     console.log("getUserByPhone", e);
-    return { error: `Error finding user: ${get(e, "errors[0].message")}` };
+    return { error: `Error loading data: ${get(e, "errors[0].message")}` };
   }
 };
 const updateLatestMessageForPhones = async ({ phones, message }) => {

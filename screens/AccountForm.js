@@ -33,7 +33,6 @@ class AccountForm extends React.Component {
     //     errorMessage: getCurrentUserError,
     //     isLoading: false
     //   });
-
     this.setState({
       // isLoading: false,
       user,
@@ -67,7 +66,6 @@ class AccountForm extends React.Component {
       return;
     }
 
-    // setSettings(
     await onSave();
   };
 
@@ -171,9 +169,12 @@ class AccountForm extends React.Component {
   }
 }
 
-export default connect(({ settings }) => ({ settings }), {
-  setSettings: setSettingsType
-})(AccountForm);
+export default connect(
+  ({ settings }) => ({ settings }),
+  {
+    setSettings: setSettingsType
+  }
+)(AccountForm);
 
 const styles = StyleSheet.create({
   radioRow: {

@@ -19,12 +19,13 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "buildNumber": "2",
       "supportsTablet": true,
       "bundleIdentifier": "com.villagekeep"
     },
     "android": {
       "package": "com.bigyellowstar.villagekeep",
-      "versionCode": 4
+      "versionCode": 5
     },
     "description": ""
   }

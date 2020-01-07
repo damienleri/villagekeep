@@ -20,10 +20,11 @@ import {
 } from "@ui-kitten/components";
 import Auth from "@aws-amplify/auth";
 
-import { Notifications } from "expo";
+import { Notifications, Updates } from "expo";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 
+import buildInfo from "../build"; // updated by tasks/publishExpo.js as referenced in package.json
 import { gutterWidth } from "../utils/style";
 import Button from "../components/Button";
 import BuildInfo from "../components/BuildInfo";
@@ -46,6 +47,24 @@ class SettingsScreen extends React.Component {
     }
   };
 
+  handleUpdateBuild = async () => {
+    this.setState({ updateBuildMessage: "Checking for update..." });
+    try {
+      const update = await Updates.checkForUpdateAsync();
+      if (update.isAvailable) {
+        this.setState({ updateBuildMessage: "Downloading update..." });
+        await Updates.fetchUpdateAsync();
+        this.setState({ updateBuildMessage: "Installing update..." });
+        await Updates.reloadFromCache();
+        this.setState({ updateBuildMessage: "Updated." });
+      } else {
+        this.setState({ updateBuildMessage: "Up to date" });
+      }
+    } catch (e) {
+      console.log(e);
+      this.setState({ error: e.message });
+    }
+  };
   componentDidMount() {
     this.loadUserDataSubcription = this.props.navigation.addListener(
       "willFocus",
@@ -91,6 +110,7 @@ class SettingsScreen extends React.Component {
   render() {
     const { settings, setSettings } = this.props;
     const { theme, user = {} } = settings;
+    const { updateBuildMessage = "" } = this.state;
     if (!user) return null;
     const { error } = this.state;
     const isDeveloper = !Constants.isDevice; // in simulator
@@ -107,6 +127,11 @@ class SettingsScreen extends React.Component {
           user.isParent ? "parent or guardian" : "teen"
         }`,
         onPress: () => this.props.navigation.navigate("SettingAccount")
+      },
+      {
+        title: "Check for new version",
+        description: `Version ${buildInfo.jsBuildNumber}. ${updateBuildMessage}`,
+        onPress: this.handleUpdateBuild
       }
     ];
     return (
@@ -156,15 +181,17 @@ class SettingsScreen extends React.Component {
             </View>
           )}
         </View>
-        <BuildInfo />
       </Layout>
     );
   }
 }
 
-export default connect(({ settings }) => ({ settings }), {
-  setSettings: setSettingsType
-})(SettingsScreen);
+export default connect(
+  ({ settings }) => ({ settings }),
+  {
+    setSettings: setSettingsType
+  }
+)(SettingsScreen);
 
 const styles = StyleSheet.create({
   container: {

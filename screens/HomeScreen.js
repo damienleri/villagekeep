@@ -74,8 +74,16 @@ class HomeScreen extends React.Component {
   };
 
   fetchUserData = async () => {
-    const { user, error: currentUserError } = await getCurrentUser();
-    console.log("user", user, currentUserError);
+    const {
+      user,
+      cognitoUser,
+      error: currentUserError
+    } = await getCurrentUser();
+    // if (currentUserError && !user && cognitoUser) {
+    //   // User created cognito acct but not api user acct.
+    //   this.props.navigation.navigate("AuthVerify");
+    //   return;
+    // }
     if (currentUserError) return { error: currentUserError };
     const {
       eventPhones,
@@ -109,7 +117,12 @@ class HomeScreen extends React.Component {
     if (!this.context.isConnected) return;
 
     const { user, events, error } = await this.fetchUserData();
-    if (error) this.setState({ error });
+    // if (error && error.toString().toLowerCase() === 'network error') return;
+
+    if (error)
+      this.setState({
+        error: `${error}. To refresh you can "pull" down on this screen.`
+      });
     if (user) await setSettings({ user, events });
     this.subscribeToServer(); //will subscribe to graphql if not already subscribed. requires user to be loaded
   };

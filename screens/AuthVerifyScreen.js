@@ -83,7 +83,7 @@ class AuthVerifyScreen extends React.Component {
     }
 
     setSettings({ user });
-    this.props.navigation.navigate("AuthEditAccount");
+    this.props.navigation.navigate("AuthEditAccount", { isNewUser: true });
     return;
   };
 
@@ -167,9 +167,12 @@ class AuthVerifyScreen extends React.Component {
     );
   }
 }
-export default connect(({ settings }) => ({ settings }), {
-  setSettings: setSettingsType
-})(AuthVerifyScreen);
+export default connect(
+  ({ settings }) => ({ settings }),
+  {
+    setSettings: setSettingsType
+  }
+)(AuthVerifyScreen);
 
 const styles = StyleSheet.create({
   container: {

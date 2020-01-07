@@ -81,7 +81,7 @@ exports.sendNotifications = async function({ pushTokens, eventId, text }) {
     messages.push({
       to: pushToken,
       sound: "default",
-      body: "<Reply> " + text,
+      body: "[New mesg] " + text,
       data: { eventId }
     });
   }
