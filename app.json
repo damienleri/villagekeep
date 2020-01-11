@@ -5,7 +5,7 @@
     "privacy": "unlisted",
     "sdkVersion": "36.0.0",
     "platforms": ["ios", "android", "web"],
-    "version": "0.1.6",
+    "version": "0.1.8",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "primaryColor": "#92aaaa",
@@ -19,13 +19,13 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "buildNumber": "2",
+      "buildNumber": "1",
       "supportsTablet": true,
       "bundleIdentifier": "com.villagekeep"
     },
     "android": {
       "package": "com.bigyellowstar.villagekeep",
-      "versionCode": 5
+      "versionCode": 6
     },
     "description": ""
   }

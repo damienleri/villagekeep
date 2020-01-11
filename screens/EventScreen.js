@@ -45,7 +45,6 @@ import {
   getFormattedNameFromUser,
   getFormattedMessageTime
 } from "../utils/etc";
-import { cachedRefresh } from "../utils/caching";
 
 class EventScreen extends React.Component {
   static contextType = NetworkContext;

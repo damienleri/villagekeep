@@ -25,7 +25,6 @@ import AppNavigator from "./navigation/AppNavigator";
 
 Amplify.configure(awsConfig);
 API.configure(awsConfig);
-// Amplify.Logger.LOG_LEVEL = "DEBUG";
 
 function AppContents(props) {
   const { settings = {} } = props;
@@ -78,8 +77,6 @@ export default App;
 async function loadResourcesAsync() {}
 
 function handleLoadingError(error) {
-  // In this case, you might want to report the error to your error reporting
-  // service, for example Sentry
   console.warn(error);
 }
 

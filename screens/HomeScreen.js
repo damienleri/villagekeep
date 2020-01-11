@@ -31,7 +31,6 @@ import {
   getFormattedMessageTime,
   truncate
 } from "../utils/etc";
-import { cachedRefresh } from "../utils/caching";
 import { gutterWidth, colors, textLinkColor } from "../utils/style";
 import EventsEmptyState from "../components/EventsEmptyState";
 import AddEventActions from "../components/AddEventActions";

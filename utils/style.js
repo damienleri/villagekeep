@@ -29,7 +29,5 @@ export const colors = {
   backgrounds: { dark: "#222B45", light: "#ffffff" }
 };
 
-// export const topNavigationHeight = 80;
 export const topNavigationHeight = 80;
-// export const topNavigationPaddingTop = Platform.OS === "ios" ? 28 : 10;
 export const topNavigationPaddingTop = Platform.OS === "ios" ? 28 : 10;
