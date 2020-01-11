@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Button } from "@ui-kitten/components";
-// import Button from "../components/Button";
 
 export default function FormSubmitButton(props) {
   return (

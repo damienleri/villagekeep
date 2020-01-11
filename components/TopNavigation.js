@@ -35,7 +35,6 @@ export default function(props) {
     );
 
   const renderRightControls = () => [];
-  // const renderRightControls = () => [<EditAction />, <MenuAction />];
 
   const hasContent = !isFirstInStack;
   const styles = StyleSheet.create({
@@ -45,10 +44,6 @@ export default function(props) {
     },
     navStyle: {
       height: topNavigationHeight - topNavigationPaddingTop
-
-      // height: hasContent
-      //   ? topNavigationHeight - topNavigationPaddingTop
-      //   : topNavigationPaddingTop
     }
   });
   /* Not using SafeAreaView as it causes the screen to be vertically jumpy when switching tabs */

@@ -20,8 +20,6 @@ import { colors } from "../utils/style";
 import AddEventActions from "./AddEventActions";
 
 const Step = ({ name, description, isDone, onPress }) => {
-  // const color = isDone ? successColor : primaryColor;
-  // const color = isDone ? successColor : "white";
   return (
     <View style={styles.step}>
       <View style={styles.stepRow}>
@@ -56,17 +54,8 @@ const Step = ({ name, description, isDone, onPress }) => {
 
 const EventsEmptyState = ({ user, handleAddEvent, navigation }) => {
   let { isParent } = user;
-  // isParent = false;
-  // console.log(user);
   const contacts = user.contacts.items;
   const contactsByType = groupBy(contacts, "type");
-
-  // <Text category="h5" style={styles.stepsHeader}>
-  //   Welcome.
-  // </Text>
-  // <Text style={styles.stepsHeaderHint} category="h5">
-  //   {"  "}Here's how to use this.
-  // </Text>
 
   return (
     <ScrollView>

@@ -63,18 +63,3 @@ query ListContacts {
     }
   }
 }
-
-# mutation CreateEvent {
-#   createEvent(
-#     input: { owner: "+12678086023", title: "t1", eventUserId: "999" }
-#   ) {
-#     id
-#     title
-#     owner
-#   }
-# }
-
-#  Prettify Query:  Ctrl+Shift+P (also removes comments)
-#       Run Query:  Ctrl+Enter   (or press the play button above)
-#   Auto Complete:  Ctrl+Space   (or just start typing)
-#

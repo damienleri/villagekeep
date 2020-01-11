@@ -3,7 +3,6 @@ import { StyleSheet, TextInput } from "react-native";
 import { Input, Icon } from "@ui-kitten/components";
 
 export default React.forwardRef((props, ref) => {
-  // return <TextInput {...props} ref={ref} style={[props.style, styles.input]} />;
   return (
     <Input
       {...props}

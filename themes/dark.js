@@ -1,5 +1,4 @@
 // extends https://github.com/eva-design/eva/blob/master/packages/eva/themes/light.json
-// const tinycolor = require("tinycolor2");
 import tinycolor from "tinycolor2";
 import { colors } from "../utils/style";
 import { dark } from "@eva-design/eva";

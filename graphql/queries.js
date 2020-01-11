@@ -1,63 +1,3 @@
-// export const getUserShallow = `query GetUser($id: ID!) {
-//   getUser(id: $id) {
-//     id
-//     cognitoUserId
-//     createdAt
-//     updatedAt
-//     phone
-//     firstName
-//     lastName
-//     isParent
-//     deletedAt
-//     pushToken
-//     pushEnabled
-//     pushEnabledForEvents
-//     pushEnabledForMessages
-//   }
-// }
-// `;
-// const eventPhones = `
-const eventPhonesFragment = `fragment EventPhones on EventPhone {
-    updatedAt
-    phone
-    latestMessage {
-      id
-    }
-    event {
-      id
-      createdAt
-      title
-      type
-      user {
-        id
-        firstName
-        lastName
-      }
-      eventPhones {
-        items {
-          id
-          firstName
-          lastName
-          phone
-          user {
-            id
-          }
-        }
-      }
-      latestMessage {
-        createdAt
-        text
-        user {
-          id
-          firstName
-          lastName
-          phone
-        }
-      }
-    }
-  }
-`;
-
 export const userByCognitoUserId = `
 query UserByCognitoUserId(
   $cognitoUserId: String
@@ -149,7 +89,6 @@ query UserByCognitoUserId(
   }
 }
 `;
-//${eventPhonesFragment}
 
 export const kidUsersWithEventPhones = `query kidUsersWithEventPhones(
   $phone: AWSPhone

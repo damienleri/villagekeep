@@ -18,11 +18,9 @@ export default function InlineFormSubmitButton(props) {
 }
 const styles = StyleSheet.create({
   button: {
-    // marginVertical: 10
     height: 35
   },
   textStyle: {
     fontWeight: "normal"
-    // textTransform: "uppercase"
   }
 });

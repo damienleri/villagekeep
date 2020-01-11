@@ -77,12 +77,9 @@ const MessageComposer = React.forwardRef((props, ref) => {
 const mapStateToProps = ({ settings }) => {
   return { settings };
 };
-export default connect(
-  mapStateToProps,
-  null,
-  null,
-  { forwardRef: true }
-)(MessageComposer);
+export default connect(mapStateToProps, null, null, { forwardRef: true })(
+  MessageComposer
+);
 
 const styles = StyleSheet.create({
   messageInputRow: {
@@ -90,26 +87,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderTopColor: colors.brandColor,
     borderTopWidth: StyleSheet.hairlineWidth
-    // backgroundColor: "white"
   },
   messageInputRowOffline: { borderTopColor: colors.dangerColor },
-  // inputContainer: {
-  //   // marginTop: 100,
-  //   flexDirection: "row",
-  //   alignSelf: "center",
-  //   width: "96%",
-  //   marginLeft: 2,
-  //   marginRight: 2,
-  //   marginBottom: 10,
-  //   minHeight: 50, //... For dynamic height
-  //   // borderRadius: 50,
-  //   backgroundColor: "transparent",
-  //   borderWidth: 1,
-  //   borderColor: "gray",
-  //   paddingLeft: 10, //... With respect to the min height, so that it doesn't cut
-  //   paddingTop: 10, //... With respect to the min height, so that it doesn't cut
-  //   paddingBottom: 10 //... With respect to the min height, so that it doesn't cut
-  // },
   messageInput: {
     borderWidth: 0,
     flex: 2,
@@ -118,7 +97,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     fontSize: 16
   },
-  // themedMessageInput: { dark: { color: "white" }, light: { color: "black" } },
 
   messageSubmitContainer: { paddingHorizontal: 10 }, //TouchableOpacity
   messageSubmitButton: {
