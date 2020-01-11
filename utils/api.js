@@ -147,7 +147,7 @@ export const getEventsForKids = async ({ user }) => {
       kidContact.phone
     );
     if (error) return { error };
-
+    if (!kidUser) continue; // didn't create an account
     const isReciprocal = !!kidUser.contacts.items.find(
       c => c.type === "parent" && c.phone === user.phone
     );

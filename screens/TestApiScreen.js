@@ -18,22 +18,8 @@ export default class TestApiScreen extends React.Component {
   static navigationOptions = {
     title: "Contacts"
   };
-  //
-  // addContact = async ({ type }) => {
-  //   const phone = "+12678086023";
-  //   const firstName = "Dale";
-  //   const lastName = "Cooper";
-  //   const { error, contact } = await createContact({
-  //     type,
-  //     phone,
-  //     firstName,
-  //     lastName
-  //   });
-  //   console.log(contact);
-  // };
   addUser = async () => {
     const { error, user } = await createCurrentUser();
-    console.log(user);
   };
 
   listContacts = async () => {
@@ -53,17 +39,9 @@ export default class TestApiScreen extends React.Component {
 
   deleteUser = async () => {
     await deleteCurrentUser();
-    return this.props.navigation.navigate("AuthVerify", {
-      phone: "+12678086023",
-      password: "testtest1"
-    });
   };
 
   render() {
-    // <Button onPress={() => this.addContact({ type: "kid" })}>
-    //   Add a kid
-    // </Button>
-
     return (
       <Layout style={styles.container}>
         <Button onPress={this.addUser}>Add User</Button>

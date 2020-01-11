@@ -9,10 +9,6 @@ import FormSubmitButton from "../components/FormSubmitButton";
 import { getCurrentUser, updateUser } from "../utils/api";
 import { setSettings as setSettingsType } from "../redux/actions";
 
-/// This component is used on multiple screens:
-/// - new user flow
-/// - settings tab
-
 class AccountForm extends React.Component {
   state = { firstName: "", lastName: "", isParent: null };
   constructor(props) {
@@ -22,19 +18,7 @@ class AccountForm extends React.Component {
   async componentDidMount() {
     const { settings = {} } = this.props;
     const { user } = settings;
-    // this.setState({ isLoading: true });
-
-    //
-    // const { user, error: getCurrentUserError } = await getUserShallow(
-    //   homeScreenUser.id
-    // );
-    // if (getCurrentUserError)
-    //   return this.setState({
-    //     errorMessage: getCurrentUserError,
-    //     isLoading: false
-    //   });
     this.setState({
-      // isLoading: false,
       user,
       firstName: user.firstName || "",
       lastName: user.lastName || "",
@@ -88,7 +72,6 @@ class AccountForm extends React.Component {
       isSubmitting
     } = this.state;
     const { isNewUser } = this.props;
-    // if (isLoading) return <Spinner size="giant" />;
     return (
       <Form>
         <FormInput
@@ -169,12 +152,9 @@ class AccountForm extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  {
-    setSettings: setSettingsType
-  }
-)(AccountForm);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(AccountForm);
 
 const styles = StyleSheet.create({
   radioRow: {

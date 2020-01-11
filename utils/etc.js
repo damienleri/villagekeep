@@ -82,3 +82,16 @@ export function getKidsContacts(user) {
   }
   return contacts.flat();
 }
+
+export function truncate(text, n, useWordBoundary) {
+  if (!text) return text;
+  if (text.length <= n) {
+    return text;
+  }
+  var subString = text.substr(0, n - 1);
+  return (
+    (useWordBoundary
+      ? subString.substr(0, subString.lastIndexOf(" "))
+      : subString) + "…"
+  );
+}

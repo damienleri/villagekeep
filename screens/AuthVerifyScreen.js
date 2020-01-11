@@ -16,13 +16,7 @@ const codeLength = 6;
 class AuthVerifyScreen extends React.Component {
   state = { code: "" };
   static navigationOptions = props => ({
-    header: (
-      <TopNavigation
-        {...props}
-        hideBack={true}
-        // onBackPress={() => props.navigation.navigate("Welcome")}
-      />
-    )
+    header: <TopNavigation {...props} hideBack={true} />
   });
   constructor() {
     super();
@@ -167,12 +161,9 @@ class AuthVerifyScreen extends React.Component {
     );
   }
 }
-export default connect(
-  ({ settings }) => ({ settings }),
-  {
-    setSettings: setSettingsType
-  }
-)(AuthVerifyScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(AuthVerifyScreen);
 
 const styles = StyleSheet.create({
   container: {

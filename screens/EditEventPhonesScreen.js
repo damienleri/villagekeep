@@ -11,11 +11,7 @@ import Form from "../components/Form";
 import FormInput from "../components/FormInput";
 import FormSubmitButton from "../components/FormSubmitButton";
 import TopNavigation from "../components/TopNavigation";
-import {
-  createEventWithPhones,
-  updateEventPhones
-  // deleteEvent
-} from "../utils/api";
+import { createEventWithPhones, updateEventPhones } from "../utils/api";
 import { gutterWidth, colors } from "../utils/style";
 import {
   formatPhone,
@@ -74,7 +70,6 @@ class EditEventPhonesScreen extends React.Component {
       eventPhoneIsSelected: aryToHash(
         preselectedEventPhones.map(ep => ep.phone)
       )
-      // hash of {id1: true, id2: false} etc
     };
   }
 

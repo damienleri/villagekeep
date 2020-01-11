@@ -16,7 +16,6 @@ import TestApiScreen from "../screens/TestApiScreen";
 import PeopleScreen from "../screens/PeopleScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import EditContactScreen from "../screens/EditContactScreen";
-// import EditEventScreen from "../screens/EditEventScreen";
 import EventScreen from "../screens/EventScreen";
 import EditEventPhonesScreen from "../screens/EditEventPhonesScreen";
 import SettingAccountScreen from "../screens/SettingAccountScreen";
@@ -43,15 +42,15 @@ const TabBarComponent = ({ navigation }) => {
           onSelect={onSelect}
         >
           <BottomNavigationTab
-            // title="EVENTS"
+            title="THREADS"
             icon={style => <Icon {...style} name="message-square-outline" />}
           />
           <BottomNavigationTab
-            // title="PEOPLE"
+            title="PEOPLE"
             icon={style => <Icon {...style} name="people-outline" />}
           />
           <BottomNavigationTab
-            // title="SETTINGS"
+            title="SETTINGS"
             icon={style => <Icon {...style} name="settings-outline" />}
           />
         </BottomNavigation>
@@ -65,26 +64,9 @@ const EventsStack = createStackNavigator(
     Home: HomeScreen,
     Event: EventScreen,
     EditEventPhones: EditEventPhonesScreen
-    // EditEvent: EditEventScreen
   },
   config
 );
-
-// EventsStack.navigationOptions = {
-//   tabBarLabel: "Events",
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={
-//         Platform.OS === "ios"
-//           ? `ios-information-circle${focused ? "" : "-outline"}`
-//           : "md-information-circle"
-//       }
-//     />
-//   )
-// };
-//
-// EventsStack.path = "";
 
 const PeopleStack = createStackNavigator(
   {
@@ -93,19 +75,6 @@ const PeopleStack = createStackNavigator(
   },
   config
 );
-
-// PeopleStack.navigationOptions = {
-//   tabBarLabel: "People",
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={Platform.OS === "ios" ? "ios-link" : "md-link"}
-//     />
-//   )
-// };
-//
-// PeopleStack.path = "";
-
 const SettingsStack = createStackNavigator(
   {
     Settings: SettingsScreen,
@@ -115,18 +84,6 @@ const SettingsStack = createStackNavigator(
   },
   config
 );
-
-// SettingsStack.navigationOptions = {
-//   tabBarLabel: "Settings",
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={Platform.OS === "ios" ? "ios-options" : "md-options"}
-//     />
-//   )
-// };
-//
-// SettingsStack.path = "";
 
 const tabNavigator = createBottomTabNavigator(
   {

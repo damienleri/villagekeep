@@ -10,30 +10,19 @@ export default class AuthLoadingScreen extends React.Component {
     await this.loadApp();
   };
   loadApp = async () => {
-    console.log("\n******Auth loading*******\n");
+    console.log("\n****** Loading App *******\n");
 
     try {
       if (!Device.isDevice) {
-        // if (0 && !Device.isDevice) {
-
-        // return this.props.navigation.navigate("Welcome");
-        // return this.props.navigation.navigate("AuthForgotPasswordVerify", {
-        //   phone: "+12678086023"
-        // });
-
-        // await Auth.signIn("+16109104174", "testtest1"); // eli
-        await Auth.signIn("+12678086023", "testtest1");
-        // await Auth.signIn("+12678080275", "44kimchi");
-        // return this.props.navigation.navigate("EditEvent");
+        // for testing only
+        await Auth.signIn("+12027621401", "testkid1!"); // kid test account
+        // await Auth.signIn("+19142329901", "testparent1!"); // parent test account
         return this.props.navigation.navigate("Home");
-        // this.props.navigation.navigate("EditContact", { type: "kid" });
       }
 
       const user = await Auth.currentAuthenticatedUser({
         bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       });
-
-      // return this.props.navigation.navigate("People");
 
       this.props.navigation.navigate("Main");
     } catch (e) {

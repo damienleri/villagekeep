@@ -28,7 +28,8 @@ import {
   formatPhone,
   getFormattedNameFromEventPhone,
   getFormattedNameFromUser,
-  getFormattedMessageTime
+  getFormattedMessageTime,
+  truncate
 } from "../utils/etc";
 import { cachedRefresh } from "../utils/caching";
 import { gutterWidth, colors, textLinkColor } from "../utils/style";
@@ -40,9 +41,6 @@ import { NetworkContext } from "../components/NetworkProvider";
 class HomeScreen extends React.Component {
   static contextType = NetworkContext;
   state = {};
-  // static navigationOptions = props => ({
-  //   header: null
-  // });
   componentDidMount = async () => {
     this.screenFocusSubcription = this.props.navigation.addListener(
       "willFocus",
@@ -65,10 +63,7 @@ class HomeScreen extends React.Component {
       type: "User",
       id: user.id,
       callback: ({ data, error }) => {
-        if (error) this.setState({ error }); // doesn't seem to work
-        // console.log("homscreen: user subscription fired.");
-        // if (error && this.userSubscription) this.userSubscription.unsubscribe();
-        this.loadUserData();
+        if (!error) this.loadUserData();
       }
     });
   };
@@ -79,11 +74,6 @@ class HomeScreen extends React.Component {
       cognitoUser,
       error: currentUserError
     } = await getCurrentUser();
-    // if (currentUserError && !user && cognitoUser) {
-    //   // User created cognito acct but not api user acct.
-    //   this.props.navigation.navigate("AuthVerify");
-    //   return;
-    // }
     if (currentUserError) return { error: currentUserError };
     const {
       eventPhones,
@@ -117,7 +107,6 @@ class HomeScreen extends React.Component {
     if (!this.context.isConnected) return;
 
     const { user, events, error } = await this.fetchUserData();
-    // if (error && error.toString().toLowerCase() === 'network error') return;
 
     if (error)
       this.setState({
@@ -152,7 +141,6 @@ class HomeScreen extends React.Component {
     const eventPhonesExceptMe = event.eventPhones.items.filter(
       ep => ep.phone !== user.phone
     );
-    // console.log(event.eventPhones.items[0]);
     const eventPhonesText =
       eventPhonesExceptMe
         .map(({ firstName, lastName }) => `${firstName} ${lastName}`)
@@ -161,7 +149,7 @@ class HomeScreen extends React.Component {
     return (
       <TouchableOpacity onPress={onPress}>
         <View style={styles.listItem}>
-          <View>
+          <View style={styles.listItemCol1}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.eventInnerRow}>
               <Text style={styles.creationTimeLabel}>Includes </Text>
@@ -177,17 +165,19 @@ class HomeScreen extends React.Component {
               <View>
                 <Text style={styles.eventInnerRow}>
                   <Text style={styles.creationTimeLabel}>
-                    {"Last mesg "}
                     {getFormattedMessageTime(latestMessage.createdAt)}
-                    {" by "}{" "}
+                    {" by "}
                   </Text>
                   {latestMessage.user.phone === user.phone
                     ? "you"
-                    : getFormattedNameFromUser(latestMessage.user)}
+                    : truncate(
+                        getFormattedNameFromUser(latestMessage.user),
+                        15
+                      )}
                   {": "}
                 </Text>
                 <Text style={styles.latestMessageText}>
-                  {latestMessage.text}
+                  {truncate(latestMessage.text, 40)}
                 </Text>
               </View>
             )}
@@ -206,8 +196,6 @@ class HomeScreen extends React.Component {
 
   renderHeader = () => {
     const { user, events } = this.props.settings;
-    //         <Text style={styles.header}>Village Keep</Text>
-
     return (
       <View>
         <AddEventActions
@@ -241,7 +229,6 @@ class HomeScreen extends React.Component {
           />
         }
         ListHeaderComponent={this.renderHeader}
-        // stickyHeaderIndices={[0]}
       />
     );
   };
@@ -315,6 +302,9 @@ const styles = StyleSheet.create({
   eventsContainer: { paddingVertical: 0 },
   list: {
     marginVertical: 16
+  },
+  listItemCol1: {
+    width: "85%"
   },
   listItem: {
     flexDirection: "row",

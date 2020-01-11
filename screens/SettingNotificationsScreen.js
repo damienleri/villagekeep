@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: gutterWidth
   },
-  // intro: { marginHorizontal: gutterWidth },
   introHeader: {},
   introText: { marginVertical: 10 }
 });

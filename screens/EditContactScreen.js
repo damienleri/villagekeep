@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, View, Alert, Modal, FlatList } from "react-native";
 import {
   Icon,
   Layout,
@@ -12,6 +12,7 @@ import {
   Spinner
 } from "@ui-kitten/components";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
+import * as Contacts from "expo-contacts";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import FormInput from "../components/FormInput";
@@ -23,8 +24,8 @@ import {
   updateContact,
   deleteContact
 } from "../utils/api";
-import { gutterWidth } from "../utils/style";
 import { formatPhone } from "../utils/etc";
+import { colors, gutterWidth } from "../utils/style";
 
 export default class EditContactScreen extends React.Component {
   constructor(props) {
@@ -37,7 +38,8 @@ export default class EditContactScreen extends React.Component {
         firstName: contact.firstName,
         lastName: contact.lastName,
         phone: formatPhone(contact.phone),
-        validPhone: contact ? contact.phone : null
+        validPhone: contact ? contact.phone : null,
+        addressBookModalIsVisible: false
       };
     } else {
       /* Create mode */
@@ -45,7 +47,8 @@ export default class EditContactScreen extends React.Component {
         firstName: "",
         lastName: "",
         phone: "",
-        validPhone: null
+        validPhone: null,
+        addressBookModalIsVisible: false
       };
     }
   }
@@ -99,7 +102,7 @@ export default class EditContactScreen extends React.Component {
       });
       if (updateContactError) {
         this.setState({
-          errorMessage: updateContactError,
+          error: updateContactError,
           isSubmitting: false
         });
         return;
@@ -116,7 +119,7 @@ export default class EditContactScreen extends React.Component {
       });
       if (createContactError) {
         this.setState({
-          errorMessage: createContactError,
+          error: createContactError,
           isSubmitting: false
         });
         return;
@@ -127,10 +130,10 @@ export default class EditContactScreen extends React.Component {
 
   handleDelete = async () => {
     const contact = this.props.navigation.getParam("contact");
-    const { error: errorMessage } = await deleteContact({
+    const { error } = await deleteContact({
       contactId: contact.id
     });
-    if (errorMessage) return this.setState({ errorMessage });
+    if (error) return this.setState({ error });
     this.props.navigation.goBack();
   };
 
@@ -150,16 +153,171 @@ export default class EditContactScreen extends React.Component {
     );
   };
 
+  handleAddressBookClick = async () => {
+    const { status } = await Contacts.requestPermissionsAsync();
+    if (status === "granted") {
+      const { data } = await Contacts.getContactsAsync();
+      // this.setState({ addressBookIsVisible: true });
+      console.log("contacts", data[0]);
+      this.setState({ addressBookData: data, addressBookModalIsVisible: true });
+    }
+  };
+
+  acceptSuggestedContact = async item => {
+    const { firstName, lastName, phone, id } = item;
+    const type = this.props.navigation.getParam("type");
+    const user = this.props.navigation.getParam("user");
+
+    this.setState({
+      error: null,
+      accepting: { ...this.state.accepting, [id]: true }
+    });
+
+    const { contact, error } = await createContact({
+      user,
+      firstName,
+      lastName,
+      phone,
+      type
+    });
+
+    if (error) {
+      this.setState({
+        error,
+        accepting: { ...this.state.accepting, [id]: false }
+      });
+      return;
+    }
+
+    await this.setState({
+      accepting: { ...this.state.accepting, [id]: false },
+      accepted: { ...this.state.accepted, [id]: true }
+    });
+  };
+
+  renderAddressBookItem = ({ item }) => {
+    const { firstName, lastName, phone, id } = item;
+    const { accepting = {}, accepted = {} } = this.state;
+    return (
+      <View style={styles.listItem}>
+        <View>
+          <Text style={styles.contactName}>
+            {firstName} {lastName}
+          </Text>
+          <Text>{formatPhone(phone)}</Text>
+        </View>
+        {accepted[id] ? (
+          <Icon
+            fill="green"
+            height={24}
+            width={24}
+            animation="zoom"
+            name="checkmark-outline"
+          />
+        ) : (
+          <Button
+            appearance="ghost"
+            inline={true}
+            onPress={() => this.acceptSuggestedContact(item)}
+          >
+            {accepting[id] ? "Adding..." : "Add"}
+          </Button>
+        )}
+      </View>
+    );
+  };
+
+  renderAddressBookList = () => {
+    const { addressBookData } = this.state;
+    if (!addressBookData) return <Spinner />;
+    if (!addressBookData.length) return <Text>No contacts found.</Text>;
+    let filtered = [];
+
+    addressBookData.forEach(row => {
+      let phone;
+      if (row.phoneNumbers) {
+        const entry =
+          row.phoneNumbers.find(
+            p => p.label && p.label.toLowerCase() === "mobile"
+          ) || row.phoneNumbers[0];
+        if (entry) {
+          const parsed = parsePhoneNumberFromString(entry.number, "US");
+          if (parsed && parsed.isValid()) {
+            phone = parsed.format("E.164");
+          }
+        }
+      }
+
+      if (!phone) return;
+      const id = row.id;
+      let firstName = row.firstName;
+      let lastName = row.lastName;
+      if (!firstName && !lastName) {
+        if (row.name) {
+          firstName = row.name;
+        }
+        if (!firstName) return;
+      }
+      filtered.push({ id, phone, firstName, lastName });
+    });
+    // console.log(filtered);
+    return (
+      <View style={styles.contactsSection}>
+        <Text style={styles.introText}></Text>
+        <FlatList
+          style={styles.list}
+          renderItem={this.renderAddressBookItem}
+          data={filtered}
+          keyExtractor={item => item.id}
+          ItemSeparatorComponent={() => (
+            <View style={styles.listItemSeparator} />
+          )}
+          ListHeaderComponent={this.renderListHeader}
+          stickyHeaderIndices={[0]}
+        />
+      </View>
+    );
+  };
+
+  renderListHeader = () => {
+    const { closingAddressModal } = this.state;
+    return (
+      <View style={styles.listHeader}>
+        <Button
+          appearance="primary"
+          onPress={this.closeAddressBookModal}
+          disabled={closingAddressModal}
+        >
+          {closingAddressModal ? "Closing..." : "Close"}
+        </Button>
+      </View>
+    );
+  };
+
+  renderAddressBookModal = () => {
+    return (
+      <Layout style={styles.modalContainer}>
+        <Text category="h4">Choose Contacts</Text>
+        <View>{this.renderAddressBookList()}</View>
+      </Layout>
+    );
+  };
+  closeAddressBookModal = async () => {
+    this.setState({ closingAddressModal: true });
+    this.props.navigation.navigate("People");
+  };
+
   render() {
     const { navigation } = this.props;
     const {
-      errorMessage,
+      error,
       firstName,
       lastName,
       phone,
       isSubmitting,
       phoneErrorMessage,
-      validPhone
+      validPhone,
+      addressBookModalIsVisible
     } = this.state;
     const contact = navigation.getParam("contact");
     const user = navigation.getParam("user");
@@ -168,27 +326,29 @@ export default class EditContactScreen extends React.Component {
 
     return (
       <Layout style={styles.container}>
-        <View style={styles.intro}>
-          <Text category="h5" style={styles.header}>
-            {contact ? "Let's fix this " : "It's time to add this "}
-            {type === "parent" ? "parent/guardian" : type}.
-          </Text>
-          {isParent ? (
-            <Text style={styles.introText}></Text>
-          ) : (
-            <Text style={styles.introText}>
-              Your parents will have access to the names and numbers you add
-              here.
+        {!contact && (
+          <View style={styles.intro}>
+            <View>
+              <Text style={styles.header}>Select from your phone:</Text>
+              <Button
+                onPress={this.handleAddressBookClick}
+                appearance="outline"
+              >
+                Open address book
+              </Button>
+            </View>
+            <Text style={styles.header}>
+              Or add a single {type === "parent" ? "parent/guardian" : type}:
             </Text>
-          )}
-        </View>
+          </View>
+        )}
 
         <Form>
           <FormInput
             label="First name"
             placeholder=""
             onChangeText={firstName =>
-              this.setState({ firstName, errorMessage: false })
+              this.setState({ firstName, error: false })
             }
             value={firstName}
             returnKeyType="done"
@@ -198,9 +358,7 @@ export default class EditContactScreen extends React.Component {
           <FormInput
             label="Last name"
             placeholder=""
-            onChangeText={lastName =>
-              this.setState({ lastName, errorMessage: false })
-            }
+            onChangeText={lastName => this.setState({ lastName, error: false })}
             value={lastName}
             returnKeyType="done"
             autoCorrect={false}
@@ -223,9 +381,9 @@ export default class EditContactScreen extends React.Component {
             autoCapitalize="none"
             autoCorrect={false}
           />
-          {errorMessage && (
-            <Text style={styles.errorMessage} status="danger">
-              {errorMessage}
+          {error && (
+            <Text style={styles.error} status="danger">
+              {error}
             </Text>
           )}
           <FormSubmitButton
@@ -246,6 +404,14 @@ export default class EditContactScreen extends React.Component {
             </Button>
           )}
         </Form>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={addressBookModalIsVisible}
+          onRequestClose={this.closeAddressBookModal}
+        >
+          {this.renderAddressBookModal()}
+        </Modal>
       </Layout>
     );
   }
@@ -259,9 +425,28 @@ const styles = StyleSheet.create({
   header: { marginTop: 20, marginBottom: 10, fontWeight: "normal" },
   introText: { marginBottom: 10 },
   deleteButton: { marginTop: 20 },
-  errorMessage: {
+  error: {
     marginTop: 4,
     marginBottom: 8,
     textAlign: "center"
-  }
+  },
+  modalContainer: {
+    flex: 1,
+    paddingHorizontal: gutterWidth,
+    paddingTop: 50
+  },
+  listHeader: {
+    paddingBottom: 20
+  },
+  listItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  listItemSeparator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.brandColor,
+    marginVertical: 8
+  },
+  contactName: { fontWeight: "bold", fontSize: 16 }
 });

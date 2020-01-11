@@ -102,22 +102,25 @@ class PeopleScreen extends React.Component {
     let sections = [];
 
     if (isParent) {
-      sections.push({
-        data: contactsByType.kid,
-        singular: "kid",
-        plural: "kids"
-      });
+      if (contactsByType.kid)
+        sections.push({
+          data: contactsByType.kid,
+          singular: "kid",
+          plural: "kids"
+        });
     } else {
-      sections.push({
-        data: contactsByType.parent,
-        singular: "guardian",
-        plural: "guardians"
-      });
-      sections.push({
-        data: contactsByType.friend,
-        singular: "friend",
-        plural: "friends"
-      });
+      if (contactsByType.parent)
+        sections.push({
+          data: contactsByType.parent,
+          singular: "guardian",
+          plural: "guardians"
+        });
+      if (contactsByType.friend)
+        sections.push({
+          data: contactsByType.friend,
+          singular: "friend",
+          plural: "friends"
+        });
     }
 
     return (
@@ -237,14 +240,8 @@ class PeopleScreen extends React.Component {
 
     await this.setState({
       accepting: { ...this.state.accepting, [phone]: false },
-      accepted: { ...this.state.accepting, [phone]: true }
+      accepted: { ...this.state.accepted, [phone]: true }
     });
-    console.log("created contact", contact);
-
-    // Workaround for the tabview onselect not firing when returning to tab 0:
-    setTimeout(() => {
-      this.loadUserData();
-    }, 200);
   };
 
   renderSuggestedContact = ({ item }) => {
@@ -401,14 +398,15 @@ const styles = StyleSheet.create({
     paddingVertical: 32
   },
   contactsSection: {
-    marginBottom: 16
+    marginBottom: 24
   },
   contactsSectionHeader: {
     color: "#aaa",
-    fontSize: 15,
+    fontSize: 17,
     textTransform: "uppercase",
     marginTop: 16,
-    marginBottom: 8
+    marginBottom: 8,
+    fontWeight: "600"
   },
   listItem: {
     flexDirection: "row",

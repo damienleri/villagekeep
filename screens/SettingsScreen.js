@@ -113,7 +113,7 @@ class SettingsScreen extends React.Component {
     const { updateBuildMessage = "" } = this.state;
     if (!user) return null;
     const { error } = this.state;
-    const isDeveloper = !Constants.isDevice; // in simulator
+    const isDeveloper = false; // !Constants.isDevice; // in simulator
 
     const items = [
       {
@@ -186,12 +186,9 @@ class SettingsScreen extends React.Component {
   }
 }
 
-export default connect(
-  ({ settings }) => ({ settings }),
-  {
-    setSettings: setSettingsType
-  }
-)(SettingsScreen);
+export default connect(({ settings }) => ({ settings }), {
+  setSettings: setSettingsType
+})(SettingsScreen);
 
 const styles = StyleSheet.create({
   container: {

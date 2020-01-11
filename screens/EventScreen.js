@@ -63,12 +63,12 @@ class EventScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    // console.log("constructor", props.isNewEvent);
     const event = props.navigation.getParam("event");
     this.messageInputRef = React.createRef();
     this.titleInputRef = React.createRef();
     this.state = {
       title: event.title,
+      draftTitle: event.title,
       serverMessagesKey: `eventScreenServerMessages-${event.id}`,
       localMessagesKey: `eventScreenLocalMessages-${event.id}`,
       error: null
@@ -119,18 +119,17 @@ class EventScreen extends React.Component {
     if (this.context.isConnected) {
       const { messages, error } = await this.fetchMessagesForEventId(event.id);
       if (messages) setSettings({ [serverMessagesKey]: messages });
-      // console.log(messages);
       if (error) this.setState({ error });
     }
   };
 
   handleSubmitTitle = async () => {
-    const { title } = this.state;
+    const { title, draftTitle } = this.state;
     const event = this.props.navigation.getParam("event");
     this.setState({ isSubmittingTitle: true });
     const { event: updatedEvent, error } = await updateEvent({
       id: event.id,
-      title
+      title: draftTitle
     });
     if (error) {
       this.setState({
@@ -139,7 +138,11 @@ class EventScreen extends React.Component {
       });
       return;
     }
-    this.setState({ isSubmittingTitle: false, isEditingTitle: false });
+    this.setState({
+      title: draftTitle,
+      isSubmittingTitle: false,
+      isEditingTitle: false
+    });
   };
 
   handleDelete = async () => {
@@ -203,19 +206,14 @@ class EventScreen extends React.Component {
       [serverMessagesKey]: serverMessages
     } = this.props.settings;
     if (!serverMessages) return <Spinner />;
-    console.log("localMessages", localMessages);
-    console.log("serverMessages", serverMessages);
-    // const messages = [].concat(serverMessages);
     const messages = uniqBy(
       (localMessages || []).concat(serverMessages),
       "localSentAt"
     );
-    // console.log(messages);
     const sortedMessages = sortBy(
       messages,
       m => m.localSentAt || m.createdAt
     ).reverse();
-    // console.log("localMessages", localMessages);
     return (
       <FlatList
         inverted
@@ -232,8 +230,6 @@ class EventScreen extends React.Component {
     const { localMessagesKey } = this.state;
     const { [localMessagesKey]: localMessages } = this.props.settings;
     const { setSettings } = this.props;
-    console.log("addMessageToQueue", localMessage);
-    // await setSettings({ [localMessagesKey]: [localMessage].concat(localMessages) });
     await setSettings({
       [localMessagesKey]: [localMessage].concat(localMessages || [])
     });
@@ -305,7 +301,6 @@ class EventScreen extends React.Component {
   };
 
   handleChangeInputText = inputText => {
-    // if (this.state.inputText ==="")
     this.setState({ inputText });
   };
 
@@ -319,6 +314,7 @@ class EventScreen extends React.Component {
     const {
       error,
       title,
+      draftTitle,
       isRefreshing,
       isLoading,
       isEditingTitle,
@@ -334,11 +330,6 @@ class EventScreen extends React.Component {
         icon: style => <Icon {...style} name="person-add" />,
         onPress: this.handleAddPerson
       }
-      // {
-      //   title: "Delete event",
-      //   icon: style => <Icon {...style} name="trash" />,
-      //   onPress: this.handleDeletePress
-      // }
     ];
     const event = this.props.navigation.getParam("event");
     const { user } = this.props.settings;
@@ -349,9 +340,10 @@ class EventScreen extends React.Component {
           <InlineForm>
             <InlineFormInput
               label=""
-              placeholder="A name for the event"
-              onChangeText={title => this.setState({ title, error: false })}
-              value={title}
+              onChangeText={draftTitle =>
+                this.setState({ draftTitle, error: false })
+              }
+              value={draftTitle}
               maxLength={50}
               returnKeyType="done"
               selectTextOnFocus={true}
@@ -370,7 +362,9 @@ class EventScreen extends React.Component {
                 {isSubmittingTitle ? "Saving" : "Save"}
               </InlineFormSubmitButton>
               <InlineFormCancelButton
-                onPress={() => this.setState({ isEditingTitle: false })}
+                onPress={() =>
+                  this.setState({ isEditingTitle: false, draftTitle: title })
+                }
               >
                 Cancel
               </InlineFormCancelButton>
@@ -390,33 +384,16 @@ class EventScreen extends React.Component {
                 fill={colors.brandColor}
               />
             </TouchableOpacity>
-            {/*<OverflowMenu
-              data={moreActionsData}
-              visible={showMoreActions}
-              selectedIndex={null}
-              onSelect={index => moreActionsData[index].onPress()}
-              onBackdropPress={() => this.setState({ showMoreActions: false })}
-            >
-              <Icon
-                name="more-vertical"
-                width={24}
-                height={24}
-                fill={colors.brandColor}
-                onPress={() => this.setState({ showMoreActions: true })}
-              />
-            </OverflowMenu>*/}
           </View>
         )}
 
         <View style={styles.peopleButtonRow}>
-          <Text>We have {event.eventPhones.items.length} people. </Text>
           <Button
             appearance="ghost"
             inline={true}
             onPress={() =>
               this.props.navigation.navigate("EditEventPhones", { event })
             }
-            // icon={style => <Icon {...style} name="people" />}
           >
             Add or remove people
           </Button>
@@ -474,7 +451,6 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   title: { fontSize: 18, marginRight: 20 },
-  // header: { marginTop: 20, marginBottom: 10, fontWeight: "normal" },
   introText: { marginBottom: 10 },
 
   messageForm: { flex: 1, paddingHorizontal: 0 },
