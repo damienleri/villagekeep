@@ -268,7 +268,8 @@ export const createContact = async ({
   type,
   phone,
   firstName,
-  lastName
+  lastName,
+  sendInvitation
 }) => {
   try {
     const res = await API.graphql(
@@ -278,6 +279,7 @@ export const createContact = async ({
           phone,
           firstName,
           lastName,
+          sendInvitation,
           userId: user.id,
           cognitoUserId: user.cognitoUserId
         }

@@ -24,6 +24,7 @@ import {
   TabBar,
   Tab
 } from "@ui-kitten/components";
+import { sortBy } from "lodash";
 import { groupBy } from "lodash";
 import Form from "../components/Form";
 import Button from "../components/Button";
@@ -94,7 +95,13 @@ class PeopleScreen extends React.Component {
     const { user } = settings;
     const { isParent } = user;
     const { isRefreshing } = this.state;
-    const contactsByType = groupBy(user.contacts.items, "type");
+    const sorted = sortBy(user.contacts.items, c =>
+      c.firstName
+        ? [c.firstName.toLowerCase(), c.lastName.toLowerCase()]
+        : c.lastName.toLowerCase()
+    );
+
+    const contactsByType = groupBy(sorted, "type");
     if (isParent && !contactsByType.kid) return null;
     if (!isParent && !contactsByType.parent && !contactsByType.friend)
       return null;
@@ -400,6 +407,7 @@ const styles = StyleSheet.create({
   contactsSection: {
     marginBottom: 24
   },
+  list: { marginBottom: 40 },
   contactsSectionHeader: {
     color: "#aaa",
     fontSize: 17,

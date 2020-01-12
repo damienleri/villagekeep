@@ -5,7 +5,6 @@ type User
     fields: ["cognitoUserId"]
     queryField: "userByCognitoUserId"
   )
-  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
   @key(name: "byPhone", fields: ["phone"], queryField: "userByPhone") {
   id: ID!
   cognitoUserId: String!
@@ -31,7 +30,6 @@ type User
 }
 
 type Event
-  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
   @key(
     name: "byUser"
     fields: ["userId", "createdAt"]
@@ -53,13 +51,17 @@ type Event
 }
 
 type Contact
-  # @auth(rules: [{ allow: owner, operations: [read, update, delete] }])
   @key(
     name: "byUser"
     fields: ["userId", "createdAt"]
     queryField: "contactsByUser"
   )
   @key(name: "byPhone", fields: ["phone"], queryField: "contactsByPhone")
+  @key(
+    name: "byCreatedAt"
+    fields: ["createdAt"]
+    queryField: "contactsByCreatedAt"
+  )
   @model {
   id: ID!
   cognitoUserId: String!
@@ -74,6 +76,7 @@ type Contact
   lastName: String
   userId: ID!
   user: User! @connection(fields: ["userId"])
+  sendInvitation: Boolean
 }
 
 type EventPhone
@@ -92,7 +95,6 @@ type EventPhone
     fields: ["userId", "createdAt"]
     queryField: "eventPhonesByUser"
   )
-  # @auth(rules: [{ allow: owner, operations: [update, delete] }])
   @model {
   id: ID!
   cognitoUserId: String!
@@ -105,12 +107,11 @@ type EventPhone
   user: User! @connection(fields: ["userId"])
   usersByPhone: [User] @connection(keyName: "byPhone", fields: ["phone"])
   eventId: ID!
-  event: Event! @connection(fields: ["eventId"]) ## left this optional in case event gets deleted
+  event: Event! @connection(fields: ["eventId"])
   latestMessage: Message @connection
 }
 
 type Message
-  # @auth(rules: [{ allow: owner, operations: [ update, delete] }])
   @key(
     name: "byEvent"
     fields: ["eventId", "createdAt"]

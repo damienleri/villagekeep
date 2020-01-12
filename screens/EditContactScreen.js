@@ -9,8 +9,10 @@ import {
   CardHeader,
   List,
   ListItem,
-  Spinner
+  Spinner,
+  CheckBox
 } from "@ui-kitten/components";
+import { sortBy } from "lodash";
 import { parsePhoneNumberFromString, AsYouType } from "libphonenumber-js";
 import * as Contacts from "expo-contacts";
 import Button from "../components/Button";
@@ -26,6 +28,7 @@ import {
 } from "../utils/api";
 import { formatPhone } from "../utils/etc";
 import { colors, gutterWidth } from "../utils/style";
+import { sendInvitationToContactsByDefault } from "../utils/constants";
 
 export default class EditContactScreen extends React.Component {
   constructor(props) {
@@ -38,6 +41,7 @@ export default class EditContactScreen extends React.Component {
         firstName: contact.firstName,
         lastName: contact.lastName,
         phone: formatPhone(contact.phone),
+        sendInvitation: contact.sendInvitation,
         validPhone: contact ? contact.phone : null,
         addressBookModalIsVisible: false
       };
@@ -47,6 +51,7 @@ export default class EditContactScreen extends React.Component {
         firstName: "",
         lastName: "",
         phone: "",
+        sendInvitation: sendInvitationToContactsByDefault,
         validPhone: null,
         addressBookModalIsVisible: false
       };
@@ -83,7 +88,7 @@ export default class EditContactScreen extends React.Component {
   };
 
   handleSubmit = async () => {
-    const { firstName, lastName, validPhone } = this.state;
+    const { firstName, lastName, validPhone, sendInvitation } = this.state;
     const contact = this.props.navigation.getParam("contact");
     const type = this.props.navigation.getParam("type");
     const user = this.props.navigation.getParam("user");
@@ -115,7 +120,8 @@ export default class EditContactScreen extends React.Component {
         firstName,
         lastName,
         phone: validPhone,
-        type
+        type,
+        sendInvitation
       });
       if (createContactError) {
         this.setState({
@@ -164,7 +170,7 @@ export default class EditContactScreen extends React.Component {
   };
 
   acceptSuggestedContact = async item => {
-    const { firstName, lastName, phone, id } = item;
+    const { firstName, lastName, phone, id, sendInvitation } = item;
     const type = this.props.navigation.getParam("type");
     const user = this.props.navigation.getParam("user");
 
@@ -178,7 +184,8 @@ export default class EditContactScreen extends React.Component {
       firstName,
       lastName,
       phone,
-      type
+      type,
+      sendInvitation
     });
 
     if (error) {
@@ -196,7 +203,7 @@ export default class EditContactScreen extends React.Component {
   };
 
   renderAddressBookItem = ({ item }) => {
-    const { firstName, lastName, phone, id, wasAdded } = item;
+    const { firstName, lastName, phone, sendInvitation, id, wasAdded } = item;
     const { accepting = {}, accepted = {} } = this.state;
     return (
       <View style={styles.listItem}>
@@ -230,7 +237,7 @@ export default class EditContactScreen extends React.Component {
   };
 
   renderAddressBookList = () => {
-    const { addressBookData } = this.state;
+    const { addressBookData, sendInvitation } = this.state;
     const user = this.props.navigation.getParam("user");
     if (!addressBookData) return <Spinner />;
     let filtered = [];
@@ -245,11 +252,12 @@ export default class EditContactScreen extends React.Component {
         if (entry) {
           const parsed = parsePhoneNumberFromString(entry.number, "US");
           if (parsed && parsed.isValid()) {
+            // This library also checks validity of area code and such, so it
+            // skips most of the dummy contacts in the iOS simulator
             phone = parsed.format("E.164");
           }
         }
       }
-
       if (!phone) continue;
       const wasAdded = !!user.contacts.items.find(c => c.phone === phone);
       const id = row.id;
@@ -261,16 +269,28 @@ export default class EditContactScreen extends React.Component {
         }
         if (!firstName) continue;
       }
-      filtered.push({ id, phone, firstName, lastName, wasAdded });
+      filtered.push({
+        id,
+        phone,
+        firstName,
+        lastName,
+        wasAdded,
+        sendInvitation
+      });
     }
 
+    const sorted = sortBy(filtered, c =>
+      c.firstName
+        ? [c.firstName.toLowerCase(), c.lastName.toLowerCase()]
+        : c.lastName.toLowerCase()
+    );
     return (
       <View style={styles.contactsSection}>
         <Text style={styles.introText}></Text>
         <FlatList
           style={styles.list}
           renderItem={this.renderAddressBookItem}
-          data={filtered}
+          data={sorted}
           keyExtractor={item => item.id}
           ItemSeparatorComponent={() => (
             <View style={styles.listItemSeparator} />
@@ -299,9 +319,18 @@ export default class EditContactScreen extends React.Component {
   };
 
   renderAddressBookModal = () => {
+    const { sendInvitation } = this.state;
     return (
       <Layout style={styles.modalContainer}>
         <Text category="h4">Choose Contacts</Text>
+        <CheckBox
+          style={styles.sendInvitationCheckboxInModal}
+          checked={sendInvitation}
+          text="Send a text invitation to the Village Keep app"
+          onChange={sendInvitation => {
+            this.setState({ sendInvitation });
+          }}
+        />
         <View>{this.renderAddressBookList()}</View>
       </Layout>
     );
@@ -321,7 +350,8 @@ export default class EditContactScreen extends React.Component {
       isSubmitting,
       phoneErrorMessage,
       validPhone,
-      addressBookModalIsVisible
+      addressBookModalIsVisible,
+      sendInvitation
     } = this.state;
     const contact = navigation.getParam("contact");
     const user = navigation.getParam("user");
@@ -390,6 +420,14 @@ export default class EditContactScreen extends React.Component {
               {error}
             </Text>
           )}
+          <CheckBox
+            style={styles.sendInvitationCheckbox}
+            checked={sendInvitation}
+            text="Send a text invitation to the Village Keep app"
+            onChange={sendInvitation => {
+              this.setState({ sendInvitation });
+            }}
+          />
           <FormSubmitButton
             onPress={this.handleSubmit}
             disabled={!firstName || !lastName || !validPhone || isSubmitting}
@@ -439,6 +477,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: gutterWidth,
     paddingTop: 50
   },
+  list: { marginBottom: 40 },
   listHeader: {
     paddingBottom: 20
   },
@@ -452,5 +491,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.brandColor,
     marginVertical: 8
   },
-  contactName: { fontWeight: "bold", fontSize: 16 }
+  contactName: { fontWeight: "bold", fontSize: 16 },
+  sendInvitationCheckboxInModal: {
+    marginTop: 20
+  },
+  sendInvitationCheckbox: {
+    marginTop: 5,
+    marginBottom: 15
+  }
 });
