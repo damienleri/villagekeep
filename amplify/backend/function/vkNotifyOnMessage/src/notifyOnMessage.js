@@ -6,6 +6,7 @@ const AWSAppSyncClient = require("aws-appsync").default;
 const gql = require("graphql-tag");
 const queries = require("./queries");
 const awsConfig = require("./aws-exports").default;
+const credentials = require("./credentials").default;
 Auth.configure(awsConfig);
 
 exports.getTokensForEvent = async function({ eventId, excludeUserId }) {
@@ -127,8 +128,9 @@ async function geteventPhonesByEvent({ eventId }) {
 
 async function generateCognitoToken() {
   try {
-    await Auth.signIn("+12678086023", "testtest1");
+    await Auth.signIn(credentials.username, credentials.password);
   } catch (error) {
+    console.log(error);
     return { error: `Error signing in: ${error}` };
   }
   const cognitoUser = await Auth.currentAuthenticatedUser();

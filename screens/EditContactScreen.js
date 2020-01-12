@@ -196,7 +196,7 @@ export default class EditContactScreen extends React.Component {
   };
 
   renderAddressBookItem = ({ item }) => {
-    const { firstName, lastName, phone, id } = item;
+    const { firstName, lastName, phone, id, wasAdded } = item;
     const { accepting = {}, accepted = {} } = this.state;
     return (
       <View style={styles.listItem}>
@@ -206,7 +206,9 @@ export default class EditContactScreen extends React.Component {
           </Text>
           <Text>{formatPhone(phone)}</Text>
         </View>
-        {accepted[id] ? (
+        {wasAdded ? (
+          <Text>Added</Text>
+        ) : accepted[id] ? (
           <Icon
             fill="green"
             height={24}
@@ -229,11 +231,11 @@ export default class EditContactScreen extends React.Component {
 
   renderAddressBookList = () => {
     const { addressBookData } = this.state;
+    const user = this.props.navigation.getParam("user");
     if (!addressBookData) return <Spinner />;
-    if (!addressBookData.length) return <Text>No contacts found.</Text>;
     let filtered = [];
 
-    addressBookData.forEach(row => {
+    for (const row of addressBookData) {
       let phone;
       if (row.phoneNumbers) {
         const entry =
@@ -248,7 +250,8 @@ export default class EditContactScreen extends React.Component {
         }
       }
 
-      if (!phone) return;
+      if (!phone) continue;
+      const wasAdded = !!user.contacts.items.find(c => c.phone === phone);
       const id = row.id;
       let firstName = row.firstName;
       let lastName = row.lastName;
@@ -256,11 +259,11 @@ export default class EditContactScreen extends React.Component {
         if (row.name) {
           firstName = row.name;
         }
-        if (!firstName) return;
+        if (!firstName) continue;
       }
-      filtered.push({ id, phone, firstName, lastName });
-    });
-    // console.log(filtered);
+      filtered.push({ id, phone, firstName, lastName, wasAdded });
+    }
+
     return (
       <View style={styles.contactsSection}>
         <Text style={styles.introText}></Text>
@@ -274,6 +277,7 @@ export default class EditContactScreen extends React.Component {
           )}
           ListHeaderComponent={this.renderListHeader}
           stickyHeaderIndices={[0]}
+          ListEmptyComponent={<Text>No contacts found.</Text>}
         />
       </View>
     );
