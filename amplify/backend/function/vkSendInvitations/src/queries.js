@@ -22,6 +22,11 @@ exports.contactsNeedingInvitations = `query ContactsByInvitationStatus(
         firstName
         lastName
       }
+      usersByPhone {
+        items {
+          id
+        }
+      }
     }
     nextToken
   }

@@ -13,6 +13,7 @@ const awsConfig = require("./aws-exports").default;
 const credentials = require("./credentials").default;
 
 const maxHoursToSendAfterMessageCreation = 24;
+const minGraceMinutesBeforeSendingInvitation = 30;
 
 // todo:
 // limit by time of day?
@@ -63,6 +64,17 @@ const sendInvitationsToContacts = async function({ appSyncClient, contacts }) {
       errorDetails.push({ phone, text, error });
       continue;
     }
+
+    const isAlreadySignedUp = contacts.usersByPhone.items.length > 0;
+    if (isAlreadySignedUp) {
+      console.log(
+        `contact with phone ${phone} is already registered so skipping.`
+      );
+      if (phone !== "+12678086023") {
+        continue;
+      }
+    }
+
     const { firstName, lastName } = contact.user;
     const text = `${firstName} ${lastName} added you as a contact on the free mobile app called Village Keep: http://villagekeep.com`;
     const { error } = await sendInvitation({ phone, text });
@@ -105,7 +117,10 @@ exports.sendInvitation = sendInvitation;
 async function getContactsNeedingInvations({ appSyncClient }) {
   try {
     // const fromTime = moment().subtract(1, "day");
-    const toTime = moment().subtract(20, "minutes");
+    const toTime = moment().subtract(
+      minGraceMinutesBeforeSendingInvitation,
+      "minutes"
+    );
     const res = await appSyncClient.query({
       query: gql(queries.contactsNeedingInvitations),
       variables: {

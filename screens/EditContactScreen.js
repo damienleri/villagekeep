@@ -279,8 +279,8 @@ export default class EditContactScreen extends React.Component {
 
     const sorted = sortBy(filtered, c =>
       c.firstName
-        ? [c.firstName.toLowerCase(), c.lastName.toLowerCase()]
-        : c.lastName.toLowerCase()
+        ? [c.firstName.toLowerCase(), (c.lastName || "").toLowerCase()]
+        : (c.lastName || "").toLowerCase()
     );
     return (
       <View style={styles.contactsSection}>
