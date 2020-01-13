@@ -23,6 +23,8 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -80,6 +82,8 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -164,6 +168,8 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -221,6 +227,8 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -305,6 +313,8 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -362,6 +372,8 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -885,6 +897,8 @@ export const createContact = `mutation CreateContact($input: CreateContactInput!
       pushEnabledForMessages
     }
     sendInvitation
+    invitationSentAt
+    invitationStatus
   }
 }
 `;
@@ -977,6 +991,8 @@ export const updateContact = `mutation UpdateContact($input: UpdateContactInput!
       pushEnabledForMessages
     }
     sendInvitation
+    invitationSentAt
+    invitationStatus
   }
 }
 `;
@@ -1069,6 +1085,8 @@ export const deleteContact = `mutation DeleteContact($input: DeleteContactInput!
       pushEnabledForMessages
     }
     sendInvitation
+    invitationSentAt
+    invitationStatus
   }
 }
 `;

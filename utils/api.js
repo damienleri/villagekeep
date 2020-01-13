@@ -280,6 +280,7 @@ export const createContact = async ({
           firstName,
           lastName,
           sendInvitation,
+          invitationStatus: sendInvitation ? "unsent" : null,
           userId: user.id,
           cognitoUserId: user.cognitoUserId
         }

@@ -1,8 +1,9 @@
-const { getInvitationsToSend, sendInvitations } = require("./invitations");
+const { processContacts } = require("./invitations");
 
 (async () => {
-  const { error, invitations } = await getInvitationsToSend();
-
-  const { error: sendError } = await sendInvitations({ invitations });
-  if (sendError) console.log("senderror", sendError);
+  const { error, errorDetails } = await processContacts();
+  if (error) {
+    console.log("aborted due to error", error, errorDetails);
+    return;
+  }
 })();

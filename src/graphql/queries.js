@@ -23,6 +23,8 @@ export const getUser = `query GetUser($id: ID!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -80,6 +82,8 @@ export const getUser = `query GetUser($id: ID!) {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -463,6 +467,8 @@ export const getContact = `query GetContact($id: ID!) {
       pushEnabledForMessages
     }
     sendInvitation
+    invitationSentAt
+    invitationStatus
   }
 }
 `;
@@ -504,6 +510,8 @@ export const listContacts = `query ListContacts(
         pushEnabledForMessages
       }
       sendInvitation
+      invitationSentAt
+      invitationStatus
     }
     nextToken
   }
@@ -1114,6 +1122,8 @@ export const contactsByUser = `query ContactsByUser(
         pushEnabledForMessages
       }
       sendInvitation
+      invitationSentAt
+      invitationStatus
     }
     nextToken
   }
@@ -1165,19 +1175,23 @@ export const contactsByPhone = `query ContactsByPhone(
         pushEnabledForMessages
       }
       sendInvitation
+      invitationSentAt
+      invitationStatus
     }
     nextToken
   }
 }
 `;
-export const contactsByCreatedAt = `query ContactsByCreatedAt(
-  $createdAt: String
+export const contactsByInvitationStatus = `query ContactsByInvitationStatus(
+  $invitationStatus: InvitationStatusType
+  $createdAt: ModelStringKeyConditionInput
   $sortDirection: ModelSortDirection
   $filter: ModelContactFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  contactsByCreatedAt(
+  contactsByInvitationStatus(
+    invitationStatus: $invitationStatus
     createdAt: $createdAt
     sortDirection: $sortDirection
     filter: $filter
@@ -1216,6 +1230,8 @@ export const contactsByCreatedAt = `query ContactsByCreatedAt(
         pushEnabledForMessages
       }
       sendInvitation
+      invitationSentAt
+      invitationStatus
     }
     nextToken
   }

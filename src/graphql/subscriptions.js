@@ -23,6 +23,8 @@ export const onCreateUser = `subscription OnCreateUser {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -80,6 +82,8 @@ export const onCreateUser = `subscription OnCreateUser {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -164,6 +168,8 @@ export const onUpdateUser = `subscription OnUpdateUser {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -221,6 +227,8 @@ export const onUpdateUser = `subscription OnUpdateUser {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -305,6 +313,8 @@ export const onDeleteUser = `subscription OnDeleteUser {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -362,6 +372,8 @@ export const onDeleteUser = `subscription OnDeleteUser {
         lastName
         userId
         sendInvitation
+        invitationSentAt
+        invitationStatus
       }
       nextToken
     }
@@ -885,6 +897,8 @@ export const onCreateContact = `subscription OnCreateContact {
       pushEnabledForMessages
     }
     sendInvitation
+    invitationSentAt
+    invitationStatus
   }
 }
 `;
@@ -977,6 +991,8 @@ export const onUpdateContact = `subscription OnUpdateContact {
       pushEnabledForMessages
     }
     sendInvitation
+    invitationSentAt
+    invitationStatus
   }
 }
 `;
@@ -1069,6 +1085,8 @@ export const onDeleteContact = `subscription OnDeleteContact {
       pushEnabledForMessages
     }
     sendInvitation
+    invitationSentAt
+    invitationStatus
   }
 }
 `;

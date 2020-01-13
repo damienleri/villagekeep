@@ -4,9 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "aws-serverless-express": "^3.3.5",
-    "body-parser": "^1.17.1",
-    "express": "^4.15.2"
+    "aws-amplify": "^2.1.0",
+    "aws-appsync": "^3.0.2",
+    "aws-sdk": "^2.601.0",
+    "expo-server-sdk": "^3.4.0",
+    "graphql-tag": "^2.10.1",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {},
   "scripts": {

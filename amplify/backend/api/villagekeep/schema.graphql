@@ -57,10 +57,15 @@ type Contact
     queryField: "contactsByUser"
   )
   @key(name: "byPhone", fields: ["phone"], queryField: "contactsByPhone")
+  # @key(
+  #   name: "byCreatedAt"
+  #   fields: ["createdAt"]
+  #   queryField: "contactsByCreatedAt"
+  # )
   @key(
-    name: "byCreatedAt"
-    fields: ["createdAt"]
-    queryField: "contactsByCreatedAt"
+    name: "byInvitationStatus"
+    fields: ["invitationStatus", "createdAt"]
+    queryField: "contactsByInvitationStatus"
   )
   @model {
   id: ID!
@@ -77,6 +82,8 @@ type Contact
   userId: ID!
   user: User! @connection(fields: ["userId"])
   sendInvitation: Boolean
+  invitationSentAt: AWSTimestamp
+  invitationStatus: InvitationStatusType
 }
 
 type EventPhone
@@ -148,4 +155,8 @@ enum EventType {
   kids
   both
   custom
+}
+enum InvitationStatusType {
+  unsent
+  sent
 }

@@ -2,7 +2,7 @@ const { Expo } = require("expo-server-sdk");
 const { get } = require("lodash");
 require("isomorphic-fetch");
 const Auth = require("@aws-amplify/auth").default;
-const AWSAppSyncClient = require("aws-appsync").default;
+const AWSAppSyncClient = require("aws-appsync").default; // because aws-amplify client still doesn't work right with nodeJs
 const gql = require("graphql-tag");
 const queries = require("./queries");
 const awsConfig = require("./aws-exports").default;
@@ -119,11 +119,16 @@ exports.sendNotifications = async function({ pushTokens, eventId, text }) {
 async function geteventPhonesByEvent({ eventId }) {
   const { appSyncClient, error } = await generateAppsyncClient();
   if (error) return { error };
-  const res = await appSyncClient.query({
-    query: gql(queries.eventPhonesByEvent),
-    variables: { eventId, limit: 500 }
-  });
-  return { eventPhones: res.data.eventPhonesByEvent.items };
+  try {
+    const res = await appSyncClient.query({
+      query: gql(queries.eventPhonesByEvent),
+      variables: { eventId, limit: 500 }
+    });
+    return { eventPhones: res.data.eventPhonesByEvent.items };
+  } catch (e) {
+    console.log(e);
+    return { error: e };
+  }
 }
 
 async function generateCognitoToken() {

@@ -163,8 +163,6 @@ export default class EditContactScreen extends React.Component {
     const { status } = await Contacts.requestPermissionsAsync();
     if (status === "granted") {
       const { data } = await Contacts.getContactsAsync();
-      // this.setState({ addressBookIsVisible: true });
-      console.log("contacts", data[0]);
       this.setState({ addressBookData: data, addressBookModalIsVisible: true });
     }
   };
