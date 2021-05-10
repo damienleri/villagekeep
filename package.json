@@ -37,7 +37,7 @@
     "expo-web-browser": "~8.0.0",
     "global": "^4.4.0",
     "libphonenumber-js": "^1.7.29",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "react": "16.9.0",
     "react-dom": "^16.12.0",
