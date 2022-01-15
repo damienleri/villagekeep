@@ -62,7 +62,7 @@
     "jest-expo": "^36.0.0",
     "jsonfile": "^5.0.0",
     "path": "^0.12.7",
-    "shelljs": "^0.8.3"
+    "shelljs": "^0.8.5"
   },
   "private": true
 }
